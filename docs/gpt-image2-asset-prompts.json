@@ -1,0 +1,74 @@
+[
+  {
+    "id": "battle-background",
+    "target": "assets/generated/backgrounds/night-temple-battle.png",
+    "size": "1536x1024",
+    "final_size": [1920, 1080],
+    "prompt": "Task type: game battle background concept art. Objective: create a polished finished background for a cybersecurity deckbuilding roguelike named 夜巡 SOC：边界告警. Format: 16:9 landscape, single finished image, no UI overlay, no text. Scene: a night-shift SOC operations room fused with subtle Eastern night-patrol architecture: dark server racks as temple pillars, glowing network map on the floor, blue-cyan SIEM dashboards, red alert traces, rain outside high windows, boundary gateway halo in the distance. Style: premium 2D game background, painterly cinematic, cyber-noir, restrained oriental motifs, teal/cyan primary lighting with amber warning accents, readable central empty arena space for characters, high detail but not cluttered. Constraints: no readable random text, no logos, no people in foreground, no cards, no mockup, no frame, no watermark."
+  },
+  {
+    "id": "player-night-patrol",
+    "target": "assets/generated/characters/player-night-patrol.png",
+    "size": "1024x1536",
+    "final_size": [720, 960],
+    "prompt": "Task type: game character sprite illustration. Objective: main playable character for 夜巡 SOC：边界告警. Format: vertical character portrait, full body, single character, no text. Subject: a night-shift SOC incident responder / cyber night watch guardian, wearing a dark tactical coat with subtle modern Hanfu silhouette, earpiece, ID lanyard, glowing wrist terminal, holding a tablet projecting IOC glyphs and firewall sigils. Pose: facing right, calm defensive stance, ready to respond, readable silhouette. Style: polished 2D game sprite, semi-realistic painterly, cyber-noir Eastern fantasy, cyan rim light and warm amber monitor reflections, transparent-looking dark simple background with soft glow. Constraints: no extra characters, no weapons like swords, no random text, no logo, no UI, no watermark, centered with full body visible."
+  },
+  {
+    "id": "lantern",
+    "target": "assets/generated/enemies/lantern.png",
+    "size": "1024x1024",
+    "final_size": [720, 720],
+    "prompt": "Task type: game enemy sprite. Objective: enemy activity '噪声告警蜂群' for a cybersecurity roguelike. Format: square sprite, single enemy, no text. Subject: a swarm of glowing red-orange false alert packets and small lantern-like drones made of log fragments, circling a corrupted alert beacon. Visual metaphor: noisy SIEM alerts, decoys, packet sparks. Style: polished 2D game monster sprite, cyber-noir Eastern night-patrol atmosphere, dark background, cyan/red contrast, readable silhouette, high detail, painterly. Constraints: no random letters, no UI, no human, no watermark, centered enemy with room around edges."
+  },
+  {
+    "id": "waterghost",
+    "target": "assets/generated/enemies/waterghost.png",
+    "size": "1024x1024",
+    "final_size": [720, 720],
+    "prompt": "Task type: game enemy sprite. Objective: enemy '钓鱼凭据回传' for 夜巡 SOC：边界告警. Format: square sprite, single enemy, no text. Subject: a translucent phishing specter made of login forms, credential bubbles, and network cables, rising from a dark data stream; hook-like cursor shapes and red exfiltration trails. Style: polished 2D game monster sprite, semi-realistic painterly cyber-noir, teal data water and red threat glow, Eastern ghostly silhouette but clearly cybersecurity-themed. Constraints: no readable form text, no logos, no UI frame, no watermark, centered."
+  },
+  {
+    "id": "templecorpse",
+    "target": "assets/generated/enemies/templecorpse.png",
+    "size": "1024x1024",
+    "final_size": [720, 720],
+    "prompt": "Task type: game enemy sprite. Objective: enemy '遗留服务僵尸' for a cybersecurity deckbuilder. Format: square sprite, single enemy, no text. Subject: a hulking zombie server daemon assembled from obsolete server chassis, cracked ports, dangling patch cables, and stale service banners; faint CVE warning glyphs as abstract shapes, not readable text. Style: polished 2D game enemy sprite, dark cyberpunk SOC mood with restrained oriental talisman-like circuit patterns, cyan rim light, red vulnerability core. Constraints: no random text, no brand logos, no UI, no watermark, centered and readable."
+  },
+  {
+    "id": "macaque",
+    "target": "assets/generated/enemies/macaque.png",
+    "size": "1024x1024",
+    "final_size": [720, 720],
+    "prompt": "Task type: game enemy sprite. Objective: enemy '横向移动脚本' for 夜巡 SOC：边界告警. Format: square sprite, single enemy, no text. Subject: an agile script-intruder creature shaped like a quick monkey silhouette made of command lines, lateral network arrows, and endpoint shadows, leaping between server nodes. Style: polished 2D monster sprite, energetic pose, cyber-noir Eastern fantasy, cyan network trails and orange exploit sparks, clear silhouette. Constraints: no readable code text, no UI, no logos, no watermark, centered."
+  },
+  {
+    "id": "warlock",
+    "target": "assets/generated/enemies/warlock.png",
+    "size": "1024x1024",
+    "final_size": [720, 720],
+    "prompt": "Task type: game enemy sprite. Objective: enemy 'C2 编排者' for a cybersecurity roguelike. Format: square sprite, single enemy, no text. Subject: a hooded command-and-control operator made of dark packets and botnet strings, hovering over a holographic network topology, many red command threads extending outward. Style: premium 2D game boss-minion sprite, cyber-noir, ominous, Eastern ritual geometry translated into circuit sigils, teal and crimson lighting, painterly detail. Constraints: no readable letters, no logos, no UI, no watermark, centered."
+  },
+  {
+    "id": "foxshade",
+    "target": "assets/generated/enemies/foxshade.png",
+    "size": "1024x1024",
+    "final_size": [720, 720],
+    "prompt": "Task type: game enemy sprite. Objective: enemy '伪装进程' for 夜巡 SOC：边界告警. Format: square sprite, single enemy, no text. Subject: a sleek fox-like malware process with translucent layered tails made of process trees and masquerading windows, elegant but dangerous; one tail reveals a red malicious core. Style: polished 2D game monster sprite, cyber-noir Eastern fox spirit metaphor, dark teal background, magenta/red threat highlights, readable silhouette. Constraints: no random text, no UI panels, no logos, no watermark, centered."
+  },
+  {
+    "id": "tigerlord",
+    "target": "assets/generated/enemies/tigerlord.png",
+    "size": "1024x1024",
+    "final_size": [860, 860],
+    "prompt": "Task type: game boss sprite. Objective: final boss '勒索核心' for 夜巡 SOC：边界告警. Format: square boss sprite, no text. Subject: a massive cyber tiger / ransomware core guardian made of encrypted file shards, server armor, lock-shaped red cores, and network chains; imposing frontal three-quarter stance, claws as encryption keys. Style: high-finish 2D game boss art, cinematic cyber-noir with Eastern guardian-beast silhouette, cyan rim light, crimson ransomware glow, very strong silhouette and premium detail. Constraints: no readable text, no UI, no logo, no watermark, centered with full body visible."
+  },
+  {
+    "id": "icon",
+    "target": "assets/marketing/icon.png",
+    "copy_to": "public/favicon.png",
+    "size": "1024x1024",
+    "final_size": [512, 512],
+    "copy_size": [256, 256],
+    "prompt": "Task type: app/game icon. Objective: polished icon for 夜巡 SOC：边界告警. Format: square app icon, single emblem, no text. Subject: a cyber night-watch shield combining a crescent moon, SOC radar ring, firewall gate, and subtle Eastern roofline silhouette; cyan glowing boundary line around a dark core with small amber alert dot. Style: premium game app icon, clean high-contrast, beveled but not childish, dark teal / black / cyan / amber palette, readable at small size. Constraints: no words, no random letters, no official logos, no watermark, no background scene, centered emblem."
+  }
+]
