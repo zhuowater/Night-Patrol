@@ -2,7 +2,7 @@
 
 《夜巡 SOC：边界告警》是一个网络安全主题的卡牌构筑 roguelike demo。你扮演夜班 SOC 响应员，接管凌晨控制台，在有限算力和响应窗口里追踪 IOC、压制横向移动、清理噪声告警，并在天亮前阻止攻击者触达核心域控。
 
-当前版本是第一关竖切 demo：可以从标题页进入攻击路径，经历普通战、高危入侵、异常事件、情报市场、维护窗口，最终阻断核心域控前的勒索核心。
+当前版本是 `v0.2.2-demo` 试玩候选：可以从标题页进入攻击路径，经历普通战、高危入侵、异常事件、情报市场、维护窗口，最终阻断核心域控前的勒索核心。
 
 ## 下载试玩
 
@@ -23,6 +23,7 @@ macOS 版本目前是 demo 阶段的 ad-hoc 签名包，没有 Apple 公证。�
 - 类《杀戮尖塔》的核心循环：走路线、打战斗、拿新牌、拿工具、删牌升级、滚动构筑。
 - 拖拽出牌：攻击牌拖向攻击活动，技能和法门拖向自己。
 - 卡组循环：抽牌、回卷弃牌堆、能量补偿、IOC 爆发和算力成长互相配合。
+- 攻击链反制：C2 信标可用 IOC 拦截，凭据噪声可用持续降权清洗，勒索倒计时可用算力恢复演练取消。
 - 完整第一关：普通攻击活动、高危敌人、Boss、事件、维护窗口、市场和处置结算界面。
 - 视听演出：React + Phaser 战斗舞台、敌人大立绘、背景音乐、攻击音效、胜利结算视频与静态 fallback。
 
@@ -98,6 +99,13 @@ http://127.0.0.1:5173
 npm run check:theme
 ```
 
+攻击链与规则场景检查：
+
+```bash
+npm run check:attack-chain
+npm run check:engine-scenarios
+```
+
 ## 客户端打包
 
 本地客户端预览：
@@ -123,8 +131,8 @@ npm run desktop:dist
 GitHub CI 打包方式：
 
 ```bash
-git tag v0.2.1-demo
-git push origin v0.2.1-demo
+git tag v0.2.2-demo
+git push origin v0.2.2-demo
 ```
 
 推送 tag 后，GitHub Actions 会构建 macOS 和 Windows 包，并附加到 GitHub Release 页面。
@@ -133,6 +141,8 @@ git push origin v0.2.1-demo
 
 - `docs/CYBERSECURITY_RETHEME_DESIGN.md`：网络安全主题改编设计。
 - `docs/plans/2026-05-01-cybersecurity-retheme-phase-1.md`：Phase 1 实施计划。
+- `docs/plans/2026-05-01-v0.2.2-playtest-candidate.md`：v0.2.2 试玩候选收口计划。
+- `docs/RELEASE_NOTES_v0.2.2.md`：v0.2.2 Release Notes 草案。
 - `docs/PLANNING.md`：早期玩法与世界观规划。
 - `docs/FIRST_ACT_DEMO_ROADMAP.md`：第一关完整 demo 路线图。
 - `docs/IMPLEMENTATION_DETAILS.md`：实现细节和 AI 协作复盘。

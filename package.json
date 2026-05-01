@@ -1,6 +1,6 @@
 {
   "name": "night-patrol-soc",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "description": "网络安全主题卡牌构筑 roguelike demo",
   "main": "electron/main.cjs",
@@ -19,7 +19,8 @@
     "desktop:pack": "npm run build && electron-builder --dir",
     "desktop:dist": "npm run build && electron-builder --publish never",
     "check:theme": "node scripts/check-cybersec-theme.mjs",
-    "check:attack-chain": "node scripts/check-attack-chain-counterplay.mjs"
+    "check:attack-chain": "node scripts/check-attack-chain-counterplay.mjs",
+    "check:engine-scenarios": "tsx scripts/check-engine-scenarios.ts"
   },
   "build": {
     "appId": "com.yexunlu.soc",
@@ -81,6 +82,7 @@
     "@vitejs/plugin-react": "^6.0.1",
     "electron": "^41.3.0",
     "electron-builder": "^26.8.1",
+    "tsx": "^4.21.0",
     "typescript": "^5.6.3",
     "vite": "^8.0.10"
   }
