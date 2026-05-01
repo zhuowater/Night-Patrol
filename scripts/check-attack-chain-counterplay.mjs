@@ -1,14 +1,14 @@
 import fs from 'node:fs';
 
-const engine = fs.readFileSync('src/game/engine/core.ts', 'utf8');
+const attackChain = fs.readFileSync('src/game/engine/attackChain.ts', 'utf8');
 const app = fs.readFileSync('src/App.tsx', 'utf8');
 const themeCheck = fs.readFileSync('scripts/check-cybersec-theme.mjs', 'utf8');
 
 const required = [
-  { file: 'src/game/engine/core.ts', text: 'function applyAttackChainCounterplay', reason: 'centralized counterplay must run before punitive attack-chain pressure' },
-  { file: 'src/game/engine/core.ts', text: 'C2 追踪拦截', reason: 'IOC layers should be able to intercept C2 beacon noise' },
-  { file: 'src/game/engine/core.ts', text: '凭据隔离清洗', reason: 'weak counterplay should clean credential noise before draw penalty snowballs' },
-  { file: 'src/game/engine/core.ts', text: '勒索恢复演练', reason: 'saved compute should cancel ransomware countdown damage' },
+  { file: 'src/game/engine/attackChain.ts', text: 'function applyAttackChainCounterplay', reason: 'centralized counterplay must run before punitive attack-chain pressure' },
+  { file: 'src/game/engine/attackChain.ts', text: 'C2 追踪拦截', reason: 'IOC layers should be able to intercept C2 beacon noise' },
+  { file: 'src/game/engine/attackChain.ts', text: '凭据隔离清洗', reason: 'weak counterplay should clean credential noise before draw penalty snowballs' },
+  { file: 'src/game/engine/attackChain.ts', text: '勒索恢复演练', reason: 'saved compute should cancel ransomware countdown damage' },
   { file: 'src/App.tsx', text: '反制窗口', reason: 'UI must expose upcoming player counterplay, not only enemy risks' },
   { file: 'src/App.tsx', text: 'C2：IOC ≥ 1 可拦截信标', reason: 'UI forecast must teach C2 counterplay rule' },
   { file: 'src/App.tsx', text: '本回合 IOC 拦截，噪声不增加', reason: 'risk forecast must account for C2 counterplay instead of contradicting the engine' },
@@ -18,7 +18,7 @@ const required = [
 ];
 
 const sources = {
-  'src/game/engine/core.ts': engine,
+  'src/game/engine/attackChain.ts': attackChain,
   'src/App.tsx': app,
   'scripts/check-cybersec-theme.mjs': themeCheck,
 };
@@ -33,8 +33,8 @@ if (missing.length > 0) {
   process.exit(1);
 }
 
-const pressureIndex = engine.indexOf('function applyAttackChainPressure');
-const counterplayIndex = engine.indexOf('function applyAttackChainCounterplay');
+const pressureIndex = attackChain.indexOf('function applyAttackChainPressure');
+const counterplayIndex = attackChain.indexOf('function applyAttackChainCounterplay');
 if (counterplayIndex < 0 || pressureIndex < 0 || counterplayIndex > pressureIndex) {
   console.error('Attack-chain counterplay check failed: applyAttackChainCounterplay must be defined before applyAttackChainPressure for reviewability.');
   process.exit(1);
