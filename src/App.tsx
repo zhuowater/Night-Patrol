@@ -1,7 +1,5 @@
 import {
   AudioWaveform,
-  BadgeCent,
-  BookOpen,
   Home,
   Info,
   RotateCcw,
@@ -11,11 +9,9 @@ import {
   Swords,
   Volume2,
   VolumeX,
-  Zap,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import type { CSSProperties, PointerEvent as ReactPointerEvent, ReactNode } from "react";
-import { NODE_DEFS } from "./game/content";
 import {
   buyShopCard,
   buyShopRelic,
@@ -42,61 +38,33 @@ import {
   takeRewardCard,
   upgradeCard,
 } from "./game/engine";
-import { RitualAudio } from "./game/audio";
-import type { CardInstance, Difficulty, EnemyState, GameState, NodeType, PlayerState, Screen } from "./game/types";
-import { CombatStage } from "./phaser/CombatStage";
-
-const routeNames = ["边界", "办公网", "终端", "日志湖", "服务器区", "情报市", "核心域", "域控"];
-const hudBloodUrl = new URL("../assets/vendor/shushan/icon-blood-orb.png", import.meta.url).href;
-const baguaIconUrl = new URL("../assets/vendor/shushan/icon-bagua-gold.png", import.meta.url).href;
-const talismanIconUrl = new URL("../assets/vendor/shushan/icon-talisman-paper.png", import.meta.url).href;
-const swordFireUrl = new URL("../assets/vendor/shushan/icon-sword-flame.png", import.meta.url).href;
-const swordCrossUrl = new URL("../assets/vendor/shushan/icon-sword-cross.png", import.meta.url).href;
-const blockBadgeUrl = new URL("../assets/vendor/shushan/badge-shield.png", import.meta.url).href;
-const incenseBadgeUrl = new URL("../assets/vendor/shushan/relic-bell.png", import.meta.url).href;
-const sealBadgeUrl = new URL("../assets/vendor/shushan/relic-orb-blue.png", import.meta.url).href;
-const pileDrawUrl = new URL("../assets/vendor/shushan/badge-scroll.png", import.meta.url).href;
-const pileDiscardUrl = new URL("../assets/vendor/shushan/icon-talisman-paper.png", import.meta.url).href;
-const relicIconUrl = new URL("../assets/vendor/shushan/relic-umbrella.png", import.meta.url).href;
-const goldIconUrl = new URL("../assets/vendor/shushan/icon-bagua-gold.png", import.meta.url).href;
-const mapIconUrl = new URL("../assets/vendor/aigei/pile-draw.png", import.meta.url).href;
-const gameIconUrl = new URL("../assets/marketing/icon.png", import.meta.url).href;
-const costGemUrls: Record<string, string> = {
-  empty: new URL("../assets/vendor/shushan/cost/cost-empty.png", import.meta.url).href,
-  "0": new URL("../assets/vendor/shushan/cost/cost-0.png", import.meta.url).href,
-  "1": new URL("../assets/vendor/shushan/cost/cost-1.png", import.meta.url).href,
-  "2": new URL("../assets/vendor/shushan/cost/cost-2.png", import.meta.url).href,
-  "3": new URL("../assets/vendor/shushan/cost/cost-3.png", import.meta.url).href,
-};
-const playerNightPatrolUrl = new URL("../assets/generated/characters/player-night-patrol.png", import.meta.url).href;
-const sceneLoopVideoUrl = new URL("../assets/generated/backgrounds/night-temple-loop.mp4", import.meta.url).href;
-const enemyArtUrls: Record<string, string> = {
-  lantern: new URL("../assets/generated/enemies/lantern.png", import.meta.url).href,
-  waterghost: new URL("../assets/generated/enemies/waterghost.png", import.meta.url).href,
-  templecorpse: new URL("../assets/generated/enemies/templecorpse.png", import.meta.url).href,
-  macaque: new URL("../assets/generated/enemies/macaque.png", import.meta.url).href,
-  warlock: new URL("../assets/generated/enemies/warlock.png", import.meta.url).href,
-  foxshade: new URL("../assets/generated/enemies/foxshade.png", import.meta.url).href,
-  tigerlord: new URL("../assets/generated/enemies/tigerlord.png", import.meta.url).href,
-};
-const cinematicPosterUrls: Record<string, string> = {
-  lantern: new URL("../assets/generated/cinematics/victory-lantern-poster.png", import.meta.url).href,
-  waterghost: new URL("../assets/generated/cinematics/victory-waterghost-poster.png", import.meta.url).href,
-  templecorpse: new URL("../assets/generated/cinematics/victory-templecorpse-poster.png", import.meta.url).href,
-  macaque: new URL("../assets/generated/cinematics/victory-macaque-poster.png", import.meta.url).href,
-  warlock: new URL("../assets/generated/cinematics/victory-warlock-poster.png", import.meta.url).href,
-  foxshade: new URL("../assets/generated/cinematics/victory-foxshade-poster.png", import.meta.url).href,
-  "boss-tigerlord": new URL("../assets/generated/cinematics/victory-boss-tigerlord-poster.png", import.meta.url).href,
-};
-const cinematicVideoUrls: Record<string, string> = {
-  lantern: new URL("../assets/generated/cinematics/victory-lantern.mp4", import.meta.url).href,
-  waterghost: new URL("../assets/generated/cinematics/victory-waterghost.mp4", import.meta.url).href,
-  templecorpse: new URL("../assets/generated/cinematics/victory-templecorpse.mp4", import.meta.url).href,
-  macaque: new URL("../assets/generated/cinematics/victory-macaque.mp4", import.meta.url).href,
-  warlock: new URL("../assets/generated/cinematics/victory-warlock.mp4", import.meta.url).href,
-  foxshade: new URL("../assets/generated/cinematics/victory-foxshade.mp4", import.meta.url).href,
-  "boss-tigerlord": new URL("../assets/generated/cinematics/victory-boss-tigerlord.mp4", import.meta.url).href,
-};
+import type { CardInstance, Difficulty, EnemyState, GameState, PlayerState, Screen } from "./game/types";
+import { LazyCombatStage } from "./phaser/LazyCombatStage";
+import {
+  baguaIconUrl,
+  blockBadgeUrl,
+  cinematicPosterUrls,
+  cinematicVideoUrls,
+  costGemUrls,
+  enemyArtUrls,
+  gameIconUrl,
+  goldIconUrl,
+  hudBloodUrl,
+  incenseBadgeUrl,
+  mapIconUrl,
+  pileDiscardUrl,
+  pileDrawUrl,
+  playerNightPatrolUrl,
+  relicIconUrl,
+  sceneLoopVideoUrl,
+  sealBadgeUrl,
+  swordCrossUrl,
+  swordFireUrl,
+  talismanIconUrl,
+} from "./ui/assets";
+import { GameCard, dragHitTarget, dropTargetForCard } from "./ui/cards";
+import { LogRail, MapScreen } from "./ui/map-log";
+import { EndScreen, TopHud } from "./ui/shell";
 
 export function App() {
   const [game, setGame] = useState<GameState>(() => createGameState());
@@ -104,21 +72,29 @@ export function App() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>("normal");
   const [loadingDifficulty, setLoadingDifficulty] = useState<Difficulty | null>(null);
   const [aboutReturnScreen, setAboutReturnScreen] = useState<Screen>("title");
-  const audioRef = useRef<RitualAudio | null>(null);
+  const audioRef = useRef<import("./game/audio").RitualAudio | null>(null);
   const loadingTimerRef = useRef<number | null>(null);
 
   const audio = () => {
-    if (!audioRef.current) audioRef.current = new RitualAudio();
+    if (!audioRef.current) {
+      import("./game/audio").then(({ RitualAudio }) => {
+        if (!audioRef.current) {
+          audioRef.current = new RitualAudio();
+          audioRef.current.setMuted(muted);
+          audioRef.current.setMusicMode(game.screen === "title" || game.screen === "about" ? "title" : "game");
+        }
+      });
+    }
     return audioRef.current;
   };
 
   const transact = (fn: (draft: GameState) => void, click = true) => {
-    if (click) audio().sfx("click");
+    if (click) audio()?.sfx("click");
     setGame((prev) => {
       const next = cloneState(prev);
       next.lastFx = "none";
       fn(next);
-      if (next.lastFx !== "none") window.setTimeout(() => audio().sfx(next.lastFx), 0);
+      if (next.lastFx !== "none") window.setTimeout(() => audio()?.sfx(next.lastFx), 0);
       return next;
     });
   };
@@ -126,11 +102,11 @@ export function App() {
   const toggleMute = () => {
     const next = !muted;
     setMuted(next);
-    audio().setMuted(next);
+    audio()?.setMuted(next);
   };
 
   const returnHome = () => {
-    audio().sfx("click");
+    audio()?.sfx("click");
     if (loadingTimerRef.current) window.clearTimeout(loadingTimerRef.current);
     setLoadingDifficulty(null);
     setAboutReturnScreen("title");
@@ -138,7 +114,7 @@ export function App() {
   };
 
   const openAbout = () => {
-    audio().sfx("click");
+    audio()?.sfx("click");
     if (loadingTimerRef.current) window.clearTimeout(loadingTimerRef.current);
     setLoadingDifficulty(null);
     setGame((prev) => {
@@ -148,12 +124,12 @@ export function App() {
   };
 
   const closeAbout = () => {
-    audio().sfx("click");
+    audio()?.sfx("click");
     setGame((prev) => ({ ...cloneState(prev), screen: aboutReturnScreen || "title" }));
   };
 
   const beginRun = (difficulty: Difficulty) => {
-    audio().sfx("click");
+    audio()?.sfx("click");
     setSelectedDifficulty(difficulty);
     setLoadingDifficulty(difficulty);
     if (loadingTimerRef.current) window.clearTimeout(loadingTimerRef.current);
@@ -166,7 +142,7 @@ export function App() {
   const player = game.player;
 
   useEffect(() => {
-    audio().setMusicMode(game.screen === "title" || game.screen === "about" ? "title" : "game");
+    audio()?.setMusicMode(game.screen === "title" || game.screen === "about" ? "title" : "game");
   }, [game.screen]);
 
   useEffect(
@@ -187,6 +163,7 @@ export function App() {
         onHome={returnHome}
         onAbout={openAbout}
         onRestart={() => transact((draft) => startRun(draft, game.difficulty || selectedDifficulty))}
+        icons={{ Home: <Home />, Info: <Info />, RotateCcw: <RotateCcw />, Volume2: <Volume2 />, VolumeX: <VolumeX /> }}
       />
       <main className={`screen screen-${visibleScreen}`}>
         {loadingDifficulty && <LoadingScreen difficulty={loadingDifficulty} />}
@@ -256,82 +233,6 @@ export function App() {
         {game.screen === "gameover" && <EndScreen title="响应失守" body="攻击链突破了窗口，核心资产进入应急隔离。下一次接班，你会更懂哪些告警不能拖。" onStart={() => transact(startRun)} />}
         {game.screen === "victory" && <EndScreen title="边界天明" body="勒索核心被阻断，核心域控恢复控制。你带回来的不是答案，而是一套能让夜班活下来的响应剧本。" onStart={() => transact(startRun)} />}
       </main>
-    </div>
-  );
-}
-
-function TopHud({
-  game,
-  muted,
-  onMute,
-  onHome,
-  onAbout,
-  onRestart,
-}: {
-  game: GameState;
-  muted: boolean;
-  onMute: () => void;
-  onHome: () => void;
-  onAbout: () => void;
-  onRestart: () => void;
-}) {
-  const player = game.player;
-  return (
-    <header className="top-hud">
-      <div className="hud-left">
-        <div className="hero-seal">
-          <img src={baguaIconUrl} alt="" draggable={false} />
-        </div>
-        {player && (
-          <>
-            <HudChip icon={<img className="hud-asset-icon" src={hudBloodUrl} alt="" draggable={false} />} label={`${player.hp}/${player.maxHp}`} tone="heart" />
-            <HudChip icon={<img className="hud-asset-icon" src={goldIconUrl} alt="" draggable={false} />} label={String(player.gold)} tone="gold" />
-          </>
-        )}
-      </div>
-      <div className="hud-center">
-        <div className="hud-center-stack">
-          <div className="hud-primary-row">
-            {player ? (
-              <>
-            <HudChip icon={<img className="hud-asset-icon" src={pileDrawUrl} alt="" draggable={false} />} label={`牌组 ${player.deck.length}`} />
-            <HudChip icon={<img className="hud-asset-icon" src={relicIconUrl} alt="" draggable={false} />} label={`遗物 ${player.relics.length}`} />
-            <HudChip icon={<img className="hud-asset-icon hud-map-icon" src={mapIconUrl} alt="" draggable={false} />} label={`地图 ${Math.min(game.floor + 1, 8)}/8`} tone="map" />
-              </>
-            ) : (
-              <span className="hud-title">夜巡 SOC：边界告警</span>
-            )}
-          </div>
-          <span className="hud-credit">zhuowater × Hermes 联合开发 · 安全响应主题 demo · 非商用署名</span>
-        </div>
-      </div>
-      <div className="hud-right">
-        {game.screen !== "title" && (
-          <button className="icon-btn" type="button" title="回到首页" onClick={onHome}>
-            <Home />
-          </button>
-        )}
-        <button className="icon-btn" type="button" title={muted ? "打开声音" : "静音"} onClick={onMute}>
-          {muted ? <VolumeX /> : <Volume2 />}
-        </button>
-        <button className="icon-btn" type="button" title="关于本作" onClick={onAbout}>
-          <Info />
-        </button>
-        {player && game.screen !== "title" && (
-          <button className="icon-btn" type="button" title="重新开始本局" onClick={onRestart}>
-            <RotateCcw />
-          </button>
-        )}
-      </div>
-    </header>
-  );
-}
-
-function HudChip({ icon, label, tone }: { icon: ReactNode; label: string; tone?: string }) {
-  return (
-    <div className={`hud-chip ${tone ? `hud-chip-${tone}` : ""}`}>
-      <span>{icon}</span>
-      <strong>{label}</strong>
     </div>
   );
 }
@@ -455,99 +356,6 @@ function AmbientSceneVideo() {
   return <video className="scene-loop-video ambient-scene-video" src={sceneLoopVideoUrl} autoPlay loop muted playsInline />;
 }
 
-function MapScreen({ game, onChoose }: { game: GameState; onChoose: (nodeId: string) => void }) {
-  const rows = routeNames.map((_, row) => game.mapNodes.filter((node) => node.row === row).sort((a, b) => a.lane - b.lane));
-  const available = new Set(game.availableNodeIds);
-  const visited = new Set(game.visitedNodeIds || []);
-  const nodeById = new globalThis.Map(game.mapNodes.map((node) => [node.id, node]));
-  const mapWidth = 400;
-  const mapHeight = 640;
-  const laneX = (lane: number) => 28 + (lane / 4) * (mapWidth - 56);
-  const rowY = (row: number) => 26 + (row / (routeNames.length - 1)) * (mapHeight - 52);
-  const links = game.mapNodes.flatMap((node) =>
-    node.nextIds.flatMap((targetId) => {
-      const target = nodeById.get(targetId);
-      return target ? [{ from: node, to: target }] : [];
-    }),
-  );
-  return (
-    <section className="route-view">
-      <div className="route-map-panel">
-        <div className="route-header">
-          <p className="eyebrow">响应路径</p>
-          <h2>攻击链分叉</h2>
-          <p>每个节点只通向几条后续链路。想压高危、找维护窗口、进情报市场，都要提前看两步。</p>
-        </div>
-        <div className="branch-map" style={{ "--map-rows": routeNames.length } as CSSProperties}>
-          <svg className="branch-links" viewBox={`0 0 ${mapWidth} ${mapHeight}`} preserveAspectRatio="none" aria-hidden="true">
-            {links.map(({ from, to }) => {
-              const isPast = visited.has(from.id) && visited.has(to.id);
-              const isOpen = available.has(from.id) || game.currentNodeId === from.id;
-              return (
-                <line
-                  key={`${from.id}-${to.id}`}
-                  className={`branch-link ${isOpen ? "open" : ""} ${isPast ? "past" : ""}`}
-                  x1={laneX(from.lane)}
-                  y1={rowY(from.row)}
-                  x2={laneX(to.lane)}
-                  y2={rowY(to.row)}
-                />
-              );
-            })}
-          </svg>
-          {routeNames.map((name, rowIndex) => (
-            <span key={name} className="branch-row-label" style={{ gridColumn: 1, gridRow: rowIndex + 1 }}>
-              {name}
-            </span>
-          ))}
-          {rows.flat().map((node) => {
-            const isAvailable = available.has(node.id);
-            const isCurrent = game.currentNodeId === node.id;
-            const isPast = visited.has(node.id) && !isCurrent;
-            return (
-              <button
-                key={node.id}
-                type="button"
-                className={`map-node map-node-${node.type} ${isAvailable ? "available" : ""} ${isCurrent ? "current" : ""} ${isPast ? "past" : ""}`}
-                style={{ gridColumn: node.lane + 2, gridRow: node.row + 1 }}
-                disabled={!isAvailable}
-                onClick={() => onChoose(node.id)}
-                title={NODE_DEFS[node.type].desc}
-              >
-                {nodeIcon(node.type)}
-                <span>{NODE_DEFS[node.type].name}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-      <div className="node-choice-grid">
-        {game.availableNodeIds.map((id) => {
-          const node = game.mapNodes.find((item) => item.id === id);
-          if (!node) return null;
-          return (
-            <button key={node.id} className={`node-card node-${node.type}`} type="button" onClick={() => onChoose(node.id)}>
-              <span className="node-icon">{nodeIcon(node.type)}</span>
-              <strong>{NODE_DEFS[node.type].name}</strong>
-              <p>{NODE_DEFS[node.type].desc}</p>
-            </button>
-          );
-        })}
-      </div>
-      <LogRail logs={game.log} />
-    </section>
-  );
-}
-
-function nodeIcon(type: NodeType) {
-  if (type === "combat") return <Swords />;
-  if (type === "elite") return <Zap />;
-  if (type === "event") return <BookOpen />;
-  if (type === "rest") return <Sparkles />;
-  if (type === "shop") return <BadgeCent />;
-  return <AudioWaveform />;
-}
-
 function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlayCard: (uid: string) => void; onEndTurn: () => void }) {
   const combat = game.combat!;
   const player = game.player!;
@@ -641,7 +449,7 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
 
   return (
     <section className="combat-view">
-      <CombatStage combat={combat} player={player} />
+      <Suspense fallback={<div className="combat-stage-loading">战斗场景加载中...</div>}><LazyCombatStage combat={combat} player={player} /></Suspense>
       <video className="combat-scene-loop" src={sceneLoopVideoUrl} autoPlay loop muted playsInline />
       <div className={`combat-overlay ${drag ? "drag-active" : ""} ${expectedTarget ? `expects-${expectedTarget}` : ""} ${targetHot ? "target-hot" : ""}`}>
         <div className={`play-drop-zone ${drag ? "visible" : ""} ${targetHot ? "hot" : ""}`}>{targetHot ? "松手施放" : dropHint}</div>
@@ -908,122 +716,6 @@ function StatusBadge({ icon, text }: { icon?: ReactNode; text: string }) {
       {text}
     </span>
   );
-}
-
-function GameCard({
-  card,
-  mode,
-  index = 0,
-  count = 1,
-  disabled,
-  dragging,
-  dragOffset,
-  onClick,
-  onPointerDown,
-  onPointerMove,
-  onPointerUp,
-  onPointerCancel,
-}: {
-  card: CardInstance;
-  mode?: "hand" | "reward" | "pick";
-  index?: number;
-  count?: number;
-  disabled?: boolean;
-  dragging?: boolean;
-  dragOffset?: { x: number; y: number };
-  onClick?: () => void;
-  onPointerDown?: (event: ReactPointerEvent<HTMLButtonElement>) => void;
-  onPointerMove?: (event: ReactPointerEvent<HTMLButtonElement>) => void;
-  onPointerUp?: (event: ReactPointerEvent<HTMLButtonElement>) => void;
-  onPointerCancel?: () => void;
-}) {
-  const def = cardDef(card);
-  const costKey = typeof def.cost === "number" ? String(Math.min(def.cost, 3)) : "empty";
-  const center = (count - 1) / 2;
-  const rotate = (index - center) * 5.5;
-  const lift = Math.abs(index - center) * 9;
-  const offset = (index - center) * 78;
-  const style =
-    mode === "hand"
-      ? ({
-          "--card-rot": `${rotate}deg`,
-          "--card-x": `${offset}px`,
-          "--card-y": `${lift}px`,
-          "--drag-x": `${dragOffset?.x || 0}px`,
-          "--drag-y": `${dragOffset?.y || 0}px`,
-          zIndex: 20 + index,
-        } as CSSProperties)
-      : undefined;
-
-  return (
-    <button
-      type="button"
-      className={`game-card card-${def.type} ${disabled ? "disabled" : ""} ${dragging ? "is-dragging" : ""} ${mode ? `card-mode-${mode}` : ""}`}
-      style={style}
-      disabled={disabled}
-      onClick={onClick}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onPointerCancel={onPointerCancel}
-    >
-      <div className={`card-cost card-cost-${costKey}`}>
-        <img src={costGemUrls[costKey]} alt="" draggable={false} />
-        <strong>{def.cost}</strong>
-      </div>
-      <div className="card-title">{cardName(card)}</div>
-      <div className="card-art-window">
-        <img className={`card-art-icon card-art-icon-${def.type}`} src={cardArtImage(card)} alt="" draggable={false} />
-        <div className="sigil-lines" />
-      </div>
-      <div className="card-kind">{typeLabel(def.type)}</div>
-      <p>{cardText(card)}</p>
-      <div className="card-term-hint">{cardTermHint(card)}</div>
-    </button>
-  );
-}
-
-function cardTermHint(card: CardInstance) {
-  const text = cardText(card);
-  if (text.includes("IOC")) return "IOC 会放大沙箱引爆、溯源打击与关联分析。";
-  if (text.includes("噪声告警")) return "噪声告警会污染牌组，降低后续响应效率。";
-  if (text.includes("算力")) return "算力是临时资源，可支撑爆发清剿。";
-  if (text.includes("防护")) return "防护抵消本回合攻击活动。";
-  if (text.includes("降权")) return "降权会压低攻击活动的输出强度。";
-  return "拖拽到目标区域执行这条响应动作。";
-}
-
-function cardArtImage(card: CardInstance) {
-  const def = cardDef(card);
-  if (def.type === "attack") {
-    return ["strike", "taomu", "paperBlade"].includes(def.id) ? swordCrossUrl : swordFireUrl;
-  }
-  if (def.type === "power") return baguaIconUrl;
-  if (def.type === "status") return hudBloodUrl;
-  return talismanIconUrl;
-}
-
-function dropTargetForCard(card: CardInstance): "player" | "enemy" | null {
-  const type = cardDef(card).type;
-  if (type === "attack") return "enemy";
-  if (type === "skill" || type === "power") return "player";
-  return null;
-}
-
-function dragHitTarget(point: { x: number; y: number }): "player" | "enemy" | null {
-  if (typeof window === "undefined") return null;
-  const inBattleBand = point.y > 120 && point.y < window.innerHeight * 0.78;
-  if (!inBattleBand) return null;
-  if (point.x < window.innerWidth * 0.48) return "player";
-  if (point.x > window.innerWidth * 0.52) return "enemy";
-  return null;
-}
-
-function typeLabel(type: string) {
-  if (type === "attack") return "攻击";
-  if (type === "skill") return "技能";
-  if (type === "power") return "法门";
-  return "状态";
 }
 
 function CinematicScreen({ game, onContinue }: { game: GameState; onContinue: () => void }) {
@@ -1310,45 +1002,3 @@ function DeckPickScreen({
   );
 }
 
-function logTone(log: string) {
-  if (/获得|采购|预算|工具|响应动作/.test(log)) return { label: "收获", tone: "gain" };
-  if (/造成|攻击|伤害|降权|暴露面|IOC|防护|强度|注入/.test(log)) return { label: "处置", tone: "combat" };
-  if (/回复|升级|清理|维护|恢复/.test(log)) return { label: "整备", tone: "ready" };
-  if (/误报|情报|供应链|异常|市场|维护窗口/.test(log)) return { label: "事件", tone: "event" };
-  return { label: "路径", tone: "route" };
-}
-
-function LogRail({ logs }: { logs: string[] }) {
-  return (
-    <aside className="log-rail">
-      <strong>响应日志</strong>
-      {logs.length === 0 && <span className="log-entry log-route"><small>路径</small><b>控制台刚刚启动，攻击路径还没有留下痕迹。</b></span>}
-      {logs.map((log, index) => {
-        const meta = logTone(log);
-        return (
-          <span className={`log-entry log-${meta.tone}`} key={`${log}-${index}`}>
-            <small>{meta.label}</small>
-            <b>{log}</b>
-          </span>
-        );
-      })}
-    </aside>
-  );
-}
-
-function EndScreen({ title, body, onStart }: { title: string; body: string; onStart: () => void }) {
-  return (
-    <section className="title-view">
-      <div className="title-copy">
-        <p className="eyebrow">复盘</p>
-        <h1>{title}</h1>
-        <p>{body}</p>
-        <div className="title-actions">
-          <button className="primary-command" type="button" onClick={onStart}>
-            <Swords /> 再接一班
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}

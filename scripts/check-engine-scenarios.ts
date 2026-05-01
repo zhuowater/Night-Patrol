@@ -1,4 +1,4 @@
-import { createGameState, endTurn, finishCinematic, startRun } from '../src/game/engine';
+import { chooseEnemyIntent, createGameState, endTurn, finishCinematic, playCard, startRun } from '../src/game/engine';
 import { ENEMIES } from '../src/game/content';
 import type { CardInstance, GameState } from '../src/game/types';
 
@@ -149,6 +149,51 @@ const scenarios: Scenario[] = [
       endTurn(state);
       assert(state.screen === 'combat', `expected combat to continue, got ${state.screen}`);
       assert(state.player!.hp === 46, `expected 4 HP ransomware loss, hp=${state.player!.hp}`);
+    },
+  },
+  {
+    name: 'qingxin zero-cost draw exhausts to prevent repeat-loop abuse',
+    run: () => {
+      const state = setupCombat('lantern');
+      const combat = state.combat!;
+      combat.drawPile = [makeCard(state, 'strike'), makeCard(state, 'defend'), makeCard(state, 'zhusha')];
+      combat.hand = [makeCard(state, 'qingxin')];
+      state.player!.energy = 3;
+      const card = combat.hand[0];
+      playCard(state, card.uid);
+      assert(state.player!.energy === 3, `qingxin should remain zero cost, energy=${state.player!.energy}`);
+      assert(combat.hand.length === 2, `base qingxin should draw two cards before exhausting, hand=${combat.hand.length}`);
+      assert(combat.exhaustPile.some((item) => item.id === 'qingxin'), 'qingxin should exhaust after play');
+      assert(!combat.discardPile.some((item) => item.id === 'qingxin'), 'qingxin should not re-enter discard loop');
+    },
+  },
+  {
+    name: 'boss intent switches to pressure phase below 66 percent hp',
+    run: () => {
+      const state = setupCombat('tigerlord');
+      const combat = state.combat!;
+      combat.turn = 1;
+      combat.enemy.hp = Math.floor(combat.enemy.maxHp * 0.6);
+      for (let i = 0; i < 12; i += 1) {
+        chooseEnemyIntent(state);
+        assert(combat.enemy.intent, 'boss intent should be set');
+        assert(['密钥横向扩散', '恢复票据污染', '备份目录驻留'].includes(combat.enemy.intent.label), `unexpected phase-two intent ${combat.enemy.intent.label}`);
+      }
+      assert(state.log.some((line) => line.includes('Boss 阶段切换')), 'boss phase switch log missing');
+    },
+  },
+  {
+    name: 'boss intent switches to final phase below 33 percent hp',
+    run: () => {
+      const state = setupCombat('tigerlord');
+      const combat = state.combat!;
+      combat.turn = 1;
+      combat.enemy.hp = Math.floor(combat.enemy.maxHp * 0.25);
+      for (let i = 0; i < 12; i += 1) {
+        chooseEnemyIntent(state);
+        assert(combat.enemy.intent, 'boss intent should be set');
+        assert(['核心密钥擦除', '勒索倒计时爆发', '僵尸网络总动员'].includes(combat.enemy.intent.label), `unexpected final-phase intent ${combat.enemy.intent.label}`);
+      }
     },
   },
 ];

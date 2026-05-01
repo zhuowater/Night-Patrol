@@ -47,7 +47,8 @@ export const CARD_DEFS: Record<string, CardDef> = {
     type: "skill",
     rarity: "common",
     cost: 0,
-    text: ["抽 2 张牌。", "抽 3 张牌。"],
+    exhaust: true,
+    text: ["抽 2 张牌。消耗。", "抽 3 张牌。消耗。"],
   },
   golden: {
     id: "golden",
@@ -326,6 +327,26 @@ export const ENEMIES: Record<string, EnemyTemplate> = {
       { type: "attack", amount: 6, hits: 3, label: "三段破坏" },
       { type: "buff", amount: 3, label: "僵尸网络唤醒" },
       { type: "blockAttack", amount: 10, block: 12, label: "核心驻留" },
+    ],
+    phases: [
+      {
+        hpBelow: 0.66,
+        label: "密钥横向扩散，攻击从单点加密转为多段破坏",
+        moves: [
+          { type: "attack", amount: 6, hits: 3, label: "密钥横向扩散" },
+          { type: "curse", amount: 1, label: "恢复票据污染" },
+          { type: "blockAttack", amount: 10, block: 12, label: "备份目录驻留" },
+        ],
+      },
+      {
+        hpBelow: 0.33,
+        label: "核心倒计时进入最后压迫，必须用算力或 IOC 终结",
+        moves: [
+          { type: "attack", amount: 15, label: "核心密钥擦除" },
+          { type: "attack", amount: 6, hits: 3, label: "勒索倒计时爆发" },
+          { type: "buff", amount: 3, label: "僵尸网络总动员" },
+        ],
+      },
     ],
   },
 };

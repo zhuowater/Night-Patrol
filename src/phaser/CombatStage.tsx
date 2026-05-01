@@ -1,26 +1,9 @@
 import Phaser from "phaser";
 import { useEffect, useRef } from "react";
 import type { CombatState, PlayerState } from "../game/types";
+import { enemyArtUrls, nightTempleBattleUrl, playerNightPatrolUrl } from "./assets";
 
-const nightTempleBattleUrl = new URL("../../assets/generated/backgrounds/night-temple-battle.png", import.meta.url).href;
-const playerNightPatrolUrl = new URL("../../assets/generated/characters/player-night-patrol.png", import.meta.url).href;
-const lanternUrl = new URL("../../assets/generated/enemies/lantern.png", import.meta.url).href;
-const waterghostUrl = new URL("../../assets/generated/enemies/waterghost.png", import.meta.url).href;
-const templecorpseUrl = new URL("../../assets/generated/enemies/templecorpse.png", import.meta.url).href;
-const macaqueUrl = new URL("../../assets/generated/enemies/macaque.png", import.meta.url).href;
-const warlockUrl = new URL("../../assets/generated/enemies/warlock.png", import.meta.url).href;
-const foxshadeUrl = new URL("../../assets/generated/enemies/foxshade.png", import.meta.url).href;
-const tigerlordUrl = new URL("../../assets/generated/enemies/tigerlord.png", import.meta.url).href;
-
-const ENEMY_ART_URLS: Record<string, string> = {
-  lantern: lanternUrl,
-  waterghost: waterghostUrl,
-  templecorpse: templecorpseUrl,
-  macaque: macaqueUrl,
-  warlock: warlockUrl,
-  foxshade: foxshadeUrl,
-  tigerlord: tigerlordUrl,
-};
+const ENEMY_ART_URLS: Record<string, string> = enemyArtUrls;
 
 const ENEMY_STAGE_SIZE: Record<string, { width: number; height: number; y: number }> = {
   lantern: { width: 0.19, height: 0.4, y: 0.58 },

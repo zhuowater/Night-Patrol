@@ -68,6 +68,11 @@ export interface EnemyTemplate {
   tradecraft: string;
   counter: string;
   moves: EnemyMove[];
+  phases?: Array<{
+    hpBelow: number;
+    label: string;
+    moves: EnemyMove[];
+  }>;
   elite?: boolean;
   boss?: boolean;
 }
