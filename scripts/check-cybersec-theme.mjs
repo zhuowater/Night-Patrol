@@ -11,6 +11,15 @@ const files = [
   'README.md',
 ];
 
+const requiredSnippets = [
+  { file: 'package.json', text: 'zhuowater and Hermes' },
+  { file: 'src/App.tsx', text: 'zhuowater × Hermes 联合开发' },
+  { file: 'src/App.tsx', text: '取证价值' },
+  { file: 'src/App.tsx', text: '战术代价' },
+  { file: 'src/App.tsx', text: '情报报价单' },
+  { file: 'src/App.tsx', text: '清理误报规则' },
+];
+
 const banned = [
   '荒庙',
   '妖',
@@ -48,6 +57,19 @@ if (findings.length > 0) {
     console.error(`${finding.file}:${finding.line} [${finding.term}] ${finding.text}`);
   }
   if (findings.length > 120) console.error(`... ${findings.length - 120} more findings`);
+  process.exit(1);
+}
+
+const requiredMissing = requiredSnippets.filter(({ file, text }) => {
+  if (!fs.existsSync(file)) return true;
+  return !fs.readFileSync(file, 'utf8').includes(text);
+});
+
+if (requiredMissing.length > 0) {
+  console.error('Cybersecurity retheme check failed: required themed snippets are missing.');
+  for (const missing of requiredMissing) {
+    console.error(`${missing.file} missing: ${missing.text}`);
+  }
   process.exit(1);
 }
 

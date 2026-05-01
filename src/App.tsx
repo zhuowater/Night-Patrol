@@ -302,7 +302,7 @@ function TopHud({
               <span className="hud-title">夜巡 SOC：边界告警</span>
             )}
           </div>
-          <span className="hud-credit">歸藏 × Codex 联合开发 · 安全响应主题 demo · 非商用署名</span>
+          <span className="hud-credit">zhuowater × Hermes 联合开发 · 安全响应主题 demo · 非商用署名</span>
         </div>
       </div>
       <div className="hud-right">
@@ -402,12 +402,12 @@ function AboutScreen({ onBack, onHome }: { onBack: () => void; onHome: () => voi
         <p className="eyebrow">About</p>
         <h1>关于《夜巡 SOC：边界告警》</h1>
         <p className="about-lead">
-          本游戏由歸藏与 Codex 联合开发，是一个网络安全主题卡牌构筑 roguelike 原型 demo，仅供娱乐、学习和非商业展示。
+          本游戏由 zhuowater 与 Hermes 联合开发，是一个网络安全主题卡牌构筑 roguelike 原型 demo，仅供娱乐、学习和非商业展示。
         </p>
         <div className="about-grid">
           <article>
             <strong>共同创作</strong>
-            <span>歸藏提出主题、审美方向、玩法反馈和素材取舍；Codex 负责代码实现、系统迭代、UI 打磨、打包流程和工程文档。</span>
+            <span>zhuowater 负责主题方向、审美判断、玩法反馈和素材取舍；Hermes 负责代码实现、系统迭代、UI 打磨、打包流程和工程文档。</span>
           </article>
           <article>
             <strong>版权声明</strong>
@@ -422,7 +422,7 @@ function AboutScreen({ onBack, onHome }: { onBack: () => void; onHome: () => voi
             <span>项目包含 AI 生成素材、用户整理素材和原型资源。若进入正式发行或商业化阶段，需要重新确认素材授权或替换为自有资产。</span>
           </article>
         </div>
-        <p className="about-notice">署名建议：夜巡 SOC：边界告警，由歸藏 × Codex 联合开发。</p>
+        <p className="about-notice">署名建议：夜巡 SOC：边界告警，由 zhuowater × Hermes 联合开发。</p>
         <div className="title-actions">
           <button className="primary-command" type="button" onClick={onBack}>
             <SkipForward /> 返回
@@ -936,16 +936,32 @@ function RewardScreen({ game, onTake, onSkip }: { game: GameState; onTake: (uid:
   return (
     <section className="choice-view">
       <AmbientSceneVideo />
-      <div className="choice-header">
-        <p className="eyebrow">处置奖励</p>
+      <div className="choice-header reward-briefing">
+        <p className="eyebrow">处置奖励 · 复盘选择</p>
         <h2>{reward.title}</h2>
-        <p>获得 {reward.gold} 预算。{reward.relic ? `工具 ${reward.relic.name} 已入库。` : "这次没有新工具。"} 选一张响应动作，或让牌组保持清瘦。</p>
+        <p>本次处置回收 {reward.gold} 预算。{reward.relic ? `工具「${reward.relic.name}」已入库。` : "没有新增工具入库。"} 现在选择下一条响应动作：要补攻击、补防护，还是保持牌组清瘦。</p>
+        <div className="reward-metrics" aria-label="奖励情报摘要">
+          <span><strong>+{reward.gold}</strong> 预算回收</span>
+          <span><strong>{reward.cards.length}</strong> 条候选剧本</span>
+          <span><strong>{reward.relic ? "1" : "0"}</strong> 件工具入库</span>
+        </div>
       </div>
       {reward.relic && <div className="relic-banner"><strong>{reward.relic.name}</strong>{reward.relic.text}</div>}
       <div className="reward-row">
-        {reward.cards.map((card) => (
-          <GameCard key={card.uid} card={card} mode="reward" onClick={() => onTake(card.uid)} />
-        ))}
+        {reward.cards.map((card) => {
+          const def = cardDef(card);
+          const tacticalCost = typeof cardCost(card) === "number" ? `${cardCost(card)} 算力` : "状态负担";
+          const forensicValue = def.type === "attack" ? "压低攻击强度" : def.type === "skill" ? "稳住防线窗口" : def.type === "power" ? "长期改变值班节奏" : "风险残留";
+          return (
+            <div key={card.uid} className="reward-option">
+              <GameCard card={card} mode="reward" onClick={() => onTake(card.uid)} />
+              <div className="reward-dossier">
+                <span><strong>取证价值</strong>{forensicValue}</span>
+                <span><strong>战术代价</strong>{tacticalCost}</span>
+              </div>
+            </div>
+          );
+        })}
       </div>
       <button className="secondary-command" type="button" onClick={onSkip}>跳过响应动作</button>
       <LogRail logs={game.log} />
@@ -1011,28 +1027,36 @@ function ShopScreen({
   return (
     <section className="choice-view">
       <AmbientSceneVideo />
-      <div className="choice-header">
-        <p className="eyebrow">市场</p>
+      <div className="choice-header market-briefing">
+        <p className="eyebrow">情报报价单</p>
         <h2>情报市场</h2>
-        <p>情报市场挂出新的规则、样本与工具。你有 {gold} 预算。</p>
+        <p>暗网样本、供应商热补丁和蓝队脚本同时上架。你有 {gold} 预算；每笔采购都会改变后续牌组厚度和处置节奏。</p>
+        <div className="market-ticker" aria-label="市场态势">
+          <span><strong>{gold}</strong> 可用预算</span>
+          <span><strong>{shop.cards.filter((item) => !item.sold).length}</strong> 条剧本在售</span>
+          <span><strong>{shop.relic.sold ? "售罄" : `${shop.relic.cost}`}</strong> 工具报价</span>
+        </div>
       </div>
       <div className="shop-grid">
         {shop.cards.map((item, index) => (
           <button key={item.card.uid} className="shop-card" type="button" disabled={item.sold || gold < item.cost} onClick={() => onBuyCard(index)}>
+            <small>响应剧本</small>
             <strong>{cardName(item.card)}</strong>
             <span>{cardText(item.card)}</span>
-            <em>{item.sold ? "已售" : `${item.cost} 预算`}</em>
+            <em>{item.sold ? "已采购" : gold < item.cost ? `预算不足 · ${item.cost}` : `${item.cost} 预算`}</em>
           </button>
         ))}
         <button className="shop-card relic-shop-card" type="button" disabled={shop.relic.sold || !shop.relic.relic || gold < shop.relic.cost} onClick={onBuyRelic}>
+          <small>工具摊位</small>
           <strong>{shop.relic.relic?.name || "空摊"}</strong>
           <span>{shop.relic.relic?.text || "没有新的工具。"}</span>
-          <em>{shop.relic.sold ? "已售" : `${shop.relic.cost} 预算`}</em>
+          <em>{shop.relic.sold ? "已采购" : !shop.relic.relic ? "暂无库存" : gold < shop.relic.cost ? `预算不足 · ${shop.relic.cost}` : `${shop.relic.cost} 预算`}</em>
         </button>
         <button className="shop-card" type="button" disabled={gold < shop.removeCost} onClick={onRemove}>
-          <strong>清理旧规则</strong>
-          <span>移除一张不再需要的响应动作。</span>
-          <em>{shop.removeCost} 预算</em>
+          <small>牌组治理</small>
+          <strong>清理误报规则</strong>
+          <span>移除一张不再需要的响应动作，降低抽到低价值动作的概率。</span>
+          <em>{gold < shop.removeCost ? `预算不足 · ${shop.removeCost}` : `${shop.removeCost} 预算`}</em>
         </button>
       </div>
       <button className="secondary-command" type="button" onClick={onLeave}>离开市场</button>

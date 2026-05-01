@@ -4,7 +4,7 @@
   "private": true,
   "description": "网络安全主题卡牌构筑 roguelike demo",
   "main": "electron/main.cjs",
-  "author": "Guohao and Codex",
+  "author": "zhuowater and Hermes",
   "license": "CC-BY-NC-4.0",
   "repository": {
     "type": "git",
