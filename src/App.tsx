@@ -971,19 +971,27 @@ function RewardScreen({ game, onTake, onSkip }: { game: GameState; onTake: (uid:
 
 function EventScreen({ game, onChoice }: { game: GameState; onChoice: (choice: string) => void }) {
   const event = game.event!;
+  const signalCount = event.choices.length;
   return (
     <section className="choice-view event-view">
       <AmbientSceneVideo />
-      <div className="choice-header">
-        <p className="eyebrow">异常事件</p>
+      <div className="choice-header event-briefing">
+        <p className="eyebrow">异常事件 · 值班研判</p>
         <h2>{event.title}</h2>
         <p>{event.body}</p>
+        <div className="event-ticker" aria-label="异常研判摘要">
+          <span><strong>{signalCount}</strong> 条研判信号</span>
+          <span><strong>人工确认</strong> 响应路径</span>
+          <span><strong>低峰处置</strong> 业务扰动</span>
+        </div>
       </div>
-      <div className="decision-grid">
-        {event.choices.map((choice) => (
-          <button key={choice.id} type="button" className="decision-card" onClick={() => onChoice(choice.id)}>
+      <div className="decision-grid decision-grid-detailed">
+        {event.choices.map((choice, index) => (
+          <button key={choice.id} type="button" className="decision-card decision-card-detailed" onClick={() => onChoice(choice.id)}>
+            <small>研判信号 0{index + 1}</small>
             <strong>{choice.title}</strong>
             <span>{choice.desc}</span>
+            <em>点击提交值班结论</em>
           </button>
         ))}
       </div>
@@ -994,16 +1002,31 @@ function EventScreen({ game, onChoice }: { game: GameState; onChoice: (choice: s
 
 function RestScreen({ onHeal, onUpgrade }: { onHeal: () => void; onUpgrade: () => void }) {
   return (
-    <section className="choice-view">
+    <section className="choice-view rest-view">
       <AmbientSceneVideo />
-      <div className="choice-header">
-        <p className="eyebrow">维护</p>
+      <div className="choice-header rest-briefing">
+        <p className="eyebrow">维护窗口 · 变更评审</p>
         <h2>维护窗口</h2>
-        <p>业务低峰窗口打开。你可以恢复防线，也可以把一张响应动作升级到更顺手。</p>
+        <p>业务低峰窗口打开。你可以恢复防线，也可以把一张响应动作升级到更顺手。每次变更都会影响下一段巡检节奏。</p>
+        <div className="rest-ticker" aria-label="维护变更摘要">
+          <span><strong>30%</strong> 防线恢复</span>
+          <span><strong>1</strong> 条剧本升级</span>
+          <span><strong>变更影响</strong> 立即生效</span>
+        </div>
       </div>
-      <div className="decision-grid">
-        <button type="button" className="decision-card" onClick={onHeal}><strong>恢复防线</strong><span>回复最大生命 30%。</span></button>
-        <button type="button" className="decision-card" onClick={onUpgrade}><strong>升级剧本</strong><span>升级 1 张牌。</span></button>
+      <div className="decision-grid decision-grid-detailed">
+        <button type="button" className="decision-card decision-card-detailed" onClick={onHeal}>
+          <small>变更影响 · 稳态优先</small>
+          <strong>恢复防线</strong>
+          <span>回复最大生命 30%，适合下一跳前先降低爆仓风险。</span>
+          <em>执行维护回滚与加固</em>
+        </button>
+        <button type="button" className="decision-card decision-card-detailed" onClick={onUpgrade}>
+          <small>变更影响 · 效率优先</small>
+          <strong>升级剧本</strong>
+          <span>升级 1 张牌，让关键响应动作在后续战斗中更快闭环。</span>
+          <em>进入剧本变更清单</em>
+        </button>
       </div>
     </section>
   );

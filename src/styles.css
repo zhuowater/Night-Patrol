@@ -1875,7 +1875,9 @@ button:focus-visible {
 }
 
 .reward-briefing,
-.market-briefing {
+.market-briefing,
+.event-briefing,
+.rest-briefing {
   border: 1px solid rgba(130, 213, 199, 0.18);
   border-radius: 10px;
   background:
@@ -1885,7 +1887,9 @@ button:focus-visible {
 }
 
 .reward-metrics,
-.market-ticker {
+.market-ticker,
+.event-ticker,
+.rest-ticker {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -1893,7 +1897,9 @@ button:focus-visible {
 }
 
 .reward-metrics span,
-.market-ticker span {
+.market-ticker span,
+.event-ticker span,
+.rest-ticker span {
   display: inline-flex;
   align-items: baseline;
   gap: 6px;
@@ -1908,7 +1914,9 @@ button:focus-visible {
 }
 
 .reward-metrics strong,
-.market-ticker strong {
+.market-ticker strong,
+.event-ticker strong,
+.rest-ticker strong {
   color: var(--jade-soft);
   font-size: 1rem;
 }
@@ -1944,7 +1952,8 @@ button:focus-visible {
   letter-spacing: 0.08em;
 }
 
-.shop-card small {
+.shop-card small,
+.decision-card-detailed small {
   width: fit-content;
   margin-bottom: 2px;
   padding: 3px 8px;
@@ -1954,6 +1963,34 @@ button:focus-visible {
   font-size: 0.68rem;
   font-weight: 900;
   letter-spacing: 0.08em;
+}
+
+.decision-grid-detailed {
+  align-items: stretch;
+}
+
+.decision-card-detailed {
+  position: relative;
+  overflow: hidden;
+  gap: 10px;
+  text-align: left;
+}
+
+.decision-card-detailed::after {
+  content: "";
+  position: absolute;
+  inset: auto 14px 12px 14px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(130, 213, 199, 0.45), transparent);
+  opacity: 0.55;
+}
+
+.decision-card-detailed em {
+  margin-top: auto;
+  color: rgba(231, 199, 126, 0.82);
+  font-size: 0.76rem;
+  font-style: normal;
+  font-weight: 800;
 }
 
 .choice-view > .reward-row,

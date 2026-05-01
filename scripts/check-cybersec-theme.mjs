@@ -18,6 +18,10 @@ const requiredSnippets = [
   { file: 'src/App.tsx', text: '战术代价' },
   { file: 'src/App.tsx', text: '情报报价单' },
   { file: 'src/App.tsx', text: '清理误报规则' },
+  { file: 'src/App.tsx', text: '异常事件 · 值班研判' },
+  { file: 'src/App.tsx', text: '研判信号' },
+  { file: 'src/App.tsx', text: '维护窗口 · 变更评审' },
+  { file: 'src/App.tsx', text: '变更影响' },
 ];
 
 const banned = [
