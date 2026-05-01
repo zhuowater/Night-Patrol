@@ -178,7 +178,7 @@ class NightBattleScene extends Phaser.Scene {
     this.playerShadow?.setSize(width * 0.18, height * 0.055);
     this.enemyName?.setText(this.snapshot.enemyName).setPosition(width * 0.74, height * 0.3);
     this.sealText
-      ?.setText(`符印 ${this.snapshot.enemySeal}   格挡 ${this.snapshot.enemyBlock}`)
+      ?.setText(`IOC ${this.snapshot.enemySeal}   防护 ${this.snapshot.enemyBlock}`)
       .setPosition(width * 0.74, height * 0.38);
     this.intentText?.setText(this.snapshot.enemyIntent).setPosition(width * 0.74, height * 0.22);
     if (this.snapshot.pulse !== this.lastPulse) {

@@ -34,7 +34,7 @@ const DIFFICULTY_SPECS: Record<
     enemyDamage: 0.72,
     rewardGold: 1.25,
     startingRelics: ["oldUmbrella", "blankPage"],
-    logName: "演示",
+    logName: "演示模式",
   },
   normal: {
     playerHp: 84,
@@ -44,7 +44,7 @@ const DIFFICULTY_SPECS: Record<
     enemyDamage: 0.9,
     rewardGold: 1.1,
     startingRelics: [],
-    logName: "标准",
+    logName: "标准值班",
   },
   hard: {
     playerHp: 74,
@@ -54,7 +54,7 @@ const DIFFICULTY_SPECS: Record<
     enemyDamage: 1.08,
     rewardGold: 1,
     startingRelics: [],
-    logName: "劫难",
+    logName: "高压演练",
   },
 };
 
@@ -107,26 +107,26 @@ export function hpPercent(entity: { hp: number; maxHp: number }) {
 }
 
 export function intentText(intent: EnemyMove | null) {
-  if (!intent) return "敌意未明";
+  if (!intent) return "活动未判定";
   if (intent.type === "attack") return `${intent.label}：攻击 ${intent.amount}${intent.hits ? ` x ${intent.hits}` : ""}`;
-  if (intent.type === "block") return `${intent.label}：格挡 ${intent.amount}`;
-  if (intent.type === "buff") return `${intent.label}：力量 +${intent.amount}`;
-  if (intent.type === "debuff") return `${intent.label}：令你虚弱 ${intent.amount}`;
-  if (intent.type === "curse") return `${intent.label}：塞入 ${intent.amount} 张阴寒`;
-  if (intent.type === "blockAttack") return `${intent.label}：格挡 ${intent.block} 并攻击 ${intent.amount}`;
+  if (intent.type === "block") return `${intent.label}：防护 ${intent.amount}`;
+  if (intent.type === "buff") return `${intent.label}：强度 +${intent.amount}`;
+  if (intent.type === "debuff") return `${intent.label}：令你降权 ${intent.amount}`;
+  if (intent.type === "curse") return `${intent.label}：注入 ${intent.amount} 张噪声告警`;
+  if (intent.type === "blockAttack") return `${intent.label}：防护 ${intent.block} 并攻击 ${intent.amount}`;
   return intent.label;
 }
 
-const ROUTE_ROW_NAMES = ["县口", "荒村", "井边", "破庙", "林道", "阴市", "山门", "正殿"];
+const ROUTE_ROW_NAMES = ["边界", "办公网", "终端", "日志湖", "服务器区", "情报市", "核心域", "域控"];
 
 function nodeTrailLine(node: MapNode) {
-  const row = ROUTE_ROW_NAMES[node.row] || "夜路";
+  const row = ROUTE_ROW_NAMES[node.row] || "内网路径";
   const def = NODE_DEFS[node.type];
-  if (node.type === "combat") return `踏入${row}，雾里传来爪牙刮石的声音。`;
-  if (node.type === "elite") return `${row}阴风骤紧，破庙恶客已经等在门槛后。`;
-  if (node.type === "event") return `${row}路旁纸灯自己亮起，一桩怪事拦住去路。`;
-  if (node.type === "rest") return `${row}残灯未灭，可以借一口香火重新整备。`;
-  if (node.type === "shop") return `${row}灯摊无主，铜钱声从帘后滚出来。`;
+  if (node.type === "combat") return `进入${row}，探针捕获到新的异常握手。`;
+  if (node.type === "elite") return `${row}告警级别抬升，高危攻击链已经展开。`;
+  if (node.type === "event") return `${row}出现异常上下文，需要在误报、业务和风险之间取舍。`;
+  if (node.type === "rest") return `${row}出现短暂维护窗口，可以恢复防线或升级剧本。`;
+  if (node.type === "shop") return `${row}接入威胁情报市场，预算点正在等待分配。`;
   return `${row}尽头只剩${def.name}。`;
 }
 
@@ -194,7 +194,7 @@ export function startRun(state: GameState, difficulty: Difficulty = "normal") {
   }
 
   state.player = {
-    name: "游方夜巡人",
+    name: "夜班 SOC 响应员",
     hp: spec.playerHp,
     maxHp: spec.playerHp,
     block: 0,
@@ -224,9 +224,9 @@ export function startRun(state: GameState, difficulty: Difficulty = "normal") {
   state.pendingUpgrade = null;
   state.log = [];
   addLog(state, `难度：${spec.logName}。`);
-  addLog(state, "子时三刻，城外纸灯尽灭。");
-  addLog(state, "雾从荒庙檐下倒流，路只剩几截。");
-  addLog(state, "夜路起雾，城隍残印微微发烫。");
+  addLog(state, "凌晨 02:17，边界探针捕获异常握手。");
+  addLog(state, "日志湖里出现横向移动的第一条细线。");
+  addLog(state, "夜班控制台亮起，核心资产进入保护窗口。");
   state.screen = "map";
   state.lastFx = "reward";
 }
@@ -309,7 +309,7 @@ export function chooseNode(state: GameState, nodeId: string) {
   if (type === "event") startEvent(state);
   if (type === "rest") {
     state.screen = "rest";
-    addLog(state, "残灯照着旧伤，今晚还能再撑一程。");
+    addLog(state, "维护窗口打开，防线可以重新整备。");
   }
   if (type === "shop") startShop(state);
 }
@@ -363,7 +363,7 @@ function startCombat(state: GameState, type: "combat" | "elite" | "boss") {
   if (hasRelic(state, "bronzeMirror")) applySeal(state, 2, false);
   chooseEnemyIntent(state);
   startPlayerTurn(state);
-  addLog(state, `${enemy.name}挡在夜路中央。`);
+  addLog(state, `${enemy.name}出现在攻击路径中央。`);
   state.lastFx = type === "boss" ? "danger" : "none";
 }
 
@@ -394,19 +394,19 @@ function startPlayerTurn(state: GameState) {
   if (combat.turn === 1) {
     if (hasRelic(state, "paperHorse")) {
       player.energy += 1;
-      addLog(state, "小纸马在袖中一跳，第一回合能量 +1。");
+      addLog(state, "弹性算力池启动，第一回合能量 +1。");
     }
     if (hasRelic(state, "citySeal")) {
       player.incense += 2;
-      addLog(state, "城隍小印亮起，获得 2 点香火。");
+      addLog(state, "自动化剧本启动，获得 2 点算力。");
     }
-    if (hasRelic(state, "oldUmbrella")) gainBlock(state, 6, "旧雨伞");
+    if (hasRelic(state, "oldUmbrella")) gainBlock(state, 6, "零信任策略");
   }
 
   if (player.powers.citygod) {
-    gainBlock(state, player.powers.citygod, "请城隍");
+    gainBlock(state, player.powers.citygod, "自动化响应");
     player.incense += 1;
-    addLog(state, "城隍余力护身，香火 +1。");
+    addLog(state, "自动化响应维持防线，算力 +1。");
   }
 
   const drawCount = 5 + (player.powers.nightEye || 0) + (combat.turn === 1 && hasRelic(state, "nightSand") ? 1 : 0);
@@ -427,28 +427,28 @@ function drawCards(state: GameState, count: number) {
   }
 }
 
-function gainBlock(state: GameState, amount: number, source = "护身") {
+function gainBlock(state: GameState, amount: number, source = "防护") {
   mustPlayer(state).block += amount;
-  addLog(state, `${source}获得 ${amount} 点格挡。`);
+  addLog(state, `${source}获得 ${amount} 点防护。`);
   state.lastFx = "charge";
 }
 
 function applySeal(state: GameState, amount: number, withLog = true) {
   const enemy = mustCombat(state).enemy;
   enemy.seal += amount;
-  if (withLog) addLog(state, `${enemy.name}被贴上 ${amount} 层符印。`);
+  if (withLog) addLog(state, `${enemy.name}被标记 ${amount} 层 IOC。`);
 }
 
 function applyWeak(state: GameState, amount: number) {
   const enemy = mustCombat(state).enemy;
   enemy.weak += amount;
-  addLog(state, `${enemy.name}虚弱 ${amount} 回合。`);
+  addLog(state, `${enemy.name}降权 ${amount} 回合。`);
 }
 
 function applyVulnerable(state: GameState, amount: number) {
   const enemy = mustCombat(state).enemy;
   enemy.vulnerable += amount;
-  addLog(state, `${enemy.name}易伤 ${amount} 回合。`);
+  addLog(state, `${enemy.name}暴露面 ${amount} 回合。`);
 }
 
 function dealEnemyDamage(state: GameState, baseAmount: number, hits = 1, context: { firstAttackBonus?: boolean } = {}) {
@@ -536,12 +536,12 @@ export function playCard(state: GameState, uid: string) {
   }
 
   if (def.type === "attack") combat.attackPlayed = true;
-  if (def.type === "skill" && hasRelic(state, "brokenCenser")) gainBlock(state, 1, "破香炉");
+  if (def.type === "skill" && hasRelic(state, "brokenCenser")) gainBlock(state, 1, "WAF 补丁");
 
   combat.cardsPlayedThisTurn += 1;
   if (hasRelic(state, "blankPage") && combat.cardsPlayedThisTurn % 3 === 0) {
     drawCards(state, 1);
-    addLog(state, "无字残页翻动，抽 1 张牌。");
+    addLog(state, "查询缓存命中，抽 1 张牌。");
   }
 
   if (def.type === "power" || def.exhaust || card.temp) {
@@ -582,15 +582,15 @@ function resolveCard(state: GameState, card: CardInstance, context: { firstAttac
     case "golden":
       gainBlock(state, value(card, 8, 11), cardName(card));
       player.incense += 1;
-      addLog(state, "香火 +1。");
+      addLog(state, "算力 +1。");
       break;
     case "incense":
       player.incense += value(card, 2, 3);
-      addLog(state, `香火 +${value(card, 2, 3)}。`);
+      addLog(state, `算力 +${value(card, 2, 3)}。`);
       break;
     case "windScroll":
       drawCards(state, 1 + (enemy.seal > 0 ? value(card, 1, 2) : 0));
-      addLog(state, `${cardName(card)}带起牌风。`);
+      addLog(state, `${cardName(card)}拉起关联视图。`);
       break;
     case "thunder":
       dealEnemyDamage(state, value(card, 10, 14), 1, context);
@@ -613,22 +613,22 @@ function resolveCard(state: GameState, card: CardInstance, context: { firstAttac
       enemy.seal = 0;
       if (layers > 0) {
         dealEnemyDamage(state, layers * value(card, 5, 7));
-        addLog(state, `焚去 ${layers} 层符印。`);
+        addLog(state, `溯源消耗 ${layers} 层 IOC。`);
       } else {
-        addLog(state, "符纸烧尽，却没有符印可焚。");
+        addLog(state, "溯源链为空，没有 IOC 可消耗。");
       }
       break;
     }
     case "paper":
       gainBlock(state, value(card, 7, 10), cardName(card));
       mustCombat(state).hand.push(createCard(state, "paperBlade", card.upgraded, true));
-      addLog(state, "纸人化作纸刃入手。");
+      addLog(state, "蜜罐触发，回刺动作加入手牌。");
       break;
     case "breakEvil":
       dealEnemyDamage(state, value(card, 14, 18), 1, context);
       if (enemy.seal > 0) {
         player.energy += 1;
-        addLog(state, "破邪应符，能量 +1。");
+        addLog(state, "规则命中 IOC，能量 +1。");
       }
       break;
     case "mirror":
@@ -642,7 +642,7 @@ function resolveCard(state: GameState, card: CardInstance, context: { firstAttac
     case "scripture":
       drawCards(state, value(card, 3, 4));
       mustCombat(state).discardPile.push(createCard(state, "yinCold"));
-      addLog(state, "经页翻动，阴寒也随之入堆。");
+      addLog(state, "深度扫描完成，噪声告警也进入弃牌堆。");
       break;
     case "ashReturn":
       recycleDiscardIntoDraw(state);
@@ -651,18 +651,18 @@ function resolveCard(state: GameState, card: CardInstance, context: { firstAttac
       break;
     case "nightEye":
       player.powers.nightEye = 1;
-      addLog(state, "夜眼已开，每回合多抽 1 张牌。");
+      addLog(state, "持续监控开启，每回合多抽 1 张牌。");
       if (card.upgraded) drawCards(state, 1);
       break;
     case "citygod":
       player.powers.citygod = value(card, 3, 5);
-      addLog(state, "城隍受请，本场战斗每回合护身。");
+      addLog(state, "自动化响应上线，本场战斗每回合加固防线。");
       break;
     case "thunderLaw": {
       const spent = player.incense;
       player.incense = 0;
       dealEnemyDamage(state, value(card, 12, 16) + spent * value(card, 5, 6), 1, context);
-      addLog(state, `五雷消耗 ${spent} 点香火。`);
+      addLog(state, `全域清剿消耗 ${spent} 点算力。`);
       break;
     }
     case "paperBlade":
@@ -674,7 +674,7 @@ function resolveCard(state: GameState, card: CardInstance, context: { firstAttac
 export function endTurn(state: GameState) {
   const combat = mustCombat(state);
   const coldCount = combat.hand.filter((card) => card.id === "yinCold").length;
-  if (coldCount > 0) losePlayerHp(state, coldCount * 2, "阴寒入骨");
+  if (coldCount > 0) losePlayerHp(state, coldCount * 2, "噪声拖慢响应");
   if (state.screen === "gameover") return;
 
   while (combat.hand.length) {
@@ -692,7 +692,7 @@ function triggerSeal(state: GameState) {
   const perLayer = 3 + (hasRelic(state, "thunderWood") ? 1 : 0);
   const damage = enemy.seal * perLayer;
   enemy.hp = Math.max(0, enemy.hp - damage);
-  addLog(state, `符印灼烧，造成 ${damage} 点伤害。`);
+  addLog(state, `IOC 持续命中，造成 ${damage} 点伤害。`);
   enemy.seal = Math.max(0, enemy.seal - 1);
   state.lastFx = "fire";
   const combat = mustCombat(state);
@@ -714,27 +714,27 @@ function enemyTurn(state: GameState) {
   if (intent.type === "attack") enemyAttack(state, intent.amount, intent.hits || 1);
   if (intent.type === "block") {
     enemy.block += intent.amount;
-    addLog(state, `${enemy.name}获得 ${intent.amount} 点格挡。`);
+    addLog(state, `${enemy.name}获得 ${intent.amount} 点防护。`);
     state.lastFx = "charge";
   }
   if (intent.type === "buff") {
     enemy.strength += intent.amount;
-    addLog(state, `${enemy.name}力量 +${intent.amount}。`);
+    addLog(state, `${enemy.name}攻击强度 +${intent.amount}。`);
     state.lastFx = "danger";
   }
   if (intent.type === "debuff") {
     mustPlayer(state).weak += intent.amount;
-    addLog(state, `${enemy.name}令你虚弱 ${intent.amount} 回合。`);
+    addLog(state, `${enemy.name}令你降权 ${intent.amount} 回合。`);
     state.lastFx = "danger";
   }
   if (intent.type === "curse") {
     for (let i = 0; i < intent.amount; i += 1) combat.discardPile.push(createCard(state, "yinCold"));
-    addLog(state, `${enemy.name}将 ${intent.amount} 张阴寒塞入弃牌堆。`);
+    addLog(state, `${enemy.name}将 ${intent.amount} 张噪声告警注入弃牌堆。`);
     state.lastFx = "danger";
   }
   if (intent.type === "blockAttack") {
     enemy.block += intent.block || 0;
-    addLog(state, `${enemy.name}获得 ${intent.block || 0} 点格挡。`);
+    addLog(state, `${enemy.name}获得 ${intent.block || 0} 点防护。`);
     enemyAttack(state, intent.amount, intent.hits || 1);
   }
 
@@ -759,7 +759,7 @@ function winCombat(state: GameState) {
     state.cinematic = createCinematicState(enemy, combat.type, "victory");
     state.combat = null;
     state.screen = "cinematic";
-    addLog(state, "荒庙雾散，山君伏诛。");
+    addLog(state, "勒索链路被阻断，核心域控恢复控制。");
     state.lastFx = "reward";
     return;
   }
@@ -781,7 +781,7 @@ function winCombat(state: GameState) {
   });
   state.combat = null;
   state.screen = "cinematic";
-  addLog(state, `获得 ${gold} 金。`);
+  addLog(state, `获得 ${gold} 预算。`);
   state.lastFx = "reward";
 }
 
@@ -792,13 +792,13 @@ function createCinematicState(
   rewardSummary?: { gold: number; relicName?: string },
 ) {
   const slug = combatType === "boss" ? `boss-${enemy.id}` : enemy.id;
-  const title = combatType === "boss" ? `${enemy.name}伏诛` : combatType === "elite" ? `${enemy.name}镇压` : `${enemy.name}退散`;
+  const title = combatType === "boss" ? `${enemy.name}已阻断` : combatType === "elite" ? `${enemy.name}已遏制` : `${enemy.name}已处置`;
   const subtitle =
     combatType === "boss"
-      ? "正殿门开，山雾被晨光一寸寸推回山脊。"
+      ? "核心域控恢复心跳，勒索倒计时被清零。"
       : combatType === "elite"
-        ? "破庙恶客散入残香，遗物在灰烬里发亮。"
-        : "符火将尽，夜路重新露出一截。";
+        ? "高危链路被切断，新的安全工具进入工具箱。"
+        : "异常流量沉降，响应路径重新露出一截。";
   return {
     enemyId: enemy.id,
     enemyName: enemy.name,
@@ -861,10 +861,10 @@ function addRelic(state: GameState, id: string) {
   const relic = RELICS.find((item) => item.id === id);
   if (!relic || hasRelic(state, id)) return null;
   player.relics.push(relic);
-  addLog(state, `获得遗物：${relic.name}。`);
+  addLog(state, `获得工具：${relic.name}。`);
   if (relic.onGain === "gold60") {
     player.gold += 60;
-    addLog(state, "狐市旧钱化作 60 金。");
+    addLog(state, "紧急预算到账 60 点。");
   }
   return relic;
 }
@@ -873,7 +873,7 @@ export function takeRewardCard(state: GameState, uid: string) {
   const card = state.reward?.cards.find((item) => item.uid === uid);
   if (!card) return;
   mustPlayer(state).deck.push(createCard(state, card.id, card.upgraded));
-  addLog(state, `获得卡牌：${cardName(card)}。`);
+  addLog(state, `获得响应动作：${cardName(card)}。`);
   goMap(state);
 }
 
@@ -895,13 +895,13 @@ function recycleDiscardIntoDraw(state: GameState) {
   }
   combat.drawPile = shuffle(state, [...combat.drawPile, ...combat.discardPile]);
   combat.discardPile = [];
-  addLog(state, "灰烬回卷，弃牌堆洗回抽牌堆。");
+  addLog(state, "日志重放，弃牌堆洗回抽牌堆。");
 }
 
 function startEvent(state: GameState) {
   state.event = pick(state, EVENTS);
   state.screen = "event";
-  addLog(state, `${state.event.title}浮现在雾里。`);
+  addLog(state, `${state.event.title}浮现在控制台上。`);
 }
 
 export function resolveEvent(state: GameState, choiceId: string) {
@@ -911,7 +911,7 @@ export function resolveEvent(state: GameState, choiceId: string) {
     goMap(state);
   }
   if (choiceId === "wellRelic") {
-    losePlayerHp(state, 7, "井中冷光");
+    losePlayerHp(state, 7, "深挖告警");
     if (state.screen !== "gameover") {
       gainRandomRelic(state);
       goMap(state);
@@ -920,7 +920,7 @@ export function resolveEvent(state: GameState, choiceId: string) {
   if (choiceId === "foxCard") {
     const card = randomCardChoices(state, 1)[0];
     player.deck.push(createCard(state, card.id));
-    addLog(state, `狐嫁纸契化为 ${cardName(card)}。`);
+    addLog(state, `情报样本转化为 ${cardName(card)}。`);
     goMap(state);
   }
   if (choiceId === "foxRemove") openRemoveCard(state, 40, "map");
@@ -928,7 +928,7 @@ export function resolveEvent(state: GameState, choiceId: string) {
   if (choiceId === "templeGold") {
     player.gold += 80;
     player.deck.push(createCard(state, "yinCold"));
-    addLog(state, "获得 80 金，阴寒入牌组。");
+    addLog(state, "获得 80 预算，噪声告警进入牌组。");
     goMap(state);
   }
   if (choiceId === "scholarCopy") {
@@ -936,11 +936,11 @@ export function resolveEvent(state: GameState, choiceId: string) {
     const source = candidates.length ? pick(state, candidates) : createCard(state, "qingxin");
     player.deck.push(createCard(state, source.id, source.upgraded));
     player.deck.push(createCard(state, "yinCold"));
-    addLog(state, `无面书生替你誊出 ${cardName(source)}，也留下阴寒。`);
+    addLog(state, `隔离环境复现出 ${cardName(source)}，也留下噪声告警。`);
     goMap(state);
   }
   if (choiceId === "scholarLeave") {
-    addLog(state, "你没有回头。");
+    addLog(state, "请求被暂缓，风险没有扩大。");
     goMap(state);
   }
 }
@@ -979,7 +979,7 @@ function startShop(state: GameState) {
     removeCost: 75,
   };
   state.screen = "shop";
-  addLog(state, "阴市灯摊摊开货匣，符纸和旧器都沾着冷香。");
+  addLog(state, "情报市场打开货架，规则、工具和样本等待预算分配。");
 }
 
 function randomShopRelic(state: GameState) {
@@ -1002,7 +1002,7 @@ export function buyShopCard(state: GameState, index: number) {
   player.gold -= item.cost;
   player.deck.push(createCard(state, item.card.id));
   item.sold = true;
-  addLog(state, `买下 ${cardName(item.card)}。`);
+  addLog(state, `采购 ${cardName(item.card)}。`);
   state.lastFx = "reward";
 }
 
@@ -1018,7 +1018,7 @@ export function buyShopRelic(state: GameState) {
 
 export function openRemoveCard(state: GameState, cost: number, returnScreen: "map" | "shop") {
   if (mustPlayer(state).gold < cost) {
-    addLog(state, "金币不足。");
+    addLog(state, "预算不足。");
     return;
   }
   state.pendingRemove = { cost, returnScreen };
@@ -1032,7 +1032,7 @@ export function removeCard(state: GameState, uid: string) {
   if (!pending || index < 0 || player.gold < (pending.cost || 0)) return;
   const [removed] = player.deck.splice(index, 1);
   player.gold -= pending.cost || 0;
-  addLog(state, `烧掉了 ${cardName(removed)}。`);
+  addLog(state, `清理了 ${cardName(removed)}。`);
   state.lastFx = "reward";
   if (pending.returnScreen === "shop") {
     state.screen = "shop";

@@ -1,0 +1,54 @@
+import fs from 'node:fs';
+
+const files = [
+  'package.json',
+  'index.html',
+  'electron/main.cjs',
+  'src/game/content.ts',
+  'src/game/engine.ts',
+  'src/App.tsx',
+  'src/phaser/CombatStage.tsx',
+  'README.md',
+];
+
+const banned = [
+  '荒庙',
+  '妖',
+  '香火',
+  '城隍',
+  '山君',
+  '符印',
+  '阴寒',
+  '阴市',
+  '荒村',
+  '破庙',
+  '志怪',
+  '朱砂',
+  '桃木',
+  '纸人',
+  '残灯',
+  '夜巡录',
+];
+
+const findings = [];
+
+for (const file of files) {
+  if (!fs.existsSync(file)) continue;
+  const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/);
+  lines.forEach((line, index) => {
+    for (const term of banned) {
+      if (line.includes(term)) findings.push({ file, line: index + 1, term, text: line.trim() });
+    }
+  });
+}
+
+if (findings.length > 0) {
+  console.error('Cybersecurity retheme check failed: old-theme visible terms remain.');
+  for (const finding of findings.slice(0, 120)) {
+    console.error(`${finding.file}:${finding.line} [${finding.term}] ${finding.text}`);
+  }
+  if (findings.length > 120) console.error(`... ${findings.length - 120} more findings`);
+  process.exit(1);
+}
+
+console.log('Cybersecurity retheme check passed.');
