@@ -42,6 +42,11 @@ const requiredSnippets = [
   { file: 'src/App.tsx', text: '抽牌污染' },
   { file: 'src/App.tsx', text: '勒索倒计时' },
   { file: 'src/App.tsx', text: '横移失控' },
+  { file: 'src/game/types.ts', text: 'lastInterruption' },
+  { file: 'src/game/engine.ts', text: 'recordAttackChainInterruption' },
+  { file: 'src/game/engine.ts', text: '主动打断' },
+  { file: 'src/App.tsx', text: '主动打断反馈' },
+  { file: 'src/App.tsx', text: '最近压制' },
 ];
 
 const banned = [

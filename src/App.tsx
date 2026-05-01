@@ -694,6 +694,7 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
           incense={player.incense}
           advice={responseAdvice}
           riskForecast={riskForecast}
+          lastInterruption={combat.lastInterruption}
         />
         <div className="energy-orb">
           <strong>{player.energy}</strong>
@@ -797,6 +798,7 @@ function CombatIntelPanel({
   incense,
   advice,
   riskForecast,
+  lastInterruption,
 }: {
   enemyName: string;
   attackChain: string;
@@ -810,6 +812,7 @@ function CombatIntelPanel({
   incense: number;
   advice: string;
   riskForecast: string[];
+  lastInterruption: string | null;
 }) {
   return (
     <aside className="combat-intel-panel" aria-label="攻击链态势">
@@ -819,6 +822,10 @@ function CombatIntelPanel({
         <em>{attackChain}</em>
       </div>
       <p className="intel-tradecraft">{tradecraft}</p>
+      <div className="intel-interruption" aria-label="主动打断反馈">
+        <strong>主动打断反馈</strong>
+        <span>{lastInterruption || "最近压制：暂无，拖出攻击或加固动作后会记录链路压制结果。"}</span>
+      </div>
       <div className="intel-risk-forecast" aria-label="链路风险预告">
         <strong>链路风险预告</strong>
         {riskForecast.map((item) => (

@@ -113,6 +113,7 @@ export interface CombatState {
   attackPlayed: boolean;
   pulse: number;
   hitTarget: "enemy" | "player" | null;
+  lastInterruption: string | null;
 }
 
 export interface EventChoiceDef {

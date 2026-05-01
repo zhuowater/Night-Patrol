@@ -1,5 +1,6 @@
 import { CARD_DEFS, CARD_POOL, ENEMIES, EVENTS, NODE_DEFS, RELICS } from "./content";
 import type {
+  CardDef,
   CardInstance,
   CombatState,
   Difficulty,
@@ -353,6 +354,7 @@ function startCombat(state: GameState, type: "combat" | "elite" | "boss") {
     attackPlayed: false,
     pulse: 0,
     hitTarget: null,
+    lastInterruption: null,
   };
   player.block = 0;
   player.incense = 0;
@@ -552,6 +554,7 @@ export function playCard(state: GameState, uid: string) {
 
   if (def.type === "attack") combat.attackPlayed = true;
   if (def.type === "skill" && hasRelic(state, "brokenCenser")) gainBlock(state, 1, "WAF 补丁");
+  recordAttackChainInterruption(state, card, def.type);
 
   combat.cardsPlayedThisTurn += 1;
   if (hasRelic(state, "blankPage") && combat.cardsPlayedThisTurn % 3 === 0) {
@@ -566,6 +569,21 @@ export function playCard(state: GameState, uid: string) {
   }
 
   if (combat.enemy.hp <= 0) winCombat(state);
+}
+
+function recordAttackChainInterruption(state: GameState, card: CardInstance, type: CardDef["type"]) {
+  const combat = mustCombat(state);
+  const enemy = combat.enemy;
+  const chain = enemy.attackChain;
+  let feedback: string | null = null;
+
+  if (type === "attack") feedback = `${cardName(card)}主动打断：压低 ${chain} 的执行窗口。`;
+  if (!feedback && enemy.seal > 0 && (type === "skill" || type === "power")) feedback = `${cardName(card)}主动打断：IOC 复核让 ${chain} 暂停扩散。`;
+  if (!feedback && type === "skill" && mustPlayer(state).block > 0) feedback = `${cardName(card)}主动打断：防护窗口挡住 ${chain} 的下一跳。`;
+  if (!feedback) return;
+
+  combat.lastInterruption = feedback;
+  addLog(state, feedback);
 }
 
 function resolveCard(state: GameState, card: CardInstance, context: { firstAttackBonus?: boolean }) {

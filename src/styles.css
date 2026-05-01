@@ -1582,7 +1582,8 @@ button:focus-visible {
 
 .intel-tradecraft,
 .intel-move-tactic,
-.intel-risk-forecast {
+.intel-risk-forecast,
+.intel-interruption {
   margin: 0;
   padding: 9px 10px;
   border: 1px solid rgba(130, 213, 199, 0.14);
@@ -1595,7 +1596,8 @@ button:focus-visible {
 }
 
 .intel-move-tactic strong,
-.intel-risk-forecast strong {
+.intel-risk-forecast strong,
+.intel-interruption strong {
   display: block;
   margin-bottom: 2px;
   color: rgba(130, 213, 199, 0.92);
@@ -1603,16 +1605,23 @@ button:focus-visible {
   letter-spacing: 0.08em;
 }
 
-.intel-risk-forecast {
+.intel-risk-forecast,
+.intel-interruption {
   display: grid;
   gap: 5px;
   border-color: rgba(231, 199, 126, 0.2);
   background: rgba(231, 199, 126, 0.07);
 }
 
-.intel-risk-forecast span {
+.intel-risk-forecast span,
+.intel-interruption span {
   display: block;
   color: rgba(255, 239, 207, 0.84);
+}
+
+.intel-interruption {
+  border-color: rgba(130, 213, 199, 0.24);
+  background: rgba(68, 196, 181, 0.09);
 }
 
 .intel-grid {
