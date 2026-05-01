@@ -409,8 +409,23 @@ function startPlayerTurn(state: GameState) {
     addLog(state, "自动化响应维持防线，算力 +1。");
   }
 
-  const drawCount = 5 + (player.powers.nightEye || 0) + (combat.turn === 1 && hasRelic(state, "nightSand") ? 1 : 0);
+  const drawCount = Math.max(
+    1,
+    5 +
+      (player.powers.nightEye || 0) +
+      (combat.turn === 1 && hasRelic(state, "nightSand") ? 1 : 0) -
+      credentialDrawPenalty(state),
+  );
   drawCards(state, drawCount);
+}
+
+function credentialDrawPenalty(state: GameState) {
+  const combat = mustCombat(state);
+  if (!combat.enemy.attackChain.includes("凭据")) return 0;
+  const noiseCount = [...combat.drawPile, ...combat.discardPile, ...combat.hand].filter((card) => card.id === "yinCold").length;
+  if (noiseCount < 2) return 0;
+  addLog(state, "凭据喷洒污染抽牌：噪声告警挤占 triage 窗口，少抽 1 张牌。");
+  return 1;
 }
 
 function drawCards(state: GameState, count: number) {
@@ -738,6 +753,9 @@ function enemyTurn(state: GameState) {
     enemyAttack(state, intent.amount, intent.hits || 1);
   }
 
+  if (state.screen === "gameover") return;
+  applyAttackChainPressure(state);
+
   enemy.weak = Math.max(0, enemy.weak - 1);
   enemy.vulnerable = Math.max(0, enemy.vulnerable - 1);
   const player = mustPlayer(state);
@@ -750,6 +768,25 @@ function enemyTurn(state: GameState) {
   }
   chooseEnemyIntent(state);
   startPlayerTurn(state);
+}
+
+function applyAttackChainPressure(state: GameState) {
+  const combat = mustCombat(state);
+  const enemy = combat.enemy;
+  const chain = enemy.attackChain;
+  if (chain.includes("C2") && combat.turn % 2 === 0) {
+    combat.discardPile.push(createCard(state, "yinCold"));
+    addLog(state, "C2 信标回连：攻击者周期性下发任务，噪声告警 +1。");
+    state.lastFx = "danger";
+  }
+  if (chain.includes("横向移动") && enemy.intent?.type === "attack" && !enemy.weak) {
+    enemy.strength += 1;
+    addLog(state, "横向移动扩大落点：未降权的多点探测让后续强度 +1。");
+    state.lastFx = "danger";
+  }
+  if (chain.includes("勒索") && combat.turn % 3 === 0) {
+    losePlayerHp(state, 4, "勒索倒计时");
+  }
 }
 
 function winCombat(state: GameState) {

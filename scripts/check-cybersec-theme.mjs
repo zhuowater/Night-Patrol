@@ -32,6 +32,11 @@ const requiredSnippets = [
   { file: 'src/game/content.ts', text: '凭据喷洒' },
   { file: 'src/game/content.ts', text: '勒索加密' },
   { file: 'src/App.tsx', text: '推荐反制' },
+  { file: 'src/game/engine.ts', text: 'applyAttackChainPressure' },
+  { file: 'src/game/engine.ts', text: 'C2 信标回连' },
+  { file: 'src/game/engine.ts', text: '横向移动扩大落点' },
+  { file: 'src/game/engine.ts', text: '凭据喷洒污染抽牌' },
+  { file: 'src/game/engine.ts', text: '勒索倒计时' },
 ];
 
 const banned = [
