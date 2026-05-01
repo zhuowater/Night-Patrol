@@ -574,6 +574,7 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
   const responseAdvice = getResponseAdvice(player, enemy, noiseCount);
   const intentSummary = intentText(enemy.intent);
   const moveTactic = getMoveTactic(enemy.intent);
+  const riskForecast = getRiskForecast(enemy, combat.turn, noiseCount);
 
   const beginDrag = (card: CardInstance, event: ReactPointerEvent<HTMLButtonElement>) => {
     if (cardDef(card).unplayable) return;
@@ -692,6 +693,7 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
           block={player.block}
           incense={player.incense}
           advice={responseAdvice}
+          riskForecast={riskForecast}
         />
         <div className="energy-orb">
           <strong>{player.energy}</strong>
@@ -769,6 +771,19 @@ function getMoveTactic(intent: EnemyState["intent"]) {
   return "防御动作：趁窗口补 IOC 或准备爆发。";
 }
 
+function getRiskForecast(enemy: EnemyState, turn: number, noiseCount: number) {
+  const items: string[] = [];
+  const chain = enemy.attackChain;
+  if (chain.includes("C2")) items.push(`下次信标：${turn % 2 === 0 ? "本回合结束触发，噪声 +1" : "1 回合后注入噪声"}`);
+  if (chain.includes("凭据")) items.push(`抽牌污染：${noiseCount >= 2 ? "已生效，下回合少抽 1 张" : `还差 ${2 - noiseCount} 张噪声触发`}`);
+  if (chain.includes("勒索")) items.push(`勒索倒计时：${turn % 3 === 0 ? "本回合结束扣 4 生命" : `${3 - (turn % 3)} 回合后触发`}`);
+  if (chain.includes("横向移动")) {
+    const lateralTriggered = enemy.intent?.type === "attack";
+    items.push(`横移失控：${enemy.weak > 0 ? "已降权，强度滚雪球暂停" : lateralTriggered ? "本轮攻击后强度 +1" : "本轮不触发，留意下一次攻击"}`);
+  }
+  return items.length ? items : ["暂无额外链路节奏，按当前意图处置。"];
+}
+
 function CombatIntelPanel({
   enemyName,
   attackChain,
@@ -781,6 +796,7 @@ function CombatIntelPanel({
   block,
   incense,
   advice,
+  riskForecast,
 }: {
   enemyName: string;
   attackChain: string;
@@ -793,6 +809,7 @@ function CombatIntelPanel({
   block: number;
   incense: number;
   advice: string;
+  riskForecast: string[];
 }) {
   return (
     <aside className="combat-intel-panel" aria-label="攻击链态势">
@@ -802,6 +819,12 @@ function CombatIntelPanel({
         <em>{attackChain}</em>
       </div>
       <p className="intel-tradecraft">{tradecraft}</p>
+      <div className="intel-risk-forecast" aria-label="链路风险预告">
+        <strong>链路风险预告</strong>
+        {riskForecast.map((item) => (
+          <span key={item}>{item}</span>
+        ))}
+      </div>
       <div className="intel-grid">
         <span><strong>当前意图</strong>{intent}</span>
         <span><strong>IOC 层数</strong>{seal}</span>

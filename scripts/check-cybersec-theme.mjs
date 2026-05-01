@@ -37,6 +37,11 @@ const requiredSnippets = [
   { file: 'src/game/engine.ts', text: '横向移动扩大落点' },
   { file: 'src/game/engine.ts', text: '凭据喷洒污染抽牌' },
   { file: 'src/game/engine.ts', text: '勒索倒计时' },
+  { file: 'src/App.tsx', text: '链路风险预告' },
+  { file: 'src/App.tsx', text: '下次信标' },
+  { file: 'src/App.tsx', text: '抽牌污染' },
+  { file: 'src/App.tsx', text: '勒索倒计时' },
+  { file: 'src/App.tsx', text: '横移失控' },
 ];
 
 const banned = [
