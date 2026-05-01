@@ -1,0 +1,312 @@
+{
+  "version": "1.0",
+  "concept": "Night Patrol cybersecurity SOC retheme videos regenerated from the new GPT-image2 visual assets, with matching native environmental and impact audio.",
+  "ratio": "16:9",
+  "style_reference": "cinematic dark cyber-fantasy SOC, teal-gold energy, ancient temple fused with security operations, no text, no subtitles, no logo, no watermark",
+  "shots": [
+    {
+      "shot_id": "night-temple-loop",
+      "duration": 5,
+      "visual_goal": "ambient battle arena loop matching the new title/combat background",
+      "camera": "slow push-in",
+      "motion": "fog, talisman sparks, scanner glow, torch embers and terminal reflections move in a loopable rhythm",
+      "transition_to_next": "loop-safe stable end frame",
+      "seedance_prompt": "保留原始构图和色彩，5秒暗黑赛博国风SOC战场循环，运动轻柔克制。0-2秒：雾气从地面缓缓流动，符箓粒子和青金色扫描线沿寺庙地面自然游走，镜头缓慢推进。2-5秒：远处火光轻微跳动，屏幕冷光在湿石和金属上闪烁，尘埃悬浮，画面末尾回到稳定构图便于无缝循环。光影：火焰暖光+屏幕冷光+符阵自发光（光源层），薄雾柔化高光+丁达尔效应+湿面反射（光行为层），暗青底调+金色高光（色调层）。音效：低频电子嗡鸣、符阵轻微电流噼啪、远处火焰燃烧、空气中细尘沙沙声，弱氛围乐，不要旁白。禁止：任何文字、字幕、LOGO或水印",
+      "first_frame": "../assets/generated/backgrounds/night-temple-battle.png",
+      "reference_images": [],
+      "video_path": "../assets/generated/backgrounds/night-temple-loop.mp4",
+      "seedance_task": {
+        "id": "cgt-20260501134145-z6jcj"
+      },
+      "seedance_result": {
+        "id": "cgt-20260501134145-z6jcj",
+        "model": "doubao-seedance-2-0-260128",
+        "status": "succeeded",
+        "content": {
+          "video_url": "[redacted: expiring signed source URL; local artifact committed at video_path]"
+        },
+        "usage": {
+          "completion_tokens": 108900,
+          "total_tokens": 108900
+        },
+        "created_at": 1777614112,
+        "updated_at": 1777614375,
+        "seed": 2761,
+        "resolution": "720p",
+        "ratio": "16:9",
+        "duration": 5,
+        "framespersecond": 24,
+        "service_tier": "default",
+        "execution_expires_after": 172800,
+        "generate_audio": true,
+        "draft": false
+      }
+    },
+    {
+      "shot_id": "victory-lantern",
+      "duration": 5,
+      "visual_goal": "lantern threat defeated, luminous fragments collapse into containment",
+      "camera": "slow orbital close-up",
+      "motion": "lantern flame flickers, malware-like motes detach and get sealed",
+      "transition_to_next": "stable victory pose",
+      "seedance_prompt": "保留原始构图和色彩，5秒胜利过场，暗黑赛博国风。0-2秒：灯笼幽火剧烈闪烁，红黑恶意粒子从灯芯剥离，镜头特写缓慢推进。2-5秒：青金色封印网格迅速合拢，碎光像灰烬一样飘散，主体最后稳定停在首帧构图。光影：灯笼红光+符阵金光+终端冷光（光源层），烟尘散射光线+金属高光+薄雾柔化轮廓（光行为层），暗青底调+朱红与金色高光（色调层）。音效：火焰呼的一声收缩、电子告警短促下降、符纸电流噼啪、低频封印冲击声，弱氛围乐，不要旁白。禁止：任何文字、字幕、LOGO或水印",
+      "first_frame": "../assets/generated/cinematics/victory-lantern-poster.png",
+      "reference_images": [],
+      "video_path": "../assets/generated/cinematics/victory-lantern.mp4",
+      "seedance_task": {
+        "id": "cgt-20260501134636-dt8nb"
+      },
+      "seedance_result": {
+        "id": "cgt-20260501134636-dt8nb",
+        "model": "doubao-seedance-2-0-260128",
+        "status": "succeeded",
+        "content": {
+          "video_url": "[redacted: expiring signed source URL; local artifact committed at video_path]"
+        },
+        "usage": {
+          "completion_tokens": 108900,
+          "total_tokens": 108900
+        },
+        "created_at": 1777614398,
+        "updated_at": 1777615109,
+        "seed": 82576,
+        "resolution": "720p",
+        "ratio": "16:9",
+        "duration": 5,
+        "framespersecond": 24,
+        "service_tier": "default",
+        "execution_expires_after": 172800,
+        "generate_audio": true,
+        "draft": false
+      }
+    },
+    {
+      "shot_id": "victory-waterghost",
+      "duration": 5,
+      "visual_goal": "water ghost dissolves into data-water containment",
+      "camera": "slow push-in",
+      "motion": "water ripples, blue packets drain into a seal",
+      "transition_to_next": "stable sealed aftermath",
+      "seedance_prompt": "保留原始构图和色彩，5秒胜利过场，潮湿幽蓝的赛博水鬼被净化。0-2秒：水面涟漪猛烈扩散，水鬼轮廓像故障数据一样闪烁，镜头缓慢推进。2-5秒：蓝白封印光从下方升起，水滴和数据碎片向中心旋入，最后雾气回落并稳定。光影：冷蓝水下光+符阵金光+屏幕冷光（光源层），水雾折射+湿面反射+体积光穿透雾气（光行为层），深蓝冷底调+金色高光（色调层）。音效：水滴坠落、低沉水下轰鸣、电子杂讯被滤除、封印完成的清脆钟声，弱氛围乐，不要旁白。禁止：任何文字、字幕、LOGO或水印",
+      "first_frame": "../assets/generated/cinematics/victory-waterghost-poster.png",
+      "reference_images": [],
+      "video_path": "../assets/generated/cinematics/victory-waterghost.mp4",
+      "seedance_task": {
+        "id": "cgt-20260501135844-krz2k"
+      },
+      "seedance_result": {
+        "id": "cgt-20260501135844-krz2k",
+        "model": "doubao-seedance-2-0-260128",
+        "status": "succeeded",
+        "content": {
+          "video_url": "[redacted: expiring signed source URL; local artifact committed at video_path]"
+        },
+        "usage": {
+          "completion_tokens": 108900,
+          "total_tokens": 108900
+        },
+        "created_at": 1777615126,
+        "updated_at": 1777615329,
+        "seed": 43896,
+        "resolution": "720p",
+        "ratio": "16:9",
+        "duration": 5,
+        "framespersecond": 24,
+        "service_tier": "default",
+        "execution_expires_after": 172800,
+        "generate_audio": true,
+        "draft": false
+      }
+    },
+    {
+      "shot_id": "victory-templecorpse",
+      "duration": 5,
+      "visual_goal": "temple corpse threat breaks apart under clean containment light",
+      "camera": "low angle slow push",
+      "motion": "dust, talisman chains, bone-like fragments and corrupted packets disintegrate",
+      "transition_to_next": "stable purified frame",
+      "seedance_prompt": "保留原始构图和色彩，5秒胜利过场，古庙尸煞被安全封印。0-2秒：主体周围尘埃突然震起，腐蚀性黑雾像恶意流量一样外泄，低角度镜头缓慢推进。2-5秒：金色符链从四周扣合，黑雾被压缩成碎片消散，石地浮现青色安全网格，最后稳定收束。光影：符链金光+庙内火光+青色网格冷光（光源层），烟尘散射光线+石材粗糙高光+薄雾柔化轮廓（光行为层），暗棕底调+青金高光（色调层）。音效：沉重石块摩擦、骨裂般干脆碎响、低频恶意噪声被切断、符链锁扣声，弱氛围乐，不要旁白。禁止：任何文字、字幕、LOGO或水印",
+      "first_frame": "../assets/generated/cinematics/victory-templecorpse-poster.png",
+      "reference_images": [],
+      "video_path": "../assets/generated/cinematics/victory-templecorpse.mp4",
+      "seedance_task": {
+        "id": "cgt-20260501140223-v8ft5"
+      },
+      "seedance_result": {
+        "id": "cgt-20260501140223-v8ft5",
+        "model": "doubao-seedance-2-0-260128",
+        "status": "succeeded",
+        "content": {
+          "video_url": "[redacted: expiring signed source URL; local artifact committed at video_path]"
+        },
+        "usage": {
+          "completion_tokens": 108900,
+          "total_tokens": 108900
+        },
+        "created_at": 1777615344,
+        "updated_at": 1777615638,
+        "seed": 11812,
+        "resolution": "720p",
+        "ratio": "16:9",
+        "duration": 5,
+        "framespersecond": 24,
+        "service_tier": "default",
+        "execution_expires_after": 172800,
+        "generate_audio": true,
+        "draft": false
+      }
+    },
+    {
+      "shot_id": "victory-macaque",
+      "duration": 5,
+      "visual_goal": "macaque trickster malware is trapped by scanner talismans",
+      "camera": "subtle tracking shot",
+      "motion": "quick mischievous afterimage becomes caught, particles scatter",
+      "transition_to_next": "stable contained silhouette",
+      "seedance_prompt": "保留原始构图和色彩，5秒胜利过场，猕猴型入侵者被追踪锁定。0-2秒：主体产生短促残影和金色毛发粒子，恶意代码碎片向外飞散，镜头轻微跟拍。2-5秒：青色扫描环迅速套住残影，符箓像锁链一样收紧，碎片化为火星飘落并稳定。光影：青色扫描光+金色符火+寺庙暖光（光源层），粒子散射+毛发边缘透光+薄雾柔化高光（光行为层），暗青底调+橙金高光（色调层）。音效：敏捷脚步擦地、短促电子锁定哔声、符链嗖嗖收紧、火星噼啪声，弱氛围乐，不要旁白。禁止：任何文字、字幕、LOGO或水印",
+      "first_frame": "../assets/generated/cinematics/victory-macaque-poster.png",
+      "reference_images": [],
+      "video_path": "../assets/generated/cinematics/victory-macaque.mp4",
+      "seedance_task": {
+        "id": "cgt-20260501140730-jzxrh"
+      },
+      "seedance_result": {
+        "id": "cgt-20260501140730-jzxrh",
+        "model": "doubao-seedance-2-0-260128",
+        "status": "succeeded",
+        "content": {
+          "video_url": "[redacted: expiring signed source URL; local artifact committed at video_path]"
+        },
+        "usage": {
+          "completion_tokens": 108900,
+          "total_tokens": 108900
+        },
+        "created_at": 1777615651,
+        "updated_at": 1777615988,
+        "seed": 61861,
+        "resolution": "720p",
+        "ratio": "16:9",
+        "duration": 5,
+        "framespersecond": 24,
+        "service_tier": "default",
+        "execution_expires_after": 172800,
+        "generate_audio": true,
+        "draft": false
+      }
+    },
+    {
+      "shot_id": "victory-warlock",
+      "duration": 5,
+      "visual_goal": "warlock command-and-control ritual collapses into clean security light",
+      "camera": "slow push-in",
+      "motion": "ritual UI symbols implode, cloak and smoke move, light cleans the frame",
+      "transition_to_next": "stable defeated ritual",
+      "seedance_prompt": "保留原始构图和色彩，5秒胜利过场，黑术士的命令控制仪式崩塌。0-2秒：暗紫法阵和恶意界面猛烈闪烁，斗篷边缘被气流掀动，镜头缓慢推进。2-5秒：青金色安全光柱从中心升起，紫黑烟雾被吸入光柱，符号碎裂成无害粒子，最后稳定。光影：紫黑法阵光+青金安全光柱+屏幕冷光（光源层），烟雾散射+体积光穿透+金属微划痕高光（光行为层），深紫冷底调+青金高光（色调层）。音效：低沉咒频转为电子噪声、能量充能嗡鸣、玻璃般符号碎裂声、最终一记低频脉冲，弱氛围乐，不要旁白。禁止：任何文字、字幕、LOGO或水印",
+      "first_frame": "../assets/generated/cinematics/victory-warlock-poster.png",
+      "reference_images": [],
+      "video_path": "../assets/generated/cinematics/victory-warlock.mp4",
+      "seedance_task": {
+        "id": "cgt-20260501141317-tmptq"
+      },
+      "seedance_result": {
+        "id": "cgt-20260501141317-tmptq",
+        "model": "doubao-seedance-2-0-260128",
+        "status": "succeeded",
+        "content": {
+          "video_url": "[redacted: expiring signed source URL; local artifact committed at video_path]"
+        },
+        "usage": {
+          "completion_tokens": 108900,
+          "total_tokens": 108900
+        },
+        "created_at": 1777615998,
+        "updated_at": 1777616460,
+        "seed": 30730,
+        "resolution": "720p",
+        "ratio": "16:9",
+        "duration": 5,
+        "framespersecond": 24,
+        "service_tier": "default",
+        "execution_expires_after": 172800,
+        "generate_audio": true,
+        "draft": false
+      }
+    },
+    {
+      "shot_id": "victory-foxshade",
+      "duration": 5,
+      "visual_goal": "fox shade stealth illusion is revealed and sealed",
+      "camera": "slow arc shot",
+      "motion": "shadow tails ripple, stealth veil peels away, sigils lock on",
+      "transition_to_next": "stable unveiled frame",
+      "seedance_prompt": "保留原始构图和色彩，5秒胜利过场，狐影隐身幻术被揭露。0-2秒：多层暗影尾迹像丝绸一样缓缓摆动，画面边缘出现隐身波纹，镜头弧形环绕。2-5秒：青金扫描光掠过主体，伪装层像碎玻璃一样剥落，符印锁定后粒子安静飘散，最后稳定。光影：月光冷辉+青金扫描光+微弱狐火（光源层），薄雾柔化高光+玻璃折射彩虹光斑+粒子散射（光行为层），深蓝底调+青金与淡紫高光（色调层）。音效：丝绸般暗影摩擦、轻微狐火噼啪、扫描器连续扫频、玻璃细碎剥落声，弱氛围乐，不要旁白。禁止：任何文字、字幕、LOGO或水印",
+      "first_frame": "../assets/generated/cinematics/victory-foxshade-poster.png",
+      "reference_images": [],
+      "video_path": "../assets/generated/cinematics/victory-foxshade.mp4",
+      "seedance_task": {
+        "id": "cgt-20260501142108-qlxs9"
+      },
+      "seedance_result": {
+        "id": "cgt-20260501142108-qlxs9",
+        "model": "doubao-seedance-2-0-260128",
+        "status": "succeeded",
+        "content": {
+          "video_url": "[redacted: expiring signed source URL; local artifact committed at video_path]"
+        },
+        "usage": {
+          "completion_tokens": 108900,
+          "total_tokens": 108900
+        },
+        "created_at": 1777616471,
+        "updated_at": 1777616741,
+        "seed": 91057,
+        "resolution": "720p",
+        "ratio": "16:9",
+        "duration": 5,
+        "framespersecond": 24,
+        "service_tier": "default",
+        "execution_expires_after": 172800,
+        "generate_audio": true,
+        "draft": false
+      }
+    },
+    {
+      "shot_id": "victory-boss-tigerlord",
+      "duration": 5,
+      "visual_goal": "boss tiger lord defeat with heavy containment impact",
+      "camera": "low angle slow pull-out",
+      "motion": "tiger lord roars silently, golden armor sparks, containment shockwave expands",
+      "transition_to_next": "stable boss defeated frame",
+      "seedance_prompt": "保留原始构图和色彩，5秒Boss胜利过场，虎王级威胁被最终封印。0-2秒：主体周围金属甲片火星飞溅，黑金威压向外扩张，低角度镜头缓慢后拉。2-5秒：巨大的青金封印冲击波从中心爆发，虎形暗影被压入地面网格，烟尘和碎片向外滚动后稳定。光影：金色甲片反光+青色封印光+火焰暖光（光源层），烟尘散射+金属锐利高光+体积光穿透尘雾（光行为层），暗棕黑底调+青金高光（色调层）。音效：低频虎吼式合成器、沉重金属撞击、冲击波轰隆、碎石滚落和封印锁定重击，弱史诗氛围乐，不要旁白。禁止：任何文字、字幕、LOGO或水印",
+      "first_frame": "../assets/generated/cinematics/victory-boss-tigerlord-poster.png",
+      "reference_images": [],
+      "video_path": "../assets/generated/cinematics/victory-boss-tigerlord.mp4",
+      "seedance_task": {
+        "id": "cgt-20260501142550-vhjdh"
+      },
+      "seedance_result": {
+        "id": "cgt-20260501142550-vhjdh",
+        "model": "doubao-seedance-2-0-260128",
+        "status": "succeeded",
+        "content": {
+          "video_url": "[redacted: expiring signed source URL; local artifact committed at video_path]"
+        },
+        "usage": {
+          "completion_tokens": 108900,
+          "total_tokens": 108900
+        },
+        "created_at": 1777616753,
+        "updated_at": 1777617048,
+        "seed": 35900,
+        "resolution": "720p",
+        "ratio": "16:9",
+        "duration": 5,
+        "framespersecond": 24,
+        "service_tier": "default",
+        "execution_expires_after": 172800,
+        "generate_audio": true,
+        "draft": false
+      }
+    }
+  ]
+}
