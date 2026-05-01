@@ -1583,6 +1583,7 @@ button:focus-visible {
 .intel-tradecraft,
 .intel-move-tactic,
 .intel-risk-forecast,
+.intel-counterplay,
 .intel-interruption {
   margin: 0;
   padding: 9px 10px;
@@ -1597,6 +1598,7 @@ button:focus-visible {
 
 .intel-move-tactic strong,
 .intel-risk-forecast strong,
+.intel-counterplay strong,
 .intel-interruption strong {
   display: block;
   margin-bottom: 2px;
@@ -1606,6 +1608,7 @@ button:focus-visible {
 }
 
 .intel-risk-forecast,
+.intel-counterplay,
 .intel-interruption {
   display: grid;
   gap: 5px;
@@ -1614,6 +1617,7 @@ button:focus-visible {
 }
 
 .intel-risk-forecast span,
+.intel-counterplay span,
 .intel-interruption span {
   display: block;
   color: rgba(255, 239, 207, 0.84);
@@ -1622,6 +1626,23 @@ button:focus-visible {
 .intel-interruption {
   border-color: rgba(130, 213, 199, 0.24);
   background: rgba(68, 196, 181, 0.09);
+}
+
+.intel-counterplay {
+  border-color: rgba(130, 213, 199, 0.48);
+  background:
+    linear-gradient(135deg, rgba(68, 196, 181, 0.2), rgba(231, 199, 126, 0.08)),
+    rgba(5, 14, 16, 0.78);
+  box-shadow: 0 0 0 1px rgba(130, 213, 199, 0.08), 0 8px 20px rgba(68, 196, 181, 0.12);
+}
+
+.intel-counterplay strong {
+  color: #b8fff4;
+}
+
+.intel-counterplay span {
+  padding-left: 8px;
+  border-left: 2px solid rgba(130, 213, 199, 0.68);
 }
 
 .intel-grid {

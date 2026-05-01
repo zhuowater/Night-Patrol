@@ -574,7 +574,8 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
   const responseAdvice = getResponseAdvice(player, enemy, noiseCount);
   const intentSummary = intentText(enemy.intent);
   const moveTactic = getMoveTactic(enemy.intent);
-  const riskForecast = getRiskForecast(enemy, combat.turn, noiseCount);
+  const riskForecast = getRiskForecast(enemy, combat.turn, noiseCount, player.incense);
+  const counterplayWindows = getCounterplayWindows(enemy, combat.turn, noiseCount, player.incense);
 
   const beginDrag = (card: CardInstance, event: ReactPointerEvent<HTMLButtonElement>) => {
     if (cardDef(card).unplayable) return;
@@ -694,6 +695,7 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
           incense={player.incense}
           advice={responseAdvice}
           riskForecast={riskForecast}
+          counterplayWindows={counterplayWindows}
           lastInterruption={combat.lastInterruption}
         />
         <div className="energy-orb">
@@ -772,17 +774,55 @@ function getMoveTactic(intent: EnemyState["intent"]) {
   return "防御动作：趁窗口补 IOC 或准备爆发。";
 }
 
-function getRiskForecast(enemy: EnemyState, turn: number, noiseCount: number) {
+function getRiskForecast(enemy: EnemyState, turn: number, noiseCount: number, incense: number) {
   const items: string[] = [];
   const chain = enemy.attackChain;
-  if (chain.includes("C2")) items.push(`下次信标：${turn % 2 === 0 ? "本回合结束触发，噪声 +1" : "1 回合后注入噪声"}`);
-  if (chain.includes("凭据")) items.push(`抽牌污染：${noiseCount >= 2 ? "已生效，下回合少抽 1 张" : `还差 ${2 - noiseCount} 张噪声触发`}`);
-  if (chain.includes("勒索")) items.push(`勒索倒计时：${turn % 3 === 0 ? "本回合结束扣 4 生命" : `${3 - (turn % 3)} 回合后触发`}`);
+  if (chain.includes("C2")) {
+    if (turn % 2 === 0) {
+      items.push(`下次信标：${enemy.seal > 0 ? "本回合 IOC 拦截，噪声不增加" : "本回合结束触发，噪声 +1"}`);
+    } else {
+      items.push("下次信标：1 回合后注入噪声，可提前补 IOC 拦截");
+    }
+  }
+  if (chain.includes("凭据")) {
+    if (noiseCount >= 2) items.push(`抽牌污染：${enemy.weak > 1 ? "敌方已降权，下次抽牌前清洗" : "已生效，下回合少抽 1 张"}`);
+    else items.push(`抽牌污染：还差 ${2 - noiseCount} 张噪声触发${enemy.weak > 1 && noiseCount > 0 ? "，已降权会先清洗" : ""}`);
+  }
+  if (chain.includes("勒索")) {
+    if (turn % 3 === 0) {
+      items.push(`勒索倒计时：${incense >= 2 ? "本回合算力恢复演练取消扣血" : "本回合结束扣 4 生命"}`);
+    } else {
+      items.push(`勒索倒计时：${3 - (turn % 3)} 回合后触发，可存 2 算力取消`);
+    }
+  }
   if (chain.includes("横向移动")) {
     const lateralTriggered = enemy.intent?.type === "attack";
     items.push(`横移失控：${enemy.weak > 0 ? "已降权，强度滚雪球暂停" : lateralTriggered ? "本轮攻击后强度 +1" : "本轮不触发，留意下一次攻击"}`);
   }
   return items.length ? items : ["暂无额外链路节奏，按当前意图处置。"];
+}
+
+function getCounterplayWindows(enemy: EnemyState, turn: number, noiseCount: number, incense: number) {
+  const items: string[] = [];
+  const chain = enemy.attackChain;
+  if (chain.includes("C2")) {
+    const c2Triggering = turn % 2 === 0;
+    if (c2Triggering) items.push(`C2：IOC ≥ 1 可拦截本轮信标${enemy.seal > 0 ? "（已满足）" : "（未满足）"}`);
+    else items.push(`C2：IOC ≥ 1 可拦截信标（${2 - (turn % 2)} 回合后检查）`);
+  }
+  if (chain.includes("凭据")) {
+    const cleanupReady = enemy.weak > 1;
+    if (noiseCount > 0) items.push(`凭据：敌方降权可在下次抽牌前清洗 ${noiseCount} 张噪声${cleanupReady ? "（已满足）" : "（建议降噪过滤）"}`);
+    else items.push(`凭据：敌方降权可清洗噪声（等待噪声出现）`);
+  }
+  if (chain.includes("勒索")) {
+    const ransomwareTriggering = turn % 3 === 0;
+    if (ransomwareTriggering) items.push(`勒索：算力 ≥ 2 可取消本轮倒计时${incense >= 2 ? "（已满足）" : `（还差 ${2 - incense}）`}`);
+    else items.push(`勒索：算力 ≥ 2 可取消倒计时（${3 - (turn % 3)} 回合后检查）`);
+  }
+  if (chain.includes("横向移动")) items.push(`横移：降权可冻结攻击后强度滚雪球${enemy.weak > 0 ? "（已满足）" : "（建议降噪过滤）"}`);
+  if (turn % 2 === 0 && enemy.intent?.type !== "attack") items.push("非攻击回合：适合补 IOC / 算力，为下一次链路触发做反制。");
+  return items.length ? items : ["当前攻击链没有额外反制窗口，按意图处置即可。"];
 }
 
 function CombatIntelPanel({
@@ -798,6 +838,7 @@ function CombatIntelPanel({
   incense,
   advice,
   riskForecast,
+  counterplayWindows,
   lastInterruption,
 }: {
   enemyName: string;
@@ -812,6 +853,7 @@ function CombatIntelPanel({
   incense: number;
   advice: string;
   riskForecast: string[];
+  counterplayWindows: string[];
   lastInterruption: string | null;
 }) {
   return (
@@ -829,6 +871,12 @@ function CombatIntelPanel({
       <div className="intel-risk-forecast" aria-label="链路风险预告">
         <strong>链路风险预告</strong>
         {riskForecast.map((item) => (
+          <span key={item}>{item}</span>
+        ))}
+      </div>
+      <div className="intel-counterplay" aria-label="反制窗口">
+        <strong>反制窗口</strong>
+        {counterplayWindows.map((item) => (
           <span key={item}>{item}</span>
         ))}
       </div>

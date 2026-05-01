@@ -7,6 +7,7 @@ const files = [
   'src/game/content.ts',
   'src/game/engine.ts',
   'src/App.tsx',
+  'src/styles.css',
   'src/phaser/CombatStage.tsx',
   'README.md',
 ];
@@ -47,6 +48,13 @@ const requiredSnippets = [
   { file: 'src/game/engine.ts', text: '主动打断' },
   { file: 'src/App.tsx', text: '主动打断反馈' },
   { file: 'src/App.tsx', text: '最近压制' },
+  { file: 'src/App.tsx', text: '反制窗口' },
+  { file: 'src/App.tsx', text: 'C2：IOC ≥ 1 可拦截信标' },
+  { file: 'src/styles.css', text: 'intel-counterplay' },
+  { file: 'src/game/engine.ts', text: 'applyAttackChainCounterplay' },
+  { file: 'src/game/engine.ts', text: 'C2 追踪拦截' },
+  { file: 'src/game/engine.ts', text: '凭据隔离清洗' },
+  { file: 'src/game/engine.ts', text: '勒索恢复演练' },
 ];
 
 const banned = [
