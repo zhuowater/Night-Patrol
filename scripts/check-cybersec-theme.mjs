@@ -22,6 +22,10 @@ const requiredSnippets = [
   { file: 'src/App.tsx', text: '研判信号' },
   { file: 'src/App.tsx', text: '维护窗口 · 变更评审' },
   { file: 'src/App.tsx', text: '变更影响' },
+  { file: 'src/App.tsx', text: '攻击链态势' },
+  { file: 'src/App.tsx', text: '建议响应' },
+  { file: 'src/App.tsx', text: '术语解释' },
+  { file: 'src/App.tsx', text: 'IOC：标记后可被沙箱引爆' },
 ];
 
 const banned = [

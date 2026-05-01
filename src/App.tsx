@@ -43,7 +43,7 @@ import {
   upgradeCard,
 } from "./game/engine";
 import { RitualAudio } from "./game/audio";
-import type { CardInstance, Difficulty, GameState, NodeType, Screen } from "./game/types";
+import type { CardInstance, Difficulty, EnemyState, GameState, NodeType, PlayerState, Screen } from "./game/types";
 import { CombatStage } from "./phaser/CombatStage";
 
 const routeNames = ["边界", "办公网", "终端", "日志湖", "服务器区", "情报市", "核心域", "域控"];
@@ -570,6 +570,9 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
   const hoverTarget = dragPoint ? dragHitTarget(dragPoint) : null;
   const targetHot = Boolean(expectedTarget && hoverTarget === expectedTarget);
   const dropHint = expectedTarget === "enemy" ? "拖到攻击活动上施放" : expectedTarget === "player" ? "拖到自己身上施放" : "拖到目标身上施放";
+  const noiseCount = [...combat.hand, ...combat.drawPile, ...combat.discardPile].filter((card) => card.id === "yinCold").length;
+  const responseAdvice = getResponseAdvice(player, enemy, noiseCount);
+  const intentSummary = intentText(enemy.intent);
 
   const beginDrag = (card: CardInstance, event: ReactPointerEvent<HTMLButtonElement>) => {
     if (cardDef(card).unplayable) return;
@@ -665,7 +668,7 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
         <div className={`actor-panel enemy-panel ${expectedTarget === "enemy" ? "preview-target" : ""} ${targetHot && hoverTarget === "enemy" ? "target-hot" : ""}`}>
           <div className="intent-plaque">
             <span>活动意图</span>
-            <strong>{intentText(enemy.intent)}</strong>
+            <strong>{intentSummary}</strong>
           </div>
           <HealthStrip current={enemy.hp} max={enemy.maxHp} enemy />
           <div className="status-stack">
@@ -676,6 +679,15 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
             {enemy.vulnerable > 0 && <StatusBadge text={`暴露面 ${enemy.vulnerable}`} />}
           </div>
         </div>
+        <CombatIntelPanel
+          enemyName={enemy.name}
+          intent={intentSummary}
+          seal={enemy.seal}
+          noiseCount={noiseCount}
+          block={player.block}
+          incense={player.incense}
+          advice={responseAdvice}
+        />
         <div className="energy-orb">
           <strong>{player.energy}</strong>
           <span>/{player.maxEnergy}</span>
@@ -729,6 +741,56 @@ function HealthStrip({ current, max, enemy = false }: { current: number; max: nu
         {current}/{max}
       </strong>
     </div>
+  );
+}
+
+function getResponseAdvice(player: PlayerState, enemy: EnemyState, noiseCount: number) {
+  const incomingAttack = enemy.intent?.type === "attack" || enemy.intent?.type === "blockAttack";
+  if (incomingAttack && player.block < (enemy.intent?.amount || 0)) return "建议响应：先加固规则或临时隔离，避免攻击链直接打穿防线。";
+  if (enemy.seal >= 3) return "建议响应：IOC 已足够，优先沙箱引爆或溯源打击收束攻击链。";
+  if (noiseCount >= 3) return "建议响应：噪声告警偏多，优先降噪过滤或清理牌组，保持抽牌质量。";
+  if (player.incense >= 2) return "建议响应：算力充足，可以保留到全域清剿，也可以转化为爆发处置。";
+  return "建议响应：先标记 IOC 或压低攻击强度，再根据意图选择加固还是输出。";
+}
+
+function CombatIntelPanel({
+  enemyName,
+  intent,
+  seal,
+  noiseCount,
+  block,
+  incense,
+  advice,
+}: {
+  enemyName: string;
+  intent: string;
+  seal: number;
+  noiseCount: number;
+  block: number;
+  incense: number;
+  advice: string;
+}) {
+  return (
+    <aside className="combat-intel-panel" aria-label="攻击链态势">
+      <div className="intel-header">
+        <span>攻击链态势</span>
+        <strong>{enemyName}</strong>
+      </div>
+      <div className="intel-grid">
+        <span><strong>当前意图</strong>{intent}</span>
+        <span><strong>IOC 层数</strong>{seal}</span>
+        <span><strong>噪声告警</strong>{noiseCount}</span>
+        <span><strong>防护状态</strong>{block}</span>
+        <span><strong>可用算力</strong>{incense}</span>
+      </div>
+      <p className="intel-advice">{advice}</p>
+      <div className="term-hints" aria-label="术语解释">
+        <strong>术语解释</strong>
+        <span>IOC：标记后可被沙箱引爆、溯源打击放大。</span>
+        <span>噪声告警：污染牌组并拖慢响应节奏。</span>
+        <span>算力：临时资源，可支撑爆发清剿。</span>
+      </div>
+    </aside>
   );
 }
 
@@ -809,8 +871,19 @@ function GameCard({
       </div>
       <div className="card-kind">{typeLabel(def.type)}</div>
       <p>{cardText(card)}</p>
+      <div className="card-term-hint">{cardTermHint(card)}</div>
     </button>
   );
+}
+
+function cardTermHint(card: CardInstance) {
+  const text = cardText(card);
+  if (text.includes("IOC")) return "IOC 会放大沙箱引爆、溯源打击与关联分析。";
+  if (text.includes("噪声告警")) return "噪声告警会污染牌组，降低后续响应效率。";
+  if (text.includes("算力")) return "算力是临时资源，可支撑爆发清剿。";
+  if (text.includes("防护")) return "防护抵消本回合攻击活动。";
+  if (text.includes("降权")) return "降权会压低攻击活动的输出强度。";
+  return "拖拽到目标区域执行这条响应动作。";
 }
 
 function cardArtImage(card: CardInstance) {

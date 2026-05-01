@@ -1530,6 +1530,88 @@ button:focus-visible {
   line-height: 1.35;
 }
 
+.combat-intel-panel {
+  position: absolute;
+  left: 3.4vw;
+  top: 24px;
+  width: min(310px, 24vw);
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(130, 213, 199, 0.2);
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, rgba(68, 196, 181, 0.12), transparent 44%),
+    linear-gradient(180deg, rgba(5, 13, 16, 0.78), rgba(3, 7, 8, 0.62));
+  color: rgba(232, 255, 249, 0.88);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04), 0 18px 36px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+}
+
+.intel-header {
+  display: grid;
+  gap: 3px;
+}
+
+.intel-header span,
+.term-hints strong {
+  color: var(--jade-soft);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.intel-header strong {
+  color: #fff0c9;
+  font-size: 1.08rem;
+}
+
+.intel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+
+.intel-grid span,
+.term-hints span {
+  display: grid;
+  gap: 2px;
+  padding: 8px 9px;
+  border: 1px solid rgba(130, 213, 199, 0.14);
+  border-radius: 8px;
+  background: rgba(5, 10, 12, 0.48);
+  color: rgba(255, 239, 207, 0.78);
+  font-size: 0.74rem;
+  line-height: 1.35;
+}
+
+.intel-grid strong {
+  color: rgba(130, 213, 199, 0.92);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+}
+
+.intel-advice {
+  margin: 0;
+  padding: 10px 11px;
+  border-left: 3px solid rgba(231, 199, 126, 0.72);
+  background: rgba(231, 199, 126, 0.08);
+  color: rgba(255, 239, 207, 0.9);
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+.term-hints {
+  display: grid;
+  gap: 7px;
+}
+
+.term-hints span {
+  padding: 7px 9px;
+}
+
 .energy-orb {
   position: absolute;
   left: 4.7vw;
@@ -1850,6 +1932,21 @@ button:focus-visible {
   line-height: 1.48;
   text-align: center;
   text-shadow: 0 2px 2px rgba(0, 0, 0, 0.36);
+}
+
+.card-term-hint {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 9px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 223, 154, 0.18);
+  color: rgba(130, 213, 199, 0.86);
+  font-size: 0.62rem;
+  font-weight: 800;
+  line-height: 1.25;
+  text-align: center;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.48);
 }
 
 .reward-row {
