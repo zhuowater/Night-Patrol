@@ -231,6 +231,9 @@ export const ENEMIES: Record<string, EnemyTemplate> = {
     name: "端口扫描器",
     artKey: "lantern",
     hp: 42,
+    attackChain: "侦察扫描",
+    tradecraft: "用 SYN 洪泛和端口指纹快速描出暴露面，再塞入噪声告警拖慢值班节奏。",
+    counter: "先用资产测绘/标记 IOC 固定来源，低成本防护挡住探测伤害，再用沙箱引爆收口。",
     moves: [
       { type: "attack", amount: 6, label: "SYN 洪泛" },
       { type: "curse", amount: 1, label: "噪声注入" },
@@ -242,6 +245,9 @@ export const ENEMIES: Record<string, EnemyTemplate> = {
     name: "钓鱼载荷",
     artKey: "waterghost",
     hp: 48,
+    attackChain: "凭据喷洒",
+    tradecraft: "通过钓鱼点击诱导权限授予，再把凭据回传拆成多段小流量绕过阈值。",
+    counter: "优先降权和加固规则，避免弱口令扩散；IOC 叠满后用溯源打击清掉回传链路。",
     moves: [
       { type: "attack", amount: 8, label: "钓鱼点击" },
       { type: "debuff", amount: 2, label: "权限诱导" },
@@ -253,6 +259,9 @@ export const ENEMIES: Record<string, EnemyTemplate> = {
     name: "僵尸进程",
     artKey: "templecorpse",
     hp: 54,
+    attackChain: "C2 持久化",
+    tradecraft: "僵尸进程保持回连，靠进程守护堆防护，并持续污染日志制造误判。",
+    counter: "不要只打伤害；用日志检索和降噪过滤维持抽牌质量，等 IOC 足够后集中清剿。",
     moves: [
       { type: "attack", amount: 10, label: "僵尸回连" },
       { type: "block", amount: 10, label: "进程守护" },
@@ -264,6 +273,9 @@ export const ENEMIES: Record<string, EnemyTemplate> = {
     name: "横向移动脚本",
     artKey: "macaque",
     hp: 52,
+    attackChain: "横向移动",
+    tradecraft: "先横向探测多打点，再用提权脚本抬高后续会话劫持的爆发。",
+    counter: "看到提权脚本就提前堆防护或降权，优先阻断连接，别让强度滚起来。",
     moves: [
       { type: "attack", amount: 4, hits: 3, label: "横向探测" },
       { type: "buff", amount: 2, label: "提权脚本" },
@@ -275,6 +287,9 @@ export const ENEMIES: Record<string, EnemyTemplate> = {
     name: "C2 操作员",
     artKey: "warlock",
     hp: 68,
+    attackChain: "C2 指挥控制",
+    tradecraft: "通过 C2 指令打高额伤害，指挥增强会让下一轮威胁指数迅速上升。",
+    counter: "优先标记 IOC 与 YARA 命中；若它开始增强，保留算力给全域清剿。",
     elite: true,
     moves: [
       { type: "attack", amount: 12, label: "C2 指令" },
@@ -287,6 +302,9 @@ export const ENEMIES: Record<string, EnemyTemplate> = {
     name: "凭据窃取器",
     artKey: "foxshade",
     hp: 72,
+    attackChain: "凭据滥用",
+    tradecraft: "凭据抓取造成多段压力，伪装登录降低响应质量，令牌滥用会边打边加固。",
+    counter: "用降噪过滤压低攻击强度，配合临时隔离扛住多段伤害，再用批量标记放大处置。",
     elite: true,
     moves: [
       { type: "attack", amount: 8, hits: 2, label: "凭据抓取" },
@@ -299,6 +317,9 @@ export const ENEMIES: Record<string, EnemyTemplate> = {
     name: "勒索核心",
     artKey: "tigerlord",
     hp: 118,
+    attackChain: "勒索加密",
+    tradecraft: "先全盘加密制造高压，再唤醒僵尸网络抬强度，核心驻留会同时输出和加固。",
+    counter: "留足防护应对全盘加密；把 IOC 与算力攒到关键回合，用全域清剿/溯源打击终结。",
     boss: true,
     moves: [
       { type: "attack", amount: 16, label: "全盘加密" },

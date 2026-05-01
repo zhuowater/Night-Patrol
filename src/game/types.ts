@@ -64,6 +64,9 @@ export interface EnemyTemplate {
   name: string;
   artKey: string;
   hp: number;
+  attackChain: string;
+  tradecraft: string;
+  counter: string;
   moves: EnemyMove[];
   elite?: boolean;
   boss?: boolean;

@@ -573,6 +573,7 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
   const noiseCount = [...combat.hand, ...combat.drawPile, ...combat.discardPile].filter((card) => card.id === "yinCold").length;
   const responseAdvice = getResponseAdvice(player, enemy, noiseCount);
   const intentSummary = intentText(enemy.intent);
+  const moveTactic = getMoveTactic(enemy.intent);
 
   const beginDrag = (card: CardInstance, event: ReactPointerEvent<HTMLButtonElement>) => {
     if (cardDef(card).unplayable) return;
@@ -681,7 +682,11 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
         </div>
         <CombatIntelPanel
           enemyName={enemy.name}
+          attackChain={enemy.attackChain}
+          tradecraft={enemy.tradecraft}
+          counter={enemy.counter}
           intent={intentSummary}
+          moveTactic={moveTactic}
           seal={enemy.seal}
           noiseCount={noiseCount}
           block={player.block}
@@ -746,16 +751,31 @@ function HealthStrip({ current, max, enemy = false }: { current: number; max: nu
 
 function getResponseAdvice(player: PlayerState, enemy: EnemyState, noiseCount: number) {
   const incomingAttack = enemy.intent?.type === "attack" || enemy.intent?.type === "blockAttack";
-  if (incomingAttack && player.block < (enemy.intent?.amount || 0)) return "建议响应：先加固规则或临时隔离，避免攻击链直接打穿防线。";
+  if (incomingAttack && player.block < (enemy.intent?.amount || 0)) return `建议响应：${enemy.counter}`;
   if (enemy.seal >= 3) return "建议响应：IOC 已足够，优先沙箱引爆或溯源打击收束攻击链。";
   if (noiseCount >= 3) return "建议响应：噪声告警偏多，优先降噪过滤或清理牌组，保持抽牌质量。";
   if (player.incense >= 2) return "建议响应：算力充足，可以保留到全域清剿，也可以转化为爆发处置。";
-  return "建议响应：先标记 IOC 或压低攻击强度，再根据意图选择加固还是输出。";
+  return `建议响应：${enemy.counter}`;
+}
+
+function getMoveTactic(intent: EnemyState["intent"]) {
+  if (!intent) return "暂无攻击活动。";
+  if (intent.type === "attack" && intent.hits && intent.hits > 1) return "多段打点：容易绕过单次防护阈值，优先堆足防护或降权。";
+  if (intent.type === "attack") return "直接打击：按伤害窗口配置防护，留意下一轮是否会增强。";
+  if (intent.type === "blockAttack") return "驻留打击：同时输出与加固，适合先标记 IOC 再集中爆发。";
+  if (intent.type === "buff") return "威胁增强：下一轮伤害会抬升，推荐反制是提前降权或快速斩杀。";
+  if (intent.type === "debuff") return "响应降级：会削弱值班质量，推荐反制是保持抽牌与防护冗余。";
+  if (intent.type === "curse") return "噪声污染：会向牌组注入噪声告警，推荐反制是降噪过滤和牌组治理。";
+  return "防御动作：趁窗口补 IOC 或准备爆发。";
 }
 
 function CombatIntelPanel({
   enemyName,
+  attackChain,
+  tradecraft,
+  counter,
   intent,
+  moveTactic,
   seal,
   noiseCount,
   block,
@@ -763,7 +783,11 @@ function CombatIntelPanel({
   advice,
 }: {
   enemyName: string;
+  attackChain: string;
+  tradecraft: string;
+  counter: string;
   intent: string;
+  moveTactic: string;
   seal: number;
   noiseCount: number;
   block: number;
@@ -775,7 +799,9 @@ function CombatIntelPanel({
       <div className="intel-header">
         <span>攻击链态势</span>
         <strong>{enemyName}</strong>
+        <em>{attackChain}</em>
       </div>
+      <p className="intel-tradecraft">{tradecraft}</p>
       <div className="intel-grid">
         <span><strong>当前意图</strong>{intent}</span>
         <span><strong>IOC 层数</strong>{seal}</span>
@@ -783,8 +809,11 @@ function CombatIntelPanel({
         <span><strong>防护状态</strong>{block}</span>
         <span><strong>可用算力</strong>{incense}</span>
       </div>
+      <p className="intel-move-tactic"><strong>意图研判</strong>{moveTactic}</p>
       <p className="intel-advice">{advice}</p>
       <div className="term-hints" aria-label="术语解释">
+        <strong>推荐反制</strong>
+        <span>{counter}</span>
         <strong>术语解释</strong>
         <span>IOC：标记后可被沙箱引爆、溯源打击放大。</span>
         <span>噪声告警：污染牌组并拖慢响应节奏。</span>

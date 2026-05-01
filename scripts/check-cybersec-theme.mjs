@@ -26,6 +26,12 @@ const requiredSnippets = [
   { file: 'src/App.tsx', text: '建议响应' },
   { file: 'src/App.tsx', text: '术语解释' },
   { file: 'src/App.tsx', text: 'IOC：标记后可被沙箱引爆' },
+  { file: 'src/game/content.ts', text: 'attackChain' },
+  { file: 'src/game/content.ts', text: 'C2 持久化' },
+  { file: 'src/game/content.ts', text: '横向移动' },
+  { file: 'src/game/content.ts', text: '凭据喷洒' },
+  { file: 'src/game/content.ts', text: '勒索加密' },
+  { file: 'src/App.tsx', text: '推荐反制' },
 ];
 
 const banned = [

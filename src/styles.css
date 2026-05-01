@@ -1567,6 +1567,40 @@ button:focus-visible {
   font-size: 1.08rem;
 }
 
+.intel-header em {
+  width: fit-content;
+  padding: 3px 8px;
+  border: 1px solid rgba(231, 199, 126, 0.22);
+  border-radius: 999px;
+  background: rgba(231, 199, 126, 0.09);
+  color: rgba(255, 226, 173, 0.9);
+  font-size: 0.68rem;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.intel-tradecraft,
+.intel-move-tactic {
+  margin: 0;
+  padding: 9px 10px;
+  border: 1px solid rgba(130, 213, 199, 0.14);
+  border-radius: 9px;
+  background: rgba(68, 196, 181, 0.07);
+  color: rgba(232, 255, 249, 0.8);
+  font-size: 0.73rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.intel-move-tactic strong {
+  display: block;
+  margin-bottom: 2px;
+  color: rgba(130, 213, 199, 0.92);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+}
+
 .intel-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
