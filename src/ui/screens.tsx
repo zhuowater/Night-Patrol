@@ -29,13 +29,13 @@ function relicBuildHint(relicId: string) {
   const hints: Record<string, { build: string; value: string }> = {
     bronzeMirror: { build: "IOC 爆发 / 溯源打击", value: "开局直接铺 IOC，让雷击、沙箱引爆和溯源加权更早进入斩杀线。" },
     taomuTassel: { build: "攻击牌压血", value: "第一张攻击牌自带额外伤害，适合精简牌组后稳定抢节奏。" },
-    citySeal: { build: "首回合爆发", value: "第一回合多 2 算力，可以提前打出防护+标记+输出的组合。" },
+    citySeal: { build: "首回合爆发", value: "第一回合多 2 临时算力，可以提前打出防护+标记+输出的组合。" },
     brokenCenser: { build: "技能防护循环", value: "每张技能牌都补防护，适合高压多段攻击和长线消耗。" },
     nightSand: { build: "抽牌稳定性", value: "首回合多看一张牌，减少关键响应牌沉底的挫败感。" },
     oldUmbrella: { build: "防守起手", value: "首回合自动垫防护，给慢热牌组争取部署窗口。" },
     thunderWood: { build: "IOC 叠层收益", value: "每层 IOC 都更痛，让标记类牌从铺垫变成主要输出。" },
     blankPage: { build: "低费连打 / 查询缓存", value: "每回合第三张牌返抽，奖励低费循环和节奏规划。" },
-    paperHorse: { build: "能量上限突破", value: "首回合多 1 能量，让三牌展开更容易成立。" },
+    paperHorse: { build: "响应算力突破", value: "首回合多 1 响应算力，让三牌展开更容易成立。" },
     foxCoin: { build: "商店经济", value: "立即多 60 预算，能更早买工具、删噪声或补关键牌。" },
   };
   return hints[relicId] ?? { build: "通用响应构筑", value: "为后续路线提供稳定收益，降低单次抽牌波动。" };
@@ -269,37 +269,18 @@ export function RewardScreen({ game, onTake, onSkip }: { game: GameState; onTake
       <AmbientSceneVideo />
       <div className="choice-header reward-briefing">
         <p className="eyebrow">处置奖励 · 复盘选择</p>
-        <h2>{reward.title}</h2>
-        <p>本次处置回收 {reward.gold} 预算。{reward.relic ? `工具「${reward.relic.name}」已入库。` : "没有新增工具入库。"} 现在选择下一条响应动作：要补攻击、补防护，还是保持牌组清瘦。</p>
+        <h2>选择一张响应动作</h2>
+        <p>奖励不是只看伤害：看“适合构筑”和你当前缺什么。本次处置回收 {reward.gold} 预算；现在先选下一条响应动作。</p>
         <div className="reward-metrics" aria-label="奖励情报摘要">
           <span><strong>+{reward.gold}</strong> 预算回收</span>
           <span><strong>{reward.cards.length}</strong> 条候选剧本</span>
           <span><strong>{reward.relic ? "1" : "0"}</strong> 件工具入库</span>
         </div>
       </div>
-      {reward.relic && (
-        <div className="relic-reward-card">
-          <div>
-            <span className="reward-badge">新工具入库</span>
-            <h3>{reward.relic.name}</h3>
-            <p>{reward.relic.text}</p>
-          </div>
-          <dl>
-            <div>
-              <dt>适合构筑</dt>
-              <dd>{relicBuildHint(reward.relic.id).build}</dd>
-            </div>
-            <div>
-              <dt>为什么值钱</dt>
-              <dd>{relicBuildHint(reward.relic.id).value}</dd>
-            </div>
-          </dl>
-        </div>
-      )}
-      <div className="reward-row">
+      <div className="reward-primary-choice" aria-label="候选响应动作">
         {reward.cards.map((card) => {
           const def = cardDef(card);
-          const tacticalCost = typeof cardCost(card) === "number" ? `${cardCost(card)} 算力` : "状态负担";
+          const tacticalCost = typeof cardCost(card) === "number" ? `${cardCost(card)} 响应算力` : "状态负担";
           const forensicValue = def.type === "attack" ? "压低攻击强度" : def.type === "skill" ? "稳住防线窗口" : def.type === "power" ? "长期改变值班节奏" : "风险残留";
           return (
             <div key={card.uid} className="reward-option">
@@ -313,8 +294,33 @@ export function RewardScreen({ game, onTake, onSkip }: { game: GameState; onTake
           );
         })}
       </div>
+      <div className="reward-secondary-panel">
+        {reward.relic && (
+          <details className="relic-reward-card" open>
+            <summary>本次缴获工具</summary>
+            <div>
+              <span className="reward-badge">新工具入库</span>
+              <h3>{reward.relic.name}</h3>
+              <p>{reward.relic.text}</p>
+            </div>
+            <dl>
+              <div>
+                <dt>适合构筑</dt>
+                <dd>{relicBuildHint(reward.relic.id).build}</dd>
+              </div>
+              <div>
+                <dt>为什么值钱</dt>
+                <dd>{relicBuildHint(reward.relic.id).value}</dd>
+              </div>
+            </dl>
+          </details>
+        )}
+        <details className="reward-log-details">
+          <summary>展开响应日志</summary>
+          <LogRail logs={game.log} />
+        </details>
+      </div>
       <button className="secondary-command" type="button" onClick={onSkip}>跳过响应动作</button>
-      <LogRail logs={game.log} />
     </section>
   );
 }

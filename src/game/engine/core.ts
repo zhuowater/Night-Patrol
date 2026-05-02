@@ -74,6 +74,7 @@ export function startRun(state: GameState, difficulty: Difficulty = "normal") {
   state.availableNodeIds = state.mapNodes.filter((node) => node.row === 0).map((node) => node.id);
   state.currentNodeId = null;
   state.visitedNodeIds = [];
+  state.guidance = { seen: {} };
   state.combat = null;
   state.cinematic = null;
   state.reward = null;

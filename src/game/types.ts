@@ -17,6 +17,11 @@ export type CardType = "attack" | "skill" | "power" | "status";
 export type Rarity = "basic" | "common" | "uncommon" | "rare" | "special" | "status";
 export type NodeType = "combat" | "elite" | "event" | "rest" | "shop" | "boss";
 export type Difficulty = "story" | "normal" | "hard";
+export type GuidanceCueId = "firstCombat" | "firstC2" | "firstNoise" | "firstReward";
+
+export interface GuidanceState {
+  seen: Partial<Record<GuidanceCueId, boolean>>;
+}
 
 export interface MapNode {
   id: string;
@@ -198,5 +203,6 @@ export interface GameState {
   log: string[];
   seed: number;
   nextCardUid: number;
+  guidance?: GuidanceState;
   lastFx: "none" | "card" | "hit" | "impact" | "fire" | "lightning" | "charge" | "block" | "reward" | "danger";
 }

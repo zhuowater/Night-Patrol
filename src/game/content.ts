@@ -56,7 +56,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
     type: "skill",
     rarity: "common",
     cost: 1,
-    text: ["获得 8 点防护与 1 点算力。", "获得 11 点防护与 1 点算力。"],
+    text: ["获得 8 点防护与 1 点临时算力。", "获得 11 点防护与 1 点临时算力。"],
   },
   incense: {
     id: "incense",
@@ -65,7 +65,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
     rarity: "common",
     cost: 0,
     exhaust: true,
-    text: ["获得 2 点算力。消耗。", "获得 3 点算力。消耗。"],
+    text: ["获得 2 点临时算力。消耗。", "获得 3 点临时算力。消耗。"],
   },
   windScroll: {
     id: "windScroll",
@@ -129,7 +129,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
     type: "attack",
     rarity: "uncommon",
     cost: 2,
-    text: ["造成 14 点伤害。若目标有 IOC，获得 1 点能量。", "造成 18 点伤害。若目标有 IOC，获得 1 点能量。"],
+    text: ["造成 14 点伤害。若目标有 IOC，获得 1 点响应算力。", "造成 18 点伤害。若目标有 IOC，获得 1 点响应算力。"],
   },
   mirror: {
     id: "mirror",
@@ -146,7 +146,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
     rarity: "uncommon",
     cost: 0,
     exhaust: true,
-    text: ["获得 1 点能量。失去 2 点生命。消耗。", "获得 1 点能量。失去 1 点生命。消耗。"],
+    text: ["获得 1 点响应算力。失去 2 点生命。消耗。", "获得 1 点响应算力。失去 1 点生命。消耗。"],
   },
   scripture: {
     id: "scripture",
@@ -178,7 +178,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
     type: "power",
     rarity: "rare",
     cost: 2,
-    text: ["法门：每回合获得 3 点防护与 1 点算力。", "法门：每回合获得 5 点防护与 1 点算力。"],
+    text: ["法门：每回合获得 3 点防护与 1 点临时算力。", "法门：每回合获得 5 点防护与 1 点临时算力。"],
   },
   thunderLaw: {
     id: "thunderLaw",
@@ -186,7 +186,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
     type: "attack",
     rarity: "rare",
     cost: 3,
-    text: ["消耗所有算力。造成 12 点伤害，每点算力额外 +5。", "消耗所有算力。造成 16 点伤害，每点算力额外 +6。"],
+    text: ["消耗所有临时算力。造成 12 点伤害，每点临时算力额外 +5。", "消耗所有临时算力。造成 16 点伤害，每点临时算力额外 +6。"],
   },
   paperBlade: {
     id: "paperBlade",
@@ -216,13 +216,13 @@ export const CARD_POOL = Object.keys(CARD_DEFS).filter((id) => {
 export const RELICS: RelicDef[] = [
   { id: "bronzeMirror", name: "IOC 情报源", text: "每场战斗开始时，施加 2 层 IOC。" },
   { id: "taomuTassel", name: "封禁热键", text: "每场战斗第一张攻击牌额外造成 4 点伤害。" },
-  { id: "citySeal", name: "自动化剧本", text: "每场战斗第一回合获得 2 点算力。" },
+  { id: "citySeal", name: "自动化剧本", text: "每场战斗第一回合获得 2 点临时算力。" },
   { id: "brokenCenser", name: "WAF 补丁", text: "每打出一张技能牌，获得 1 点防护。" },
   { id: "nightSand", name: "长时日志", text: "每场战斗第一回合多抽 1 张牌。" },
   { id: "oldUmbrella", name: "零信任策略", text: "每场战斗第一回合获得 6 点防护。" },
   { id: "thunderWood", name: "溯源加权", text: "IOC 每层伤害提高 1。" },
   { id: "blankPage", name: "查询缓存", text: "每回合每打出 3 张牌，抽 1 张牌。" },
-  { id: "paperHorse", name: "弹性算力", text: "每场战斗第一回合获得 1 点额外能量。" },
+  { id: "paperHorse", name: "弹性算力", text: "每场战斗第一回合获得 1 点额外响应算力。" },
   { id: "foxCoin", name: "紧急预算", text: "获得时立即得到 60 预算。", onGain: "gold60" },
 ];
 
@@ -290,7 +290,7 @@ export const ENEMIES: Record<string, EnemyTemplate> = {
     hp: 68,
     attackChain: "C2 指挥控制",
     tradecraft: "通过 C2 指令打高额伤害，指挥增强会让下一轮威胁指数迅速上升。",
-    counter: "优先标记 IOC 与 YARA 命中；若它开始增强，保留算力给全域清剿。",
+    counter: "优先标记 IOC 与 YARA 命中；若它开始增强，保留临时算力给全域清剿。",
     elite: true,
     moves: [
       { type: "attack", amount: 12, label: "C2 指令" },
@@ -320,7 +320,7 @@ export const ENEMIES: Record<string, EnemyTemplate> = {
     hp: 118,
     attackChain: "勒索加密",
     tradecraft: "先全盘加密制造高压，再唤醒僵尸网络抬强度，核心驻留会同时输出和加固。",
-    counter: "留足防护应对全盘加密；把 IOC 与算力攒到关键回合，用全域清剿/溯源打击终结。",
+    counter: "留足防护应对全盘加密；把 IOC 与临时算力攒到关键回合，用全域清剿/溯源打击终结。",
     boss: true,
     moves: [
       { type: "attack", amount: 16, label: "全盘加密" },
@@ -331,7 +331,7 @@ export const ENEMIES: Record<string, EnemyTemplate> = {
     phases: [
       {
         hpBelow: 0.66,
-        label: "密钥横向扩散，攻击从单点加密转为多段破坏",
+        label: "扩散期：先稳防护，攻击从单点加密转为多段破坏",
         moves: [
           { type: "attack", amount: 6, hits: 3, label: "密钥横向扩散" },
           { type: "curse", amount: 1, label: "恢复票据污染" },
@@ -340,7 +340,7 @@ export const ENEMIES: Record<string, EnemyTemplate> = {
       },
       {
         hpBelow: 0.33,
-        label: "核心倒计时进入最后压迫，必须用算力或 IOC 终结",
+        label: "擦除窗口：保留临时算力并兑现 IOC 爆发，必须尽快终结",
         moves: [
           { type: "attack", amount: 15, label: "核心密钥擦除" },
           { type: "attack", amount: 6, hits: 3, label: "勒索倒计时爆发" },

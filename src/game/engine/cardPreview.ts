@@ -6,6 +6,12 @@ export type CardThreatHint = {
   tone: "attack" | "defense" | "counter" | "resource";
 };
 
+export type TurnRecommendation = {
+  title: string;
+  reason: string;
+  priority: "defense" | "counter" | "attack" | "setup";
+};
+
 export function cardThreatHint(
   card: CardInstance,
   context: { combat: CombatState; player: PlayerState },
@@ -34,6 +40,38 @@ export function cardThreatHint(
   return null;
 }
 
+export function recommendTurnAction(context: { combat: CombatState; player: PlayerState }): TurnRecommendation | null {
+  const { combat, player } = context;
+  const playableHints = combat.hand
+    .filter((card) => {
+      const cost = cardDef(card).cost;
+      return !cardDef(card).unplayable && typeof cost === "number" && player.energy >= cost;
+    })
+    .map((card) => cardThreatHint(card, context));
+  const hasHint = (label: string) => playableHints.some((hint) => hint?.label === label);
+  const incoming = combat.enemy.intent?.type === "attack" || combat.enemy.intent?.type === "blockAttack";
+  const incomingDamage = combat.enemy.intent?.amount ?? 0;
+
+  if (incoming && player.block < incomingDamage && hasHint("补足防护窗口")) {
+    return { title: "先补防护窗口", reason: `敌方本回合预计施压 ${incomingDamage}，当前防护 ${player.block}。`, priority: "defense" };
+  }
+  if (combat.enemy.attackChain.includes("C2") && hasHint("可拦截 C2 信标")) {
+    return { title: "优先标记 IOC 拦截 C2", reason: "这条链路需要 IOC 才能截断信标回连。", priority: "counter" };
+  }
+  if (combat.enemy.attackChain.includes("勒索") && hasHint("补算力取消倒计时")) {
+    return { title: "预留临时算力", reason: "勒索倒计时需要临时算力窗口来取消核心损伤。", priority: "setup" };
+  }
+  if (combat.enemy.seal > 0 && hasHint("兑现 IOC 爆发")) {
+    return { title: "兑现 IOC 爆发", reason: `目标已有 IOC ${combat.enemy.seal}，可以转化为处置伤害或抽牌。`, priority: "attack" };
+  }
+  const attackCard = combat.hand.find((card) => {
+    const cost = cardDef(card).cost;
+    return cardDef(card).type === "attack" && typeof cost === "number" && player.energy >= cost;
+  });
+  if (attackCard) return { title: "压低攻击链血量", reason: "没有紧急反制窗口时，先缩短威胁停留时间。", priority: "attack" };
+  return { title: "建立响应节奏", reason: "先打抽牌、防护或资源牌，为下一回合准备窗口。", priority: "setup" };
+}
+
 function cardTextForThreat(card: CardInstance) {
   const def = cardDef(card);
   return `${def.text[card.upgraded ? 1 : 0]} ${def.name}`;
@@ -59,9 +97,9 @@ export function previewCardEffect(card: CardInstance, context?: { combat?: Comba
     case "qingxin":
       return `预计：抽 ${value(card, 2, 3)} 张，随后归档消耗`;
     case "golden":
-      return `预计：获得 ${value(card, 8, 11)} 防护，算力 +1`;
+      return `预计：获得 ${value(card, 8, 11)} 防护，响应算力 +1`;
     case "incense":
-      return `预计：算力 +${value(card, 2, 3)}，随后归档消耗`;
+      return `预计：响应算力 +${value(card, 2, 3)}，随后归档消耗`;
     case "windScroll": {
       const extra = enemy && enemy.seal > 0 ? value(card, 1, 2) : 0;
       return `预计：抽 ${1 + extra} 张${extra ? "（IOC 已命中）" : "；目标有 IOC 时额外抽牌"}`;
@@ -83,11 +121,11 @@ export function previewCardEffect(card: CardInstance, context?: { combat?: Comba
     case "paper":
       return `预计：获得 ${value(card, 7, 10)} 防护，生成 1 张蜜罐回刺`;
     case "breakEvil":
-      return `预计：造成 ${value(card, 14, 18) + firstAttackBonus} 伤害${enemy && enemy.seal > 0 ? "，并返还 1 能量" : "；目标有 IOC 时返还能量"}${attackBonusText}`;
+      return `预计：造成 ${value(card, 14, 18) + firstAttackBonus} 伤害${enemy && enemy.seal > 0 ? "，并返还 1 响应算力" : "；目标有 IOC 时返还响应算力"}${attackBonusText}`;
     case "mirror":
       return `预计：叠 ${value(card, 2, 3)} IOC 与 2 暴露面`;
     case "refine":
-      return `预计：能量 +1，生命 -${value(card, 2, 1)}`;
+      return `预计：响应算力 +1，生命 -${value(card, 2, 1)}`;
     case "scripture":
       return `预计：抽 ${value(card, 3, 4)} 张，并加入 1 张噪声告警`;
     case "ashReturn":
@@ -95,10 +133,10 @@ export function previewCardEffect(card: CardInstance, context?: { combat?: Comba
     case "nightEye":
       return card.upgraded ? "预计：开启每回合 +1 抽牌，并立即抽 1 张" : "预计：开启每回合 +1 抽牌";
     case "citygod":
-      return `预计：每回合获得 ${value(card, 3, 5)} 防护与 1 算力`;
+      return `预计：每回合获得 ${value(card, 3, 5)} 防护与 1 响应算力`;
     case "thunderLaw": {
       const spent = player?.incense || 0;
-      return `预计：消耗 ${spent} 算力，造成 ${value(card, 12, 16) + spent * value(card, 5, 6) + firstAttackBonus} 伤害${attackBonusText}`;
+      return `预计：消耗 ${spent} 临时算力，造成 ${value(card, 12, 16) + spent * value(card, 5, 6) + firstAttackBonus} 伤害${attackBonusText}`;
     }
     case "paperBlade":
       return `预计：造成 ${value(card, 3, 5) + firstAttackBonus} 伤害，随后归档消耗${attackBonusText}`;

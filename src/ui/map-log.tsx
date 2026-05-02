@@ -11,7 +11,7 @@ const nodeBrief: Record<NodeType, { risk: string; reward: string; advice: string
   event: { risk: "不确定", reward: "资源或治理", advice: "适合用当前局势换取弹性。", timing: "立即二选一/三选一", bestWhen: "资源尴尬，需要翻盘选项" },
   rest: { risk: "低", reward: "回血或升级", advice: "残血、关键牌未升级时走这里。", timing: "无战斗，立刻整备", bestWhen: "血量低或核心牌未升级" },
   shop: { risk: "低", reward: "采购/删牌", advice: "预算充足或噪声偏多时收益高。", timing: "花预算优化牌组", bestWhen: "预算 ≥ 70 或牌组臃肿" },
-  boss: { risk: "终局", reward: "通关", advice: "确认防护、IOC 与爆发窗口。", timing: "最终战", bestWhen: "必须进入，提前备算力" },
+  boss: { risk: "终局", reward: "通关", advice: "确认防护、IOC 与爆发窗口。", timing: "最终战", bestWhen: "必须进入，提前备临时算力" },
 };
 
 function futureRouteHint(game: GameState, nodeId: string) {
@@ -76,11 +76,13 @@ export function MapScreen({ game, onChoose }: { game: GameState; onChoose: (node
             const isPast = visited.has(node.id) && !isCurrent;
             const def = NODE_DEFS[node.type];
             const brief = nodeBrief[node.type];
+            const isNext = !isAvailable && !isCurrent && !isPast && game.availableNodeIds.some((id) => nodeById.get(id)?.nextIds.includes(node.id));
+            const nodeTier = isAvailable ? "node-current" : isNext ? "node-next" : isPast ? "node-past" : "node-distant";
             return (
               <button
                 key={node.id}
                 type="button"
-                className={`map-node map-node-${node.type} ${isAvailable ? "available" : ""} ${isCurrent ? "current" : ""} ${isPast ? "past" : ""}`}
+                className={`map-node map-node-${node.type} ${nodeTier} ${isAvailable ? "available" : ""} ${isCurrent ? "current" : ""} ${isPast ? "past" : ""}`}
                 style={{ gridColumn: node.lane + 2, gridRow: node.row + 1 }}
                 disabled={!isAvailable}
                 onClick={() => onChoose(node.id)}
@@ -98,7 +100,7 @@ export function MapScreen({ game, onChoose }: { game: GameState; onChoose: (node
       <aside className="route-legend">
         <p className="eyebrow">路径情报</p>
         <h3>当前可选节点</h3>
-        <p className="route-legend-copy">先看风险/收益，再看下一跳。路线选择不是随机点格子，而是在决定：补牌、回血、买工具，还是赌高危工具。</p>
+        <p className="route-legend-copy">先从当前可选节点里选；远端节点只是路线预览。路线选择不是随机点格子，而是在决定：补牌、回血、买工具，还是赌高危工具。</p>
         {game.availableNodeIds.map((id) => {
           const node = game.mapNodes.find((item) => item.id === id)!;
           const def = NODE_DEFS[node.type];

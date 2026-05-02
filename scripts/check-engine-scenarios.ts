@@ -1,4 +1,4 @@
-import { chooseEnemyIntent, createGameState, endTurn, finishCinematic, playCard, previewAttackChain, previewUpgradeDelta, resolveEvent, startRun, cardThreatHint } from '../src/game/engine';
+import { chooseEnemyIntent, createGameState, endTurn, finishCinematic, hasSeenGuidance, markGuidanceSeen, playCard, previewAttackChain, previewUpgradeDelta, recommendTurnAction, resolveEvent, startRun, cardThreatHint } from '../src/game/engine';
 import { ENEMIES, EVENTS } from '../src/game/content';
 import type { CardInstance, GameState } from '../src/game/types';
 
@@ -71,6 +71,35 @@ function countNoise(state: GameState) {
 }
 
 const scenarios: Scenario[] = [
+  {
+    name: 'guidance state initializes and tolerates legacy missing field',
+    run: () => {
+      const state = createGameState();
+      assert(hasSeenGuidance(state, 'firstCombat') === false, 'fresh guidance should not mark first combat seen');
+      markGuidanceSeen(state, 'firstCombat');
+      assert(hasSeenGuidance(state, 'firstCombat') === true, 'markGuidanceSeen should persist cue state');
+      delete state.guidance;
+      markGuidanceSeen(state, 'firstC2');
+      assert(hasSeenGuidance(state, 'firstC2') === true, 'legacy states without guidance should be upgraded');
+      startRun(state, 'normal');
+      assert(hasSeenGuidance(state, 'firstCombat') === false, 'new runs should reset guidance');
+    },
+  },
+  {
+    name: 'turn recommendation prioritizes defense and C2 IOC windows',
+    run: () => {
+      const defenseState = setupCombat('lantern');
+      defenseState.combat!.enemy.intent = { type: 'attack', amount: 8, label: '入侵打点' };
+      defenseState.combat!.hand = [makeCard(defenseState, 'defend')];
+      const defense = recommendTurnAction({ combat: defenseState.combat!, player: defenseState.player! });
+      assert(defense?.priority === 'defense', `expected defense recommendation, got ${defense?.priority}`);
+
+      const c2State = setupCombat('warlock');
+      c2State.combat!.hand = [makeCard(c2State, 'zhusha')];
+      const c2 = recommendTurnAction({ combat: c2State.combat!, player: c2State.player! });
+      assert(c2?.priority === 'counter' && c2.title.includes('IOC'), `expected IOC counter recommendation, got ${c2?.title}`);
+    },
+  },
   {
     name: 'lethal IOC damage wins before enemy intent resolves',
     run: () => {

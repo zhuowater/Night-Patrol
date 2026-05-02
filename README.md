@@ -2,7 +2,7 @@
 
 《夜巡 SOC：边界告警》是一个网络安全主题的卡牌构筑 roguelike demo。你扮演夜班 SOC 响应员，接管凌晨控制台，在有限算力和响应窗口里追踪 IOC、压制横向移动、清理噪声告警，并在天亮前阻止攻击者触达核心域控。
 
-当前版本是 `v0.2.6-demo` 闭门试玩候选：可以从标题页进入攻击路径，经历普通战、高危入侵、异常事件、情报市场、维护窗口，最终阻断核心域控前的勒索核心。本版重点补强了闭门试玩说明、卡牌预计效果、地图路线解释、攻击链预览单一来源、勒索倒计时与 Boss 阶段提示。
+当前版本是 `v0.2.8-demo` 闭门试玩候选：可以从标题页进入攻击路径，经历普通战、高危入侵、异常事件、情报市场、维护窗口，最终阻断核心域控前的勒索核心。本版重点降低第一局认知负担：加入首次跑局 cue、回合级建议、C2/噪声微提示、专家细节折叠、奖励聚焦和地图渐进披露。
 
 ## 下载试玩
 
@@ -12,10 +12,10 @@ https://github.com/zhuowater/Night-Patrol/releases
 
 当前闭门试玩基线：
 
-- 最新试玩包：`v0.2.6-demo`
-- 下载页面：https://github.com/zhuowater/Night-Patrol/releases/tag/v0.2.6-demo
-- 试玩说明：`docs/playtest/v0.2.6-closed-playtest-instructions.md`
-- 反馈表：`docs/playtest/v0.2.6-feedback-form.md`
+- 最新试玩包：`v0.2.8-demo`
+- 下载页面：https://github.com/zhuowater/Night-Patrol/releases/tag/v0.2.8-demo
+- 试玩说明：`docs/playtest/v0.2.8-closed-playtest-instructions.md`
+- 反馈表：`docs/playtest/v0.2.8-feedback-form.md`
 
 当前计划提供：
 
@@ -30,19 +30,20 @@ macOS 版本目前是 demo 阶段的 ad-hoc 签名包，没有 Apple 公证。�
 - 网络安全响应题材：SOC 控制台、IOC、EDR 隔离、日志检索、情报市场、核心域控。
 - 类《杀戮尖塔》的核心循环：走路线、打战斗、拿新牌、拿工具、删牌升级、滚动构筑。
 - 拖拽出牌：攻击牌拖向攻击活动，技能和法门拖向自己。
-- 卡组循环：抽牌、回卷弃牌堆、能量补偿、IOC 爆发和算力成长互相配合。
-- 攻击链反制：C2 信标可用 IOC 拦截，凭据噪声可用持续降权清洗，勒索倒计时可用算力恢复演练取消。
+- 卡组循环：抽牌、回卷弃牌堆、响应算力补偿、IOC 爆发和临时算力成长互相配合。
+- 攻击链反制：C2 信标可用 IOC 拦截，凭据噪声可用持续降权清洗，勒索倒计时可用临时算力恢复演练取消。
 - 完整第一关：普通攻击活动、高危敌人、Boss、事件、维护窗口、市场和处置结算界面。
 - 视听演出：React + Phaser 战斗舞台、敌人大立绘、背景音乐、攻击音效、胜利结算视频与静态 fallback。
 
 ## 基础玩法
 
-战斗中每回合获得能量并抽牌。玩家可以用攻击牌造成伤害，用技能牌获得防护、抽牌或施加状态，用法门牌建立长期能力。
+战斗中每回合获得响应算力并抽牌。玩家可以用攻击牌造成伤害，用技能牌获得防护、抽牌或施加状态，用法门牌建立长期能力。
 
 核心机制：
 
 - IOC：施加在敌人身上的标记，可以持续结算，也可以被特定卡牌引爆。
-- 算力：战斗内临时资源，用来支撑自动化、清剿和爆发牌。
+- 响应算力：本回合用于打出响应牌，回合开始刷新。
+- 临时算力：战斗内额外资源，用来支撑自动化、清剿和爆发牌。
 - 防护：抵消当回合伤害。
 - 法门：打出后在本场战斗持续生效。
 - 工具：改变开局、抽牌、伤害、防御或资源节奏。
@@ -139,8 +140,8 @@ npm run desktop:dist
 如需通过 GitHub Release 分发，先推送 tag，再将 `release/` 目录中的桌面包上传到对应 Release：
 
 ```bash
-git tag v0.2.6-demo
-git push origin v0.2.6-demo
+git tag v0.2.8-demo
+git push origin v0.2.8-demo
 ```
 
 后续可以补充 tag-triggered GitHub Actions，让 Linux、macOS、Windows 包自动构建并附加到 Release 页面。
@@ -150,6 +151,8 @@ git push origin v0.2.6-demo
 - `docs/CYBERSECURITY_RETHEME_DESIGN.md`：网络安全主题改编设计。
 - `docs/plans/2026-05-01-cybersecurity-retheme-phase-1.md`：Phase 1 实施计划。
 - `docs/plans/2026-05-01-v0.2.2-playtest-candidate.md`：v0.2.2 试玩候选收口计划。
+- `docs/RELEASE_NOTES_v0.2.8-demo.md`：v0.2.8 Release Notes。
+- `docs/RELEASE_NOTES_v0.2.7-demo.md`：v0.2.7 Release Notes。
 - `docs/RELEASE_NOTES_v0.2.6-demo.md`：v0.2.6 Release Notes。
 - `docs/NIGHT_PATROL_NEXT_PLAN_v0.2.3-v0.3.0.md`：v0.2.3 到 v0.3.0 后续路线图。
 - `docs/RELEASE_NOTES_v0.2.3-demo.md`：v0.2.3 Release Notes。

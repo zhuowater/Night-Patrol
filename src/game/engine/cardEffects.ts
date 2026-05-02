@@ -128,11 +128,11 @@ export function resolveCard(state: GameState, card: CardInstance, context: { fir
     case "golden":
       gainBlock(state, value(card, 8, 11), cardName(card));
       player.incense += 1;
-      addLog(state, "算力 +1。");
+      addLog(state, "临时算力 +1。");
       break;
     case "incense":
       player.incense += value(card, 2, 3);
-      addLog(state, `算力 +${value(card, 2, 3)}。`);
+      addLog(state, `临时算力 +${value(card, 2, 3)}。`);
       break;
     case "windScroll":
       drawCards(state, 1 + (enemy.seal > 0 ? value(card, 1, 2) : 0));
@@ -174,7 +174,7 @@ export function resolveCard(state: GameState, card: CardInstance, context: { fir
       dealEnemyDamage(state, value(card, 14, 18), 1, context);
       if (enemy.seal > 0) {
         player.energy += 1;
-        addLog(state, "规则命中 IOC，能量 +1。");
+        addLog(state, "规则命中 IOC，响应算力 +1。");
       }
       break;
     case "mirror":
@@ -208,7 +208,7 @@ export function resolveCard(state: GameState, card: CardInstance, context: { fir
       const spent = player.incense;
       player.incense = 0;
       dealEnemyDamage(state, value(card, 12, 16) + spent * value(card, 5, 6), 1, context);
-      addLog(state, `全域清剿消耗 ${spent} 点算力。`);
+      addLog(state, `全域清剿消耗 ${spent} 点临时算力。`);
       break;
     }
     case "paperBlade":

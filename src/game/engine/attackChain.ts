@@ -124,10 +124,10 @@ export function previewAttackChain(state: GameState): AttackChainPreview {
     counterplayReadiness.push({
       id: "ransomware",
       label: "勒索倒计时",
-      requirement: "算力 ≥ 2",
-      current: `算力 ${player.incense}`,
+      requirement: "临时算力 ≥ 2",
+      current: `临时算力 ${player.incense}`,
       ready,
-      missing: ready ? undefined : `还差 ${2 - player.incense} 算力`,
+      missing: ready ? undefined : `还差 ${2 - player.incense} 临时算力`,
       tone: ready ? "ready" : "warning",
     });
     const triggeringThisTurn = combat.turn % 3 === 0;
@@ -135,11 +135,11 @@ export function previewAttackChain(state: GameState): AttackChainPreview {
     const canCancel = player.incense >= 2;
     ransomwareCountdown = { turnsRemaining, triggeringThisTurn, canCancel, computeNeeded: 2 };
     if (triggeringThisTurn) {
-      riskForecast.push(`勒索倒计时：${canCancel ? "本回合算力恢复演练取消扣血" : "本回合结束扣 4 生命"}`);
-      counterplayWindows.push(`勒索：算力 ≥ 2 可取消本轮倒计时${canCancel ? "（已满足）" : `（还差 ${2 - player.incense}）`}`);
+      riskForecast.push(`勒索倒计时：${canCancel ? "本回合临时算力恢复演练取消扣血" : "本回合结束扣 4 生命"}`);
+      counterplayWindows.push(`勒索：临时算力 ≥ 2 可取消本轮倒计时${canCancel ? "（已满足）" : `（还差 ${2 - player.incense}）`}`);
     } else {
-      riskForecast.push(`勒索倒计时：${turnsRemaining} 回合后触发，可存 2 算力取消`);
-      counterplayWindows.push(`勒索：算力 ≥ 2 可取消倒计时（${turnsRemaining} 回合后检查）`);
+      riskForecast.push(`勒索倒计时：${turnsRemaining} 回合后触发，可存 2 临时算力取消`);
+      counterplayWindows.push(`勒索：临时算力 ≥ 2 可取消倒计时（${turnsRemaining} 回合后检查）`);
     }
   }
 
@@ -159,7 +159,7 @@ export function previewAttackChain(state: GameState): AttackChainPreview {
     counterplayWindows.push(`横移：降权可冻结攻击后强度滚雪球${enemy.weak > 0 ? "（已满足）" : "（建议降噪过滤）"}`);
   }
 
-  if (combat.turn % 2 === 0 && enemy.intent?.type !== "attack") counterplayWindows.push("非攻击回合：适合补 IOC / 算力，为下一次链路触发做反制。");
+  if (combat.turn % 2 === 0 && enemy.intent?.type !== "attack") counterplayWindows.push("非攻击回合：适合补 IOC / 临时算力，为下一次链路触发做反制。");
 
   return {
     riskForecast: riskForecast.length ? riskForecast : ["链路风险预告：暂无额外链路节奏，按当前意图处置。"],
@@ -209,7 +209,7 @@ export function applyAttackChainCounterplay(state: GameState, trigger: "c2" | "c
 
   if (trigger === "ransomware" && player.incense >= 2) {
     player.incense -= 2;
-    combat.lastInterruption = "勒索恢复演练：消耗 2 点算力回滚快照，取消本轮倒计时伤害。";
+    combat.lastInterruption = "勒索恢复演练：消耗 2 点临时算力回滚快照，取消本轮倒计时伤害。";
     addLog(state, combat.lastInterruption);
     state.lastFx = "block";
     return true;

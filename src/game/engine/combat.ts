@@ -66,11 +66,11 @@ function startPlayerTurn(state: GameState) {
   if (combat.turn === 1) {
     if (hasRelic(state, "paperHorse")) {
       player.energy += 1;
-      addLog(state, "弹性算力池启动，第一回合能量 +1。");
+      addLog(state, "弹性算力池启动，第一回合响应算力 +1。");
     }
     if (hasRelic(state, "citySeal")) {
       player.incense += 2;
-      addLog(state, "自动化剧本启动，获得 2 点算力。");
+      addLog(state, "自动化剧本启动，获得 2 点临时算力。");
     }
     if (hasRelic(state, "oldUmbrella")) gainBlock(state, 6, "零信任策略");
   }
@@ -78,7 +78,7 @@ function startPlayerTurn(state: GameState) {
   if (player.powers.citygod) {
     gainBlock(state, player.powers.citygod, "自动化响应");
     player.incense += 1;
-    addLog(state, "自动化响应维持防线，算力 +1。");
+    addLog(state, "自动化响应维持防线，临时算力 +1。");
   }
 
   const drawCount = Math.max(

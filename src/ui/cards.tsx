@@ -69,7 +69,7 @@ export function GameCard({
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerCancel}
-      aria-label={`${cardName(card)}，${typeLabel(def.type)}，消耗 ${cardCost(card)} 算力。${cardText(card)}`}
+      aria-label={`${cardName(card)}，${typeLabel(def.type)}，消耗 ${cardCost(card)} 响应算力。${cardText(card)}`}
     >
       <div className={`card-cost card-cost-${costKey}`}>
         <img src={costGemUrls[costKey]} alt="" draggable={false} />
@@ -93,7 +93,7 @@ export function cardTermHint(card: CardInstance) {
   const text = cardText(card);
   if (text.includes("IOC")) return "IOC 会放大沙箱引爆、溯源打击与关联分析。";
   if (text.includes("噪声告警")) return "噪声告警会污染牌组，降低后续响应效率。";
-  if (text.includes("算力")) return "算力是临时资源，可支撑爆发清剿。";
+  if (text.includes("算力")) return "响应算力用于打出响应牌；临时算力可支撑爆发清剿。";
   if (text.includes("防护")) return "防护抵消本回合攻击活动。";
   if (text.includes("降权")) return "降权会压低攻击活动的输出强度。";
   return "点击卡牌或拖出手牌区施放；攻击默认命中当前攻击链。";

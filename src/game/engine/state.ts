@@ -1,4 +1,4 @@
-import type { GameState } from "../types";
+import type { GameState, GuidanceCueId } from "../types";
 
 export function createGameState(): GameState {
   return {
@@ -21,10 +21,20 @@ export function createGameState(): GameState {
     log: [],
     seed: Date.now() % 2147483647,
     nextCardUid: 1,
+    guidance: { seen: {} },
     lastFx: "none",
   };
 }
 
 export function cloneState(state: GameState): GameState {
   return structuredClone(state) as GameState;
+}
+
+export function hasSeenGuidance(state: GameState, id: GuidanceCueId) {
+  return Boolean(state.guidance?.seen?.[id]);
+}
+
+export function markGuidanceSeen(state: GameState, id: GuidanceCueId) {
+  if (!state.guidance) state.guidance = { seen: {} };
+  state.guidance.seen[id] = true;
 }
