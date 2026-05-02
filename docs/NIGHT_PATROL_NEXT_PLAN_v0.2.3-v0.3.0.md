@@ -532,8 +532,9 @@ Done 条件：`engine.ts ≤ 220 行`；所有检查与浏览器冒烟通过。
 - [ ] 加 `assets:audit` 脚本，输出 top assets 与预算违规。
 - [ ] 加 `assets:optimize` 脚本，生成 WebP/压缩 MP4/压缩音频。
 - [ ] 引入 `assets/optimized/`，UI 改用 optimized。
-- [ ] 胜利视频懒加载，poster 先显示。
-- [ ] Vite manual chunks：react/phaser 分包。
+- [x] 胜利视频懒加载，poster 先显示。
+- [x] Vite manual chunks：react/phaser 分包。
+- [x] 处置过场 `CinematicScreen` 独立 lazy chunk，主入口不再静态绑定全部过场素材表。
 
 Done 条件：`dist/assets` 总体积下降 ≥30%；首屏资源显著减少；build 通过。
 

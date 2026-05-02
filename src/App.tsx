@@ -7,7 +7,8 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import type { ComponentType } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import {
   cardDef,
   buyShopCard,
@@ -34,9 +35,6 @@ import {
 import type { Difficulty, GameState, Screen } from "./game/types";
 import {
   baguaIconUrl,
-  cinematicPosterUrls,
-  cinematicVideoUrls,
-  enemyArtUrls,
   gameIconUrl,
   goldIconUrl,
   hudBloodUrl,
@@ -47,8 +45,13 @@ import {
 } from "./ui/assets";
 import { MapScreen } from "./ui/map-log";
 import { EndScreen, TopHud } from "./ui/shell";
-import { AboutScreen, CinematicScreen, DeckPickScreen, EventScreen, LoadingScreen, RewardScreen, RestScreen, ShopScreen, TitleScreen } from "./ui/screens";
+import { AboutScreen, DeckPickScreen, EventScreen, LoadingScreen, RewardScreen, RestScreen, ShopScreen, TitleScreen } from "./ui/screens";
 import { CombatScreen } from "./ui/screens/CombatScreen";
+
+type CinematicScreenProps = { game: GameState; onContinue: () => void };
+const LazyCinematicScreen = lazy<ComponentType<CinematicScreenProps>>(() =>
+  import("./ui/screens/CinematicScreen").then((module) => ({ default: module.CinematicScreen })),
+);
 
 export function App() {
   const [game, setGame] = useState<GameState>(() => createGameState());
@@ -169,7 +172,9 @@ export function App() {
           />
         )}
         {player && game.screen === "cinematic" && game.cinematic && (
-          <CinematicScreen game={game} onContinue={() => transact(finishCinematic, false)} />
+          <Suspense fallback={<div className="combat-stage-loading">处置过场加载中...</div>}>
+            <LazyCinematicScreen game={game} onContinue={() => transact(finishCinematic, false)} />
+          </Suspense>
         )}
         {player && game.screen === "reward" && game.reward && (
           <RewardScreen
