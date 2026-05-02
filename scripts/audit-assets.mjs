@@ -3,7 +3,7 @@ import { readdir, stat } from "node:fs/promises";
 import path from "node:path";
 
 const ROOT = process.cwd();
-const DEFAULT_DIRS = ["assets", "public", "desktop-assets"];
+const DEFAULT_DIRS = ["assets/optimized", "assets/audio/sfx", "assets/marketing", "public", "desktop-assets"];
 const BUDGETS = [
   { pattern: /cinematics\/victory-.*-poster\.(png|webp)$/i, max: 800 * 1024, label: "普通 poster < 800KB" },
   { pattern: /cinematics\/victory-boss-.*-poster\.(png|webp)$/i, max: 1200 * 1024, label: "Boss poster < 1.2MB" },
@@ -50,6 +50,7 @@ const overBudget = files.flatMap((file) =>
 );
 
 console.log(`Asset audit: ${files.length} files, total ${fmt(total)}`);
+console.log(`Audited runtime/package assets from: ${dirs.join(", ")}`);
 console.log("\nTop assets:");
 for (const file of files.slice(0, 30)) console.log(`${fmt(file.size).padStart(9)}  ${file.rel}`);
 

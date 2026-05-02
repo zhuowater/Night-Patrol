@@ -114,6 +114,23 @@ npm run check:attack-chain
 npm run check:engine-scenarios
 ```
 
+## 资源治理
+
+运行时默认只审计会进入构建或客户端包的资源：`assets/optimized`、`assets/audio/sfx`、`assets/marketing`、`public`、`desktop-assets`。
+
+```bash
+npm run assets:optimize
+npm run assets:audit
+```
+
+如果要单独检查未压缩源素材，可显式传目录：
+
+```bash
+npm run assets:audit assets/generated
+```
+
+当前 UI 和音频入口应引用 `assets/optimized` 产物；`assets/generated` 保留为源素材，不作为默认包体预算基线。
+
 ## 客户端打包
 
 本地客户端预览：
