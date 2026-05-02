@@ -9,7 +9,7 @@
 - Electron 只负责桌面窗口、应用菜单、图标和本地文件加载。
 - GitHub Releases 托管 macOS/Windows 安装包与 zip 包。
 
-这条路线最适合 `v0.2.2-demo` 试玩候选：开发成本低，能最快把 demo 发给第一批玩家。
+这条路线已经支撑 `v0.2.8-demo` 闭门试玩候选：开发成本低，能最快把 demo 发给第一批玩家。
 
 ## 2. 为什么选 Electron
 
@@ -41,7 +41,7 @@ Electron 的优势是：
 
 ```text
 electron/main.cjs
-.github/workflows/build-desktop.yml
+.github/workflows/release.yml
 desktop-assets/icon.png
 desktop-assets/icon.ico
 public/favicon.png
@@ -147,48 +147,61 @@ git push origin main
 
 ### 5.2 自动构建客户端
 
-当前已加入 workflow：
+当前保留一条权威 workflow：
 
 ```text
-.github/workflows/build-desktop.yml
+.github/workflows/release.yml
 ```
+
+旧的 `build-desktop.yml` / `desktop-release.yml` 已移除，避免同一个 tag 触发多条发布链路、重复上传资产或引用旧 release notes。
 
 触发方式：
 
-- 手动：GitHub Actions 页面点击 `Run workflow`。
-- 自动：推送 tag，例如 `v0.2.2-demo`。
+- 自动：推送 tag，例如 `v0.2.8-demo`。
+- 手动：GitHub Actions 页面点击 `Run workflow`；只有从 tag ref 运行并勾选 `upload_to_release` 时才上传到 Release。
 
-它会在两个平台构建：
+发布 gate：
 
-- `macos-latest`
-- `windows-latest`
+1. `npm ci`
+2. `npm run check`
+3. `npm run assets:optimize -- --check`
+4. `npm run desktop:dist`
+
+它会在三个平台构建：
+
+- `ubuntu-latest`：Linux AppImage / zip
+- `macos-latest`：macOS dmg / zip
+- `windows-latest`：Windows exe / zip
 
 产物会作为 workflow artifact 上传。如果是 tag 触发，还会自动附加到 GitHub Release。
 
 玩家主要下载：
 
 ```text
-Night-Patrol-SOC-0.2.2-mac-arm64.dmg
-Night-Patrol-SOC-0.2.2-mac-arm64.zip
-Night-Patrol-SOC-0.2.2-win-x64.exe
-Night-Patrol-SOC-0.2.2-win-x64.zip
+Night-Patrol-SOC-0.2.8-linux-x86_64.AppImage
+Night-Patrol-SOC-0.2.8-linux-x64.zip
+Night-Patrol-SOC-0.2.8-mac-arm64.dmg
+Night-Patrol-SOC-0.2.8-mac-arm64.zip
+Night-Patrol-SOC-0.2.8-win-x64.exe
+Night-Patrol-SOC-0.2.8-win-x64.zip
 ```
 
 实际文件名以 electron-builder 输出为准。
 
-### 5.3 发布 v0.2.2 demo tag
+### 5.3 发布 demo tag
 
 ```bash
-git tag v0.2.2-demo
-git push origin v0.2.2-demo
+git tag v0.2.8-demo
+git push origin v0.2.8-demo
 ```
 
-等 Action 跑完后，在 GitHub Release 页面补充：
+等 Action 跑完后，在 GitHub Release 页面确认：
 
-- 试玩说明。
-- `docs/RELEASE_NOTES_v0.2.2.md` 的内容。
-- 已知问题。
-- 标题页、地图页、战斗页、结算页截图或短录屏。
+- Release 标题与 tag 正确。
+- Linux / macOS / Windows 桌面资产都已附加。
+- Release notes 已生成或补充为 `docs/RELEASE_NOTES_v0.2.8-demo.md` 的内容。
+- README、试玩说明和反馈表链接可从 Release 页面顺利跳转。
+- 浏览器实际打开 Release 页面看一遍资产展示，不只相信 API 返回。
 
 ## 6. 玩家下载说明
 
@@ -258,7 +271,7 @@ macOS 的 `.icns` 由 electron-builder 在打包时根据 `desktop-assets/icon.p
 - 结算视频。
 - poster PNG 与 BGM 文件。
 
-短期接受这个体积是合理的，因为 demo 需要完整视听效果。但 v0.2.2 之后应单独做资源瘦身。
+短期接受这个体积是合理的，因为 demo 需要完整视听效果。v0.2.8 已完成第一轮资源治理，后续继续按闭门试玩反馈和包体预算做增量瘦身。
 
 建议优化顺序：
 
@@ -334,14 +347,14 @@ poster <= 800KB
 本项目为个人学习与原型展示 demo。部分视觉素材来自用户已下载素材包并经过筛选整理，部分为 AI 生成素材。若后续进入正式公开发行或商业化阶段，需要重新确认所有素材授权或替换为自有资产。
 ```
 
-## 12. v0.2.2 推荐执行顺序
+## 12. v0.2.9 推荐执行顺序
 
-现在最短路径：
+当前最短路径：
 
-1. 跑通 `npm run check:engine-scenarios && npm run check:attack-chain && npm run check:theme && npm run build`。
+1. 跑通 `npm run check && npm run assets:optimize -- --check && npm run build`。
 2. 浏览器完整打一局并保存关键页面截图。
-3. 跑通 `npm run desktop:pack`。
+3. 跑通 `npm run desktop:pack` 或等待 tag-triggered workflow 产出三平台包。
 4. push `main`。
-5. 打 `v0.2.2-demo` tag，让 GitHub Actions 构建 macOS 和 Windows 包。
-6. 用 `docs/RELEASE_NOTES_v0.2.2.md` 填 Release。
-7. 发给第一批朋友试玩并收反馈。
+5. 如需要新试玩包，打新的 demo tag，让 `.github/workflows/release.yml` 构建 Linux、macOS 和 Windows 包。
+6. 用当前版本 Release Notes 填 Release，并在浏览器确认实际展示效果。
+7. 发给 5-10 名闭门玩家试玩并收反馈；不足 5 份反馈前，不建议先扩内容。

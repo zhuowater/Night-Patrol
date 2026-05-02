@@ -565,7 +565,7 @@ Done 条件更新：自动 fixtures 只证明可通关和规则不崩；“循�
 ### Sprint 6：发布与外部试玩（v0.2.8 已完成发布；v0.2.9 正在做反馈闭环）
 
 - [x] 修 README 旧仓库/release 链接：当前 README 指向 `zhuowater/Night-Patrol` 与 `v0.2.8-demo`。
-- [x] 完成/验证 GitHub Actions 三平台 release workflow：已能产出 Linux/macOS/Windows 资产；但 `.github/workflows/` 存在多份历史 workflow，后续应统一保留一条权威发布链路。
+- [x] 完成/验证 GitHub Actions 三平台 release workflow：已能产出 Linux/macOS/Windows 资产；当前已统一为 `.github/workflows/release.yml` 一条权威发布链路，并移除历史重复 workflow。
 - [x] 发布 `v0.2.8-demo`：Release 页面已有 Linux x64、macOS arm64、Windows x64 桌面试玩资产。
 - [x] 浏览器打开 Release 页面确认资产展示：见 `docs/playtest/v0.2.9-distribution-qa.md`。
 - [x] 准备给 5-10 个闭门玩家的下载说明和反馈表：见 `docs/playtest/v0.2.8-closed-playtest-instructions.md`、`v0.2.8-feedback-form.md`、`v0.2.8-feedback-summary-template.md`。
@@ -599,7 +599,7 @@ Done 条件更新：自动 fixtures 只证明可通关和规则不崩；“循�
 当前不再是 v0.2.3 的“先搭地基”阶段；地基已经搭过一轮。接下来如果只做三件事，顺序应改为：
 
 1. **闭门试玩反馈回收**：把 `v0.2.8-demo` 发给 5-10 名玩家，先确认下载/启动/第一战/C2/噪声/地图/奖励/Boss 是否被理解。
-2. **发布工程去重与可重复化**：统一 `.github/workflows/` 的桌面发布链路，避免多 workflow 重复触发或引用旧 release notes；继续保留 `npm run check && npm run build && assets:optimize -- --check` 作为发布 gate。
+2. **发布工程可重复化**：桌面发布链路已统一到 `.github/workflows/release.yml`；后续重点是每次 tag 发布后继续执行 `npm run check && npm run build && npm run assets:optimize -- --check`，并打开浏览器确认 Release 页面资产展示。
 3. **按反馈修 P0/P1，不先扩内容**：如果反馈显示第一局理解断点，优先修 cue、地图、奖励、Boss；如果反馈样本健康，再进入 v0.3.0 内容扩展。
 
 当前口号应从 v0.2.3 的“解构核心、瘦身包体、讲清玩法”更新为：

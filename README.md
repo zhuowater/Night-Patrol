@@ -79,7 +79,7 @@ macOS 版本目前是 demo 阶段的 ad-hoc 签名包，没有 Apple 公证。�
 - TypeScript：游戏状态、卡牌、敌人、工具和事件类型。
 - Vite：开发服务器和前端构建。
 - Electron：桌面客户端打包。
-- GitHub Release：当前以本地 Electron 打包后上传为主，后续可补 tag-triggered 三平台自动构建。
+- GitHub Release：当前由 `.github/workflows/release.yml` 在 tag push 时自动构建 Linux、macOS、Windows 桌面包并附加到 Release。
 
 ## 本地开发
 
@@ -173,14 +173,14 @@ npm run desktop:dist
 
 产物会输出到 `release/`。
 
-如需通过 GitHub Release 分发，先推送 tag，再将 `release/` 目录中的桌面包上传到对应 Release：
+如需通过 GitHub Release 分发，推送 tag 后会触发 `.github/workflows/release.yml` 自动构建三平台桌面包并附加到对应 Release：
 
 ```bash
 git tag v0.2.8-demo
 git push origin v0.2.8-demo
 ```
 
-后续可以补充 tag-triggered GitHub Actions，让 Linux、macOS、Windows 包自动构建并附加到 Release 页面。
+发布前 gate 与 CI 一致：`npm run check`、`npm run assets:optimize -- --check`、`npm run desktop:dist`。tag 发布后仍需打开浏览器确认 Release 页面资产实际展示。
 
 ## 项目文档
 

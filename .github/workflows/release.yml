@@ -61,6 +61,9 @@ jobs:
       - name: Run project checks
         run: npm run check
 
+      - name: Verify optimized assets are current
+        run: npm run assets:optimize -- --check
+
       - name: Build desktop package
         run: npm run desktop:dist
         env:
@@ -75,7 +78,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload assets to GitHub Release
-        if: startsWith(github.ref, 'refs/tags/') && (github.event_name == 'push' || inputs.upload_to_release)
+        if: startsWith(github.ref, 'refs/tags/') && (github.event_name == 'push' || inputs.upload_to_release == true)
         uses: softprops/action-gh-release@v2
         with:
           files: ${{ matrix.artifact_paths }}
