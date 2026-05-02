@@ -530,8 +530,8 @@ Done 条件：`engine.ts ≤ 220 行`；所有检查与浏览器冒烟通过。
 ### Sprint 3：资源治理（1-3 天）
 
 - [x] 加 `assets:audit` 脚本，输出 top assets、类型/区域占比、runtime/generated/dist 三种审计视图与预算违规。
-- [ ] 加 `assets:optimize` 脚本，生成 WebP/压缩 MP4/压缩音频。
-- [ ] 引入 `assets/optimized/`，UI 改用 optimized。
+- [x] 加 `assets:optimize` 脚本，生成 WebP/压缩 MP4/压缩音频；支持 `--dry-run`、`--check`、`--force`、ffmpeg 依赖检查与压缩前后 summary。
+- [x] 引入 `assets/optimized/`，UI/BGM 入口改用 optimized；`assets/generated` 仅作源素材诊断。
 - [x] 胜利视频懒加载，poster 先显示。
 - [x] Vite manual chunks：react/phaser 分包。
 - [x] 处置过场 `CinematicScreen` 独立 lazy chunk，主入口不再静态绑定全部过场素材表。

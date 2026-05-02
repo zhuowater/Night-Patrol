@@ -123,6 +123,19 @@ npm run assets:optimize
 npm run assets:audit
 ```
 
+`assets:optimize` 会从 `assets/generated` 生成 WebP/压缩 MP4，并把 BGM 压到 `assets/optimized/audio/bgm/`。常用维护参数：
+
+```bash
+# 只列出需要重建的优化任务，不写文件
+npm run assets:optimize -- --dry-run
+
+# CI/发布前检查：若源素材比 optimized 更新或产物缺失则失败
+npm run assets:optimize -- --check
+
+# 强制重建所有可优化产物，用于调整压缩参数后刷新 baseline
+npm run assets:optimize -- --force
+```
+
 常用审计视图：
 
 ```bash
