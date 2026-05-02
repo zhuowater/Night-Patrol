@@ -1,5 +1,5 @@
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
-import { cardCost, cardDef, cardName, cardText } from "../game/engine";
+import { cardCost, cardDef, cardName, cardText, previewCardEffect } from "../game/engine";
 import type { CardInstance } from "../game/types";
 import {
   baguaIconUrl,
@@ -80,6 +80,7 @@ export function GameCard({
       <div className="card-kind">{typeLabel(def.type)}</div>
       <p>{cardText(card)}</p>
       <div className="card-term-hint">{cardTermHint(card)}</div>
+      <div className="card-effect-preview">{previewCardEffect(card)}</div>
     </button>
   );
 }

@@ -5,14 +5,25 @@ import type { GameState, NodeType } from "../game/types";
 
 const routeNames = ["边界", "办公网", "终端", "日志湖", "服务器区", "情报市", "核心域", "域控"];
 
-const nodeBrief: Record<NodeType, { risk: string; reward: string; advice: string }> = {
-  combat: { risk: "低-中", reward: "预算 + 响应动作", advice: "适合补构筑与稳定成长。" },
-  elite: { risk: "高", reward: "安全工具", advice: "血量/牌组质量足够时优先。" },
-  event: { risk: "不确定", reward: "资源或治理", advice: "适合用当前局势换取弹性。" },
-  rest: { risk: "低", reward: "回血或升级", advice: "残血、关键牌未升级时走这里。" },
-  shop: { risk: "低", reward: "采购/删牌", advice: "预算充足或噪声偏多时收益高。" },
-  boss: { risk: "终局", reward: "通关", advice: "确认防护、IOC 与爆发窗口。" },
+const nodeBrief: Record<NodeType, { risk: string; reward: string; advice: string; timing: string; bestWhen: string }> = {
+  combat: { risk: "低-中", reward: "预算 + 响应动作", advice: "适合补构筑与稳定成长。", timing: "1 场标准战斗", bestWhen: "血量健康，想找关键牌" },
+  elite: { risk: "高", reward: "安全工具", advice: "血量/牌组质量足够时优先。", timing: "高压战斗，收益永久", bestWhen: "有防护/爆发，能承受波动" },
+  event: { risk: "不确定", reward: "资源或治理", advice: "适合用当前局势换取弹性。", timing: "立即二选一/三选一", bestWhen: "资源尴尬，需要翻盘选项" },
+  rest: { risk: "低", reward: "回血或升级", advice: "残血、关键牌未升级时走这里。", timing: "无战斗，立刻整备", bestWhen: "血量低或核心牌未升级" },
+  shop: { risk: "低", reward: "采购/删牌", advice: "预算充足或噪声偏多时收益高。", timing: "花预算优化牌组", bestWhen: "预算 ≥ 70 或牌组臃肿" },
+  boss: { risk: "终局", reward: "通关", advice: "确认防护、IOC 与爆发窗口。", timing: "最终战", bestWhen: "必须进入，提前备算力" },
 };
+
+function futureRouteHint(game: GameState, nodeId: string) {
+  const nodeById = new globalThis.Map(game.mapNodes.map((node) => [node.id, node]));
+  const node = nodeById.get(nodeId);
+  if (!node || node.nextIds.length === 0) return "终点链路";
+  const names = node.nextIds
+    .map((nextId) => nodeById.get(nextId))
+    .filter(Boolean)
+    .map((next) => NODE_DEFS[next!.type].name);
+  return names.length ? `下一跳可接：${Array.from(new Set(names)).join(" / ")}` : "下一跳暂不可见";
+}
 
 export function MapScreen({ game, onChoose }: { game: GameState; onChoose: (nodeId: string) => void }) {
   const rows = routeNames.map((_, row) => game.mapNodes.filter((node) => node.row === row).sort((a, b) => a.lane - b.lane));
@@ -87,6 +98,7 @@ export function MapScreen({ game, onChoose }: { game: GameState; onChoose: (node
       <aside className="route-legend">
         <p className="eyebrow">路径情报</p>
         <h3>当前可选节点</h3>
+        <p className="route-legend-copy">先看风险/收益，再看下一跳。路线选择不是随机点格子，而是在决定：补牌、回血、买工具，还是赌高危工具。</p>
         {game.availableNodeIds.map((id) => {
           const node = game.mapNodes.find((item) => item.id === id)!;
           const def = NODE_DEFS[node.type];
@@ -97,7 +109,10 @@ export function MapScreen({ game, onChoose }: { game: GameState; onChoose: (node
               <strong>{def.name}</strong>
               <em>{def.desc}</em>
               <small>风险：{brief.risk} · 收益：{brief.reward}</small>
+              <small>节奏：{brief.timing}</small>
+              <small>{futureRouteHint(game, id)}</small>
               <b>{brief.advice}</b>
+              <b>适合：{brief.bestWhen}</b>
             </button>
           );
         })}

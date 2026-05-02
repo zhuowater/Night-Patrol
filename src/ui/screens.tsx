@@ -1,6 +1,6 @@
 import { Home, SkipForward, Sparkles, Swords } from "lucide-react";
 import { useEffect, useState } from "react";
-import { cardCost, cardDef, cardName, cardText } from "../game/engine";
+import { cardCost, cardDef, cardName, cardText, previewCardEffect } from "../game/engine";
 import type { CardInstance, Difficulty, GameState } from "../game/types";
 import { GameCard } from "./cards";
 import { LogRail } from "./map-log";
@@ -243,6 +243,7 @@ export function RewardScreen({ game, onTake, onSkip }: { game: GameState; onTake
             <div key={card.uid} className="reward-option">
               <GameCard card={card} mode="reward" onClick={() => onTake(card.uid)} />
               <div className="reward-dossier">
+                <span><strong>预计效果</strong>{previewCardEffect(card)}</span>
                 <span><strong>取证价值</strong>{forensicValue}</span>
                 <span><strong>战术代价</strong>{tacticalCost}</span>
               </div>
@@ -353,6 +354,7 @@ export function ShopScreen({
             <small>响应剧本</small>
             <strong>{cardName(item.card)}</strong>
             <span>{cardText(item.card)}</span>
+            <small>{previewCardEffect(item.card)}</small>
             <em>{item.sold ? "已采购" : gold < item.cost ? `预算不足 · ${item.cost}` : `${item.cost} 预算`}</em>
           </button>
         ))}
@@ -403,6 +405,7 @@ export function DeckPickScreen({
             <button key={card.uid} type="button" className="deck-card" onClick={() => onPick(card.uid)}>
               <strong>{cardName(card)}</strong>
               <span>{cardText(card)}</span>
+              <small>{previewCardEffect(card)}</small>
               <em>{actionLabel}</em>
             </button>
           ))}

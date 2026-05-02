@@ -2,17 +2,25 @@
 
 《夜巡 SOC：边界告警》是一个网络安全主题的卡牌构筑 roguelike demo。你扮演夜班 SOC 响应员，接管凌晨控制台，在有限算力和响应窗口里追踪 IOC、压制横向移动、清理噪声告警，并在天亮前阻止攻击者触达核心域控。
 
-当前版本是 `v0.2.5-demo` 试玩候选：可以从标题页进入攻击路径，经历普通战、高危入侵、异常事件、情报市场、维护窗口，最终阻断核心域控前的勒索核心。本版重点补强了资源体积治理、UI 模块拆分、攻击链反制可视化、查询缓存进度、Boss 三阶段提示与自动跑局验证。
+当前版本是 `v0.2.6-demo` 闭门试玩候选：可以从标题页进入攻击路径，经历普通战、高危入侵、异常事件、情报市场、维护窗口，最终阻断核心域控前的勒索核心。本版重点补强了闭门试玩说明、卡牌预计效果、地图路线解释、攻击链预览单一来源、勒索倒计时与 Boss 阶段提示。
 
 ## 下载试玩
 
 桌面客户端会发布在 GitHub Releases：
 
-https://github.com/op7418/Night-Patrol/releases
+https://github.com/zhuowater/Night-Patrol/releases
+
+当前闭门试玩基线：
+
+- 最新试玩包：`v0.2.6-demo`
+- 下载页面：https://github.com/zhuowater/Night-Patrol/releases/tag/v0.2.6-demo
+- 试玩说明：`docs/playtest/v0.2.6-closed-playtest-instructions.md`
+- 反馈表：`docs/playtest/v0.2.6-feedback-form.md`
 
 当前计划提供：
 
-- macOS Apple Silicon 测试包
+- Linux x64 测试包
+- macOS Apple Silicon / Intel 测试包
 - Windows x64 测试包
 
 macOS 版本目前是 demo 阶段的 ad-hoc 签名包，没有 Apple 公证。如果系统提示“无法验证开发者”，请右键点击应用，选择“打开”，再确认一次。
@@ -71,7 +79,7 @@ macOS 版本目前是 demo 阶段的 ad-hoc 签名包，没有 Apple 公证。�
 - TypeScript：游戏状态、卡牌、敌人、工具和事件类型。
 - Vite：开发服务器和前端构建。
 - Electron：桌面客户端打包。
-- GitHub Actions：macOS 与 Windows 客户端自动构建。
+- GitHub Release：当前以本地 Electron 打包后上传为主，后续可补 tag-triggered 三平台自动构建。
 
 ## 本地开发
 
@@ -128,21 +136,21 @@ npm run desktop:dist
 
 产物会输出到 `release/`。
 
-GitHub CI 打包方式：
+如需通过 GitHub Release 分发，先推送 tag，再将 `release/` 目录中的桌面包上传到对应 Release：
 
 ```bash
-git tag v0.2.5-demo
-git push origin v0.2.5-demo
+git tag v0.2.6-demo
+git push origin v0.2.6-demo
 ```
 
-推送 tag 后，GitHub Actions 会构建 macOS 和 Windows 包，并附加到 GitHub Release 页面。
+后续可以补充 tag-triggered GitHub Actions，让 Linux、macOS、Windows 包自动构建并附加到 Release 页面。
 
 ## 项目文档
 
 - `docs/CYBERSECURITY_RETHEME_DESIGN.md`：网络安全主题改编设计。
 - `docs/plans/2026-05-01-cybersecurity-retheme-phase-1.md`：Phase 1 实施计划。
 - `docs/plans/2026-05-01-v0.2.2-playtest-candidate.md`：v0.2.2 试玩候选收口计划。
-- `docs/RELEASE_NOTES_v0.2.5-demo.md`：v0.2.5 Release Notes。
+- `docs/RELEASE_NOTES_v0.2.6-demo.md`：v0.2.6 Release Notes。
 - `docs/NIGHT_PATROL_NEXT_PLAN_v0.2.3-v0.3.0.md`：v0.2.3 到 v0.3.0 后续路线图。
 - `docs/RELEASE_NOTES_v0.2.3-demo.md`：v0.2.3 Release Notes。
 - `docs/PLANNING.md`：早期玩法与世界观规划。

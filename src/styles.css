@@ -601,6 +601,7 @@ button:focus-visible {
 
 .route-map-panel,
 .choice-header,
+.route-legend,
 .log-rail,
 .relic-banner,
 .empty-panel {
@@ -838,6 +839,40 @@ button:focus-visible {
 .deck-card span {
   display: block;
   line-height: 1.65;
+}
+
+.route-legend-copy {
+  margin: 0 0 12px;
+  color: rgba(255, 239, 207, 0.68);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.shop-card small,
+.deck-card small,
+.route-option-card small {
+  display: block;
+  margin-top: 7px;
+  color: rgba(130, 213, 199, 0.88);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.route-option-card b {
+  display: block;
+  margin-top: 8px;
+  color: rgba(255, 226, 173, 0.9);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.card-effect-preview {
+  margin-top: 6px;
+  color: #fff0c9;
+  font-size: 0.65rem;
+  font-weight: 900;
+  line-height: 1.25;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.72);
 }
 
 .shop-card em,
@@ -1600,6 +1635,7 @@ button:focus-visible {
 .intel-risk-forecast,
 .intel-counterplay,
 .intel-boss-cache,
+.intel-ransomware-countdown,
 .intel-interruption {
   margin: 0;
   padding: 9px 10px;
@@ -1616,6 +1652,7 @@ button:focus-visible {
 .intel-risk-forecast strong,
 .intel-counterplay strong,
 .intel-boss-cache strong,
+.intel-ransomware-countdown strong,
 .intel-interruption strong {
   display: block;
   margin-bottom: 2px;
@@ -1627,6 +1664,7 @@ button:focus-visible {
 .intel-risk-forecast,
 .intel-counterplay,
 .intel-boss-cache,
+.intel-ransomware-countdown,
 .intel-interruption {
   display: grid;
   gap: 5px;
@@ -1637,6 +1675,8 @@ button:focus-visible {
 .intel-risk-forecast span,
 .intel-counterplay span,
 .intel-boss-cache span,
+.intel-ransomware-countdown span,
+.intel-ransomware-countdown em,
 .intel-interruption span {
   display: block;
   color: rgba(255, 239, 207, 0.84);
@@ -1645,6 +1685,42 @@ button:focus-visible {
 .intel-interruption {
   border-color: rgba(130, 213, 199, 0.24);
   background: rgba(68, 196, 181, 0.09);
+}
+
+.intel-ransomware-countdown {
+  border-color: rgba(255, 95, 75, 0.4);
+  background:
+    linear-gradient(135deg, rgba(184, 70, 56, 0.24), rgba(231, 199, 126, 0.06)),
+    rgba(12, 5, 7, 0.74);
+  box-shadow: 0 0 0 1px rgba(255, 95, 75, 0.08), 0 10px 24px rgba(184, 70, 56, 0.12);
+}
+
+.intel-ransomware-countdown strong {
+  color: #ffb69e;
+}
+
+.intel-ransomware-countdown span {
+  color: #fff0c9;
+  font-size: 0.92rem;
+  font-weight: 950;
+}
+
+.intel-ransomware-countdown em {
+  color: rgba(255, 214, 194, 0.82);
+  font-size: 0.68rem;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.intel-ransomware-countdown.is-triggering {
+  border-color: rgba(255, 95, 75, 0.72);
+  background:
+    linear-gradient(135deg, rgba(255, 95, 75, 0.32), rgba(255, 207, 101, 0.1)),
+    rgba(18, 4, 6, 0.82);
+}
+
+.intel-ransomware-countdown.is-ready {
+  border-color: rgba(130, 213, 199, 0.52);
 }
 
 .intel-boss-cache {

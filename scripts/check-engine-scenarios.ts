@@ -1,4 +1,4 @@
-import { chooseEnemyIntent, createGameState, endTurn, finishCinematic, playCard, startRun } from '../src/game/engine';
+import { chooseEnemyIntent, createGameState, endTurn, finishCinematic, playCard, previewAttackChain, startRun } from '../src/game/engine';
 import { ENEMIES } from '../src/game/content';
 import type { CardInstance, GameState } from '../src/game/types';
 
@@ -217,6 +217,56 @@ const scenarios: Scenario[] = [
         assert(combat.enemy.intent, 'boss intent should be set');
         assert(['核心密钥擦除', '勒索倒计时爆发', '僵尸网络总动员'].includes(combat.enemy.intent.label), `unexpected final-phase intent ${combat.enemy.intent.label}`);
       }
+    },
+  },
+  {
+    name: 'attack chain preview reports ransomware countdown before trigger',
+    run: () => {
+      const state = setupCombat('tigerlord');
+      const combat = state.combat!;
+      combat.turn = 2;
+      state.player!.incense = 1;
+      const preview = previewAttackChain(state);
+      assert(preview.ransomwareCountdown?.turnsRemaining === 1, `expected one turn before ransomware trigger, got ${preview.ransomwareCountdown?.turnsRemaining}`);
+      assert(preview.ransomwareCountdown.triggeringThisTurn === false, 'ransomware countdown should not trigger on turn 2');
+      assert(preview.ransomwareCountdown.canCancel === false, 'one compute should not cancel ransomware countdown');
+      assert(preview.riskForecast.some((item) => item.includes('1 回合后触发')), 'ransomware risk forecast should mention next trigger window');
+    },
+  },
+  {
+    name: 'attack chain preview reports ransomware cancellation when compute is ready',
+    run: () => {
+      const state = setupCombat('tigerlord');
+      const combat = state.combat!;
+      combat.turn = 3;
+      state.player!.incense = 2;
+      const preview = previewAttackChain(state);
+      assert(preview.ransomwareCountdown?.triggeringThisTurn === true, 'ransomware countdown should trigger on turn 3');
+      assert(preview.ransomwareCountdown.canCancel === true, 'two compute should cancel ransomware countdown');
+      assert(preview.counterplayWindows.some((item) => item.includes('已满足')), 'ransomware counterplay should report satisfied compute window');
+    },
+  },
+  {
+    name: 'attack chain preview reports boss pressure and final phases',
+    run: () => {
+      const state = setupCombat('tigerlord');
+      const combat = state.combat!;
+      combat.enemy.hp = Math.floor(combat.enemy.maxHp * 0.6);
+      const pressurePreview = previewAttackChain(state);
+      assert(pressurePreview.bossPhase?.tone === 'pressure', `expected pressure boss phase, got ${pressurePreview.bossPhase?.tone}`);
+      combat.enemy.hp = Math.floor(combat.enemy.maxHp * 0.25);
+      const finalPreview = previewAttackChain(state);
+      assert(finalPreview.bossPhase?.tone === 'final', `expected final boss phase, got ${finalPreview.bossPhase?.tone}`);
+    },
+  },
+  {
+    name: 'attack chain preview reports query cache progress when relic is owned',
+    run: () => {
+      const state = setupCombat('lantern');
+      state.player!.relics.push({ id: 'blankPage', name: '查询缓存', text: '每回合每打出 3 张牌，抽 1 张牌。' });
+      state.combat!.queryCacheProgress = 2;
+      const preview = previewAttackChain(state);
+      assert(preview.queryCacheStatus === '查询缓存 2/3', `unexpected query cache status ${preview.queryCacheStatus}`);
     },
   },
 ];

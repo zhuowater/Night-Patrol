@@ -31,6 +31,7 @@ import {
   openRemoveCard,
   openUpgrade,
   playCard,
+  previewAttackChain,
   removeCard,
   resolveEvent,
   restHeal,
@@ -264,10 +265,12 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
   const responseAdvice = getResponseAdvice(player, enemy, noiseCount);
   const intentSummary = intentText(enemy.intent);
   const moveTactic = getMoveTactic(enemy.intent);
-  const riskForecast = getRiskForecast(enemy, combat.turn, noiseCount, player.incense);
-  const counterplayWindows = getCounterplayWindows(enemy, combat.turn, noiseCount, player.incense);
-  const bossPhase = getBossPhase(enemy);
-  const queryCacheStatus = player.relics.some((relic) => relic.id === "blankPage") ? `查询缓存 ${combat.queryCacheProgress}/3` : null;
+  const riskPreview = previewAttackChain(game);
+  const riskForecast = riskPreview.riskForecast;
+  const counterplayWindows = riskPreview.counterplayWindows;
+  const bossPhase = riskPreview.bossPhase;
+  const queryCacheStatus = riskPreview.queryCacheStatus;
+  const ransomwareCountdown = riskPreview.ransomwareCountdown;
 
   const beginDrag = (card: CardInstance, event: ReactPointerEvent<HTMLButtonElement>) => {
     if (cardDef(card).unplayable) return;
@@ -391,6 +394,7 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
           lastInterruption={combat.lastInterruption}
           bossPhase={bossPhase}
           queryCacheStatus={queryCacheStatus}
+          ransomwareCountdown={ransomwareCountdown}
         />
         <div className="energy-orb">
           <strong>{player.energy}</strong>
@@ -469,65 +473,6 @@ function getMoveTactic(intent: EnemyState["intent"]) {
   return "防御动作：趁窗口补 IOC 或准备爆发。";
 }
 
-function getRiskForecast(enemy: EnemyState, turn: number, noiseCount: number, incense: number) {
-  const items: string[] = [];
-  const chain = enemy.attackChain;
-  if (chain.includes("C2")) {
-    if (turn % 2 === 0) {
-      items.push(`下次信标：${enemy.seal > 0 ? "本回合 IOC 拦截，噪声不增加" : "本回合结束触发，噪声 +1"}`);
-    } else {
-      items.push("下次信标：1 回合后注入噪声，可提前补 IOC 拦截");
-    }
-  }
-  if (chain.includes("凭据")) {
-    if (noiseCount >= 2) items.push(`抽牌污染：${enemy.weak > 1 ? "敌方已降权，下次抽牌前清洗" : "已生效，下回合少抽 1 张"}`);
-    else items.push(`抽牌污染：还差 ${2 - noiseCount} 张噪声触发${enemy.weak > 1 && noiseCount > 0 ? "，已降权会先清洗" : ""}`);
-  }
-  if (chain.includes("勒索")) {
-    if (turn % 3 === 0) {
-      items.push(`勒索倒计时：${incense >= 2 ? "本回合算力恢复演练取消扣血" : "本回合结束扣 4 生命"}`);
-    } else {
-      items.push(`勒索倒计时：${3 - (turn % 3)} 回合后触发，可存 2 算力取消`);
-    }
-  }
-  if (chain.includes("横向移动")) {
-    const lateralTriggered = enemy.intent?.type === "attack";
-    items.push(`横移失控：${enemy.weak > 0 ? "已降权，强度滚雪球暂停" : lateralTriggered ? "本轮攻击后强度 +1" : "本轮不触发，留意下一次攻击"}`);
-  }
-  return items.length ? items : ["暂无额外链路节奏，按当前意图处置。"];
-}
-
-function getCounterplayWindows(enemy: EnemyState, turn: number, noiseCount: number, incense: number) {
-  const items: string[] = [];
-  const chain = enemy.attackChain;
-  if (chain.includes("C2")) {
-    const c2Triggering = turn % 2 === 0;
-    if (c2Triggering) items.push(`C2：IOC ≥ 1 可拦截本轮信标${enemy.seal > 0 ? "（已满足）" : "（未满足）"}`);
-    else items.push(`C2：IOC ≥ 1 可拦截信标（${2 - (turn % 2)} 回合后检查）`);
-  }
-  if (chain.includes("凭据")) {
-    const cleanupReady = enemy.weak > 1;
-    if (noiseCount > 0) items.push(`凭据：敌方降权可在下次抽牌前清洗 ${noiseCount} 张噪声${cleanupReady ? "（已满足）" : "（建议降噪过滤）"}`);
-    else items.push(`凭据：敌方降权可清洗噪声（等待噪声出现）`);
-  }
-  if (chain.includes("勒索")) {
-    const ransomwareTriggering = turn % 3 === 0;
-    if (ransomwareTriggering) items.push(`勒索：算力 ≥ 2 可取消本轮倒计时${incense >= 2 ? "（已满足）" : `（还差 ${2 - incense}）`}`);
-    else items.push(`勒索：算力 ≥ 2 可取消倒计时（${3 - (turn % 3)} 回合后检查）`);
-  }
-  if (chain.includes("横向移动")) items.push(`横移：降权可冻结攻击后强度滚雪球${enemy.weak > 0 ? "（已满足）" : "（建议降噪过滤）"}`);
-  if (turn % 2 === 0 && enemy.intent?.type !== "attack") items.push("非攻击回合：适合补 IOC / 算力，为下一次链路触发做反制。");
-  return items.length ? items : ["当前攻击链没有额外反制窗口，按意图处置即可。"];
-}
-
-function getBossPhase(enemy: EnemyState) {
-  if (!enemy.boss || !enemy.phases?.length) return null;
-  const hpRatio = enemy.hp / enemy.maxHp;
-  if (hpRatio <= 0.33) return { label: "三阶段 · 核心擦除", next: "终局压迫中", tone: "final" };
-  if (hpRatio <= 0.66) return { label: "二阶段 · 横向扩散", next: "33% 以下进入最终擦除", tone: "pressure" };
-  return { label: "一阶段 · 全盘加密", next: "66% 以下转入横向扩散", tone: "normal" };
-}
-
 function CombatIntelPanel({
   enemyName,
   attackChain,
@@ -545,6 +490,7 @@ function CombatIntelPanel({
   lastInterruption,
   bossPhase,
   queryCacheStatus,
+  ransomwareCountdown,
 }: {
   enemyName: string;
   attackChain: string;
@@ -562,6 +508,12 @@ function CombatIntelPanel({
   lastInterruption: string | null;
   bossPhase: { label: string; next: string; tone: string } | null;
   queryCacheStatus: string | null;
+  ransomwareCountdown: {
+    turnsRemaining: number;
+    triggeringThisTurn: boolean;
+    canCancel: boolean;
+    computeNeeded: number;
+  } | null;
 }) {
   return (
     <aside className="combat-intel-panel" aria-label="攻击链态势">
@@ -580,6 +532,13 @@ function CombatIntelPanel({
             </span>
           )}
           {queryCacheStatus && <span><strong>遗物联动</strong>{queryCacheStatus}，每第 3 张已打出卡额外抽 1 张。</span>}
+        </div>
+      )}
+      {ransomwareCountdown && (
+        <div className={`intel-ransomware-countdown ${ransomwareCountdown.triggeringThisTurn ? "is-triggering" : ""} ${ransomwareCountdown.canCancel ? "is-ready" : "is-not-ready"}`} aria-label="勒索倒计时">
+          <strong>勒索倒计时</strong>
+          <span>{ransomwareCountdown.triggeringThisTurn ? "本回合结束触发" : `${ransomwareCountdown.turnsRemaining} 回合后触发`}</span>
+          <em>{ransomwareCountdown.canCancel ? "算力恢复演练已就绪，可取消扣血" : `需要 ${ransomwareCountdown.computeNeeded} 算力取消扣血`}</em>
         </div>
       )}
       <div className="intel-interruption" aria-label="主动打断反馈">
