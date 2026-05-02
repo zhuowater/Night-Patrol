@@ -1,5 +1,5 @@
-import { chooseEnemyIntent, createGameState, endTurn, finishCinematic, playCard, previewAttackChain, startRun } from '../src/game/engine';
-import { ENEMIES } from '../src/game/content';
+import { chooseEnemyIntent, createGameState, endTurn, finishCinematic, playCard, previewAttackChain, previewUpgradeDelta, resolveEvent, startRun, cardThreatHint } from '../src/game/engine';
+import { ENEMIES, EVENTS } from '../src/game/content';
 import type { CardInstance, GameState } from '../src/game/types';
 
 type Scenario = {
@@ -269,7 +269,106 @@ const scenarios: Scenario[] = [
       assert(preview.queryCacheStatus === '查询缓存 2/3', `unexpected query cache status ${preview.queryCacheStatus}`);
     },
   },
-];
+  {
+    name: 'attack chain preview reports structured C2 readiness',
+    run: () => {
+      const state = setupCombat('warlock');
+      const combat = state.combat!;
+      combat.turn = 2;
+      combat.enemy.seal = 0;
+      const missingPreview = previewAttackChain(state);
+      const missingC2 = missingPreview.counterplayReadiness.find((item) => item.id === 'c2');
+      assert(missingC2, 'C2 readiness row should exist');
+      assert(missingC2.ready === false, 'zero IOC should not satisfy C2 readiness');
+      assert(missingC2.missing === '还差 1 IOC', `unexpected C2 missing text ${missingC2.missing}`);
+      combat.enemy.seal = 1;
+      const readyPreview = previewAttackChain(state);
+      const readyC2 = readyPreview.counterplayReadiness.find((item) => item.id === 'c2');
+      assert(readyC2?.ready === true, 'one IOC should satisfy C2 readiness');
+      assert(readyC2.current === 'IOC 1', `unexpected C2 current text ${readyC2?.current}`);
+    },
+  },
+  {
+    name: 'attack chain preview reports structured credential readiness with noise count',
+    run: () => {
+      const state = setupCombat('waterghost');
+      const combat = state.combat!;
+      combat.enemy.weak = 1;
+      combat.discardPile = [makeCard(state, 'yinCold')];
+      const preview = previewAttackChain(state);
+      const credential = preview.counterplayReadiness.find((item) => item.id === 'credential');
+      assert(credential, 'credential readiness row should exist');
+      assert(credential.ready === false, 'weak 1 should not satisfy credential cleanup readiness');
+      assert(credential.current.includes('噪声 1'), `credential current should include noise count, got ${credential.current}`);
+      combat.enemy.weak = 2;
+      const readyCredential = previewAttackChain(state).counterplayReadiness.find((item) => item.id === 'credential');
+      assert(readyCredential?.ready === true, 'weak 2 plus noise should satisfy credential cleanup readiness');
+    },
+  },
+  {
+    name: 'card threat hint highlights current attack answers',
+    run: () => {
+      const state = setupCombat('lantern');
+      const combat = state.combat!;
+      combat.enemy.intent = { type: 'attack', amount: 8, label: '入侵打点' };
+      assert(cardThreatHint(makeCard(state, 'defend'), { combat, player: state.player! })?.label === '补足防护窗口', 'defense card should answer incoming attack');
+    },
+  },
+  {
+    name: 'card threat hint highlights attack-chain counters and IOC payoff',
+    run: () => {
+      const c2State = setupCombat('warlock');
+      assert(cardThreatHint(makeCard(c2State, 'zhusha'), { combat: c2State.combat!, player: c2State.player! })?.label === '可拦截 C2 信标', 'IOC card should answer C2 chain');
+
+      const ransomwareState = setupCombat('tigerlord');
+      assert(cardThreatHint(makeCard(ransomwareState, 'incense'), { combat: ransomwareState.combat!, player: ransomwareState.player! })?.label === '补算力取消倒计时', 'compute card should answer ransomware chain');
+
+      const credentialState = setupCombat('waterghost');
+      assert(cardThreatHint(makeCard(credentialState, 'bell'), { combat: credentialState.combat!, player: credentialState.player! })?.label === '可压制凭据/横移', 'weak card should answer credential chain');
+
+      const payoffState = setupCombat('lantern');
+      payoffState.combat!.enemy.seal = 1;
+      assert(cardThreatHint(makeCard(payoffState, 'thunder'), { combat: payoffState.combat!, player: payoffState.player! })?.label === '兑现 IOC 爆发', 'IOC payoff card should be highlighted when IOC exists');
+    },
+  },
+  {
+    name: 'upgrade delta preview reports before and after value changes',
+    run: () => {
+      const state = setupCombat('lantern');
+      assert(previewUpgradeDelta(makeCard(state, 'strike')) === '6 → 9 伤害', 'strike upgrade delta should show damage increase');
+      assert(previewUpgradeDelta(makeCard(state, 'defend')) === '5 → 8 防护', 'defend upgrade delta should show block increase');
+      assert(previewUpgradeDelta(makeCard(state, 'qingxin')) === '抽 2 → 3', 'qingxin upgrade delta should show draw increase');
+    },
+  },
+  {
+    name: 'event choices expose honest previews and result summaries',
+    run: () => {
+      for (const event of EVENTS) {
+        for (const choice of event.choices) {
+          assert(choice.preview && choice.preview.length > 0, `${event.id}/${choice.id} should expose a preview`);
+        }
+      }
+
+      const healState = createGameState();
+      startRun(healState, 'normal');
+      healState.event = EVENTS.find((event) => event.choices.some((choice) => choice.id === 'wellHeal'))!;
+      healState.screen = 'event';
+      healState.player!.hp = 32;
+      resolveEvent(healState, 'wellHeal');
+      assert(healState.lastEventResult === '获得：防线 +12', `unexpected heal event result ${healState.lastEventResult}`);
+      assert(healState.log[0].includes('事件结果：获得：防线 +12'), 'event result should be written into the visible log');
+
+      const cardState = createGameState();
+      startRun(cardState, 'normal');
+      cardState.event = EVENTS.find((event) => event.choices.some((choice) => choice.id === 'foxCard'))!;
+      cardState.screen = 'event';
+      const beforeDeck = cardState.player!.deck.length;
+      resolveEvent(cardState, 'foxCard');
+      assert(cardState.player!.deck.length === beforeDeck + 1, 'fox card event should add one card');
+      assert(cardState.lastEventResult?.startsWith('获得：'), `fox card event should summarize gained card, got ${cardState.lastEventResult}`);
+    },
+  },
+ ];
 
 for (const scenario of scenarios) {
   scenario.run();

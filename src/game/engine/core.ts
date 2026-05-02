@@ -78,6 +78,7 @@ export function startRun(state: GameState, difficulty: Difficulty = "normal") {
   state.cinematic = null;
   state.reward = null;
   state.event = null;
+  state.lastEventResult = null;
   state.shop = null;
   state.pendingRemove = null;
   state.pendingUpgrade = null;

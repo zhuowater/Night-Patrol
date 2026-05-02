@@ -1,5 +1,6 @@
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 import { cardCost, cardDef, cardName, cardText, previewCardEffect } from "../game/engine";
+import type { CardThreatHint } from "../game/engine";
 import type { CardInstance } from "../game/types";
 import {
   baguaIconUrl,
@@ -16,6 +17,7 @@ export function GameCard({
   index = 0,
   count = 1,
   disabled,
+  threatHint,
   dragging,
   dragOffset,
   onClick,
@@ -29,6 +31,7 @@ export function GameCard({
   index?: number;
   count?: number;
   disabled?: boolean;
+  threatHint?: CardThreatHint | null;
   dragging?: boolean;
   dragOffset?: { x: number; y: number };
   onClick?: () => void;
@@ -73,6 +76,7 @@ export function GameCard({
         <strong>{def.cost}</strong>
       </div>
       <div className="card-title">{cardName(card)}</div>
+      {threatHint && !disabled && <div className={`card-threat-hint hint-${threatHint.tone}`}>{threatHint.label}</div>}
       <div className="card-art-window">
         <img className={`card-art-icon card-art-icon-${def.type}`} src={cardArtImage(card)} alt="" draggable={false} />
         <div className="sigil-lines" />
