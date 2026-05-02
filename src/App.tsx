@@ -19,6 +19,7 @@ import {
   cardDef,
   cardName,
   cardText,
+  cardThreatHint,
   chooseNode,
   cloneState,
   createGameState,
@@ -39,6 +40,7 @@ import {
   takeRewardCard,
   upgradeCard,
 } from "./game/engine";
+import type { AttackChainPreview } from "./game/engine";
 import type { CardInstance, Difficulty, EnemyState, GameState, PlayerState, Screen } from "./game/types";
 import { LazyCombatStage } from "./phaser/LazyCombatStage";
 import {
@@ -232,8 +234,16 @@ export function App() {
             emptyAction={() => transact(goMap)}
           />
         )}
+        {game.screen === "victory" && (
+          <EndScreen
+            title="边界天明"
+            body="勒索核心被阻断，核心域控恢复控制。你带回来的不是答案，而是一套能让夜班活下来的响应剧本。"
+            game={game}
+            variant="victory"
+            onStart={() => transact(startRun)}
+          />
+        )}
         {game.screen === "gameover" && <EndScreen title="响应失守" body="攻击链突破了窗口，核心资产进入应急隔离。下一次接班，你会更懂哪些告警不能拖。" onStart={() => transact(startRun)} />}
-        {game.screen === "victory" && <EndScreen title="边界天明" body="勒索核心被阻断，核心域控恢复控制。你带回来的不是答案，而是一套能让夜班活下来的响应剧本。" onStart={() => transact(startRun)} />}
       </main>
     </div>
   );
@@ -268,6 +278,7 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
   const riskPreview = previewAttackChain(game);
   const riskForecast = riskPreview.riskForecast;
   const counterplayWindows = riskPreview.counterplayWindows;
+  const counterplayReadiness = riskPreview.counterplayReadiness;
   const bossPhase = riskPreview.bossPhase;
   const queryCacheStatus = riskPreview.queryCacheStatus;
   const ransomwareCountdown = riskPreview.ransomwareCountdown;
@@ -368,7 +379,19 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
             <span>活动意图</span>
             <strong>{intentSummary}</strong>
           </div>
-          <HealthStrip current={enemy.hp} max={enemy.maxHp} enemy />
+          <HealthStrip
+            current={enemy.hp}
+            max={enemy.maxHp}
+            enemy
+            phaseMarks={
+              enemy.boss && enemy.phases?.length
+                ? enemy.phases.map((phase) => ({
+                    at: Math.round(phase.hpBelow * 100),
+                    label: phase.hpBelow <= 0.33 ? "核心擦除" : "横向扩散",
+                  }))
+                : undefined
+            }
+          />
           <div className="status-stack">
             <StatusBadge icon={<img src={sealBadgeUrl} alt="" draggable={false} />} text={`IOC ${enemy.seal}`} />
             <StatusBadge icon={<img src={blockBadgeUrl} alt="" draggable={false} />} text={`防护 ${enemy.block}`} />
@@ -391,6 +414,7 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
           advice={responseAdvice}
           riskForecast={riskForecast}
           counterplayWindows={counterplayWindows}
+          counterplayReadiness={counterplayReadiness}
           lastInterruption={combat.lastInterruption}
           bossPhase={bossPhase}
           queryCacheStatus={queryCacheStatus}
@@ -426,6 +450,7 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
                 index={index}
                 count={combat.hand.length}
                 disabled={disabled}
+                threatHint={disabled ? null : cardThreatHint(card, { combat, player })}
                 dragOffset={isDragging ? { x: drag.dx, y: drag.dy } : undefined}
                 dragging={isDragging}
                 onClick={() => onPlayCard(card.uid)}
@@ -442,10 +467,29 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
   );
 }
 
-function HealthStrip({ current, max, enemy = false }: { current: number; max: number; enemy?: boolean }) {
+function HealthStrip({
+  current,
+  max,
+  enemy = false,
+  phaseMarks = [],
+}: {
+  current: number;
+  max: number;
+  enemy?: boolean;
+  phaseMarks?: Array<{ at: number; label: string }>;
+}) {
   return (
     <div className={`health-strip ${enemy ? "enemy-health" : ""}`}>
       <div className="health-fill" style={{ width: `${Math.max(0, Math.min(100, (current / max) * 100))}%` }} />
+      {phaseMarks.map((mark) => (
+        <span
+          key={`${mark.at}-${mark.label}`}
+          className="health-phase-mark"
+          style={{ left: `${Math.max(0, Math.min(100, mark.at))}%` }}
+          title={`${mark.label}阶段阈值：${mark.at}% HP`}
+          aria-label={`${mark.label}阶段阈值：${mark.at}% HP`}
+        />
+      ))}
       <strong>
         {current}/{max}
       </strong>
@@ -487,6 +531,7 @@ function CombatIntelPanel({
   advice,
   riskForecast,
   counterplayWindows,
+  counterplayReadiness,
   lastInterruption,
   bossPhase,
   queryCacheStatus,
@@ -505,6 +550,7 @@ function CombatIntelPanel({
   advice: string;
   riskForecast: string[];
   counterplayWindows: string[];
+  counterplayReadiness: AttackChainPreview["counterplayReadiness"];
   lastInterruption: string | null;
   bossPhase: { label: string; next: string; tone: string } | null;
   queryCacheStatus: string | null;
@@ -545,6 +591,17 @@ function CombatIntelPanel({
         <strong>主动打断反馈</strong>
         <span>{lastInterruption || "最近压制：暂无，拖出攻击或加固动作后会记录链路压制结果。"}</span>
       </div>
+      {counterplayReadiness.length > 0 && (
+        <div className="intel-readiness" aria-label="反制条件状态">
+          {counterplayReadiness.map((item) => (
+            <span className={`readiness-chip readiness-${item.tone}`} key={item.id}>
+              <strong>{item.label}</strong>
+              <b>{item.ready ? "已满足" : item.missing || "未满足"}</b>
+              <em>{item.requirement} · {item.current}</em>
+            </span>
+          ))}
+        </div>
+      )}
       <div className="intel-risk-forecast" aria-label="链路风险预告">
         <strong>链路风险预告</strong>
         {riskForecast.map((item) => (

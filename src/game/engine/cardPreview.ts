@@ -1,6 +1,44 @@
 import { cardDef, value } from "./cards";
 import type { CardInstance, CombatState, PlayerState } from "../types";
 
+export type CardThreatHint = {
+  label: string;
+  tone: "attack" | "defense" | "counter" | "resource";
+};
+
+export function cardThreatHint(
+  card: CardInstance,
+  context: { combat: CombatState; player: PlayerState },
+): CardThreatHint | null {
+  const def = cardDef(card);
+  if (def.unplayable) return null;
+  const chain = context.combat.enemy.attackChain;
+  const intent = context.combat.enemy.intent;
+  const cardTextValue = cardTextForThreat(card);
+
+  if ((intent?.type === "attack" || intent?.type === "blockAttack") && cardTextValue.includes("防护")) {
+    return { label: "补足防护窗口", tone: "defense" };
+  }
+  if (chain.includes("C2") && cardTextValue.includes("IOC")) {
+    return { label: "可拦截 C2 信标", tone: "counter" };
+  }
+  if (chain.includes("勒索") && cardTextValue.includes("算力")) {
+    return { label: "补算力取消倒计时", tone: "resource" };
+  }
+  if ((chain.includes("凭据") || chain.includes("横向移动")) && cardTextValue.includes("降权")) {
+    return { label: "可压制凭据/横移", tone: "counter" };
+  }
+  if (context.combat.enemy.seal > 0 && ["windScroll", "thunder", "burn", "breakEvil"].includes(card.id)) {
+    return { label: "兑现 IOC 爆发", tone: "attack" };
+  }
+  return null;
+}
+
+function cardTextForThreat(card: CardInstance) {
+  const def = cardDef(card);
+  return `${def.text[card.upgraded ? 1 : 0]} ${def.name}`;
+}
+
 export function previewCardEffect(card: CardInstance, context?: { combat?: CombatState; player?: PlayerState }) {
   const enemy = context?.combat?.enemy;
   const player = context?.player;
@@ -69,4 +107,40 @@ export function previewCardEffect(card: CardInstance, context?: { combat?: Comba
     default:
       return "预计：按卡牌文本结算";
   }
+}
+
+export function previewUpgradeDelta(card: CardInstance): string {
+  if (card.upgraded) return "已是升级版本";
+  const current = previewCardEffect({ ...card, upgraded: false });
+  const upgradedCard = { ...card, upgraded: true };
+  const upgraded = previewCardEffect(upgradedCard);
+  const currentText = current.replace(/^预计：/, "");
+  const upgradedText = upgraded.replace(/^预计：/, "");
+
+  const damage = numericDelta(currentText, upgradedText, "造成 ", " 伤害");
+  if (damage) return `${damage} 伤害`;
+
+  const block = numericDelta(currentText, upgradedText, "获得 ", " 防护");
+  if (block) return `${block} 防护`;
+
+  const draw = numericDelta(currentText, upgradedText, "抽 ", " 张");
+  if (draw) return `抽 ${damage ?? draw}`;
+
+  return `升级后：${upgraded}`;
+}
+
+function numericDelta(beforeText: string, afterText: string, prefix: string, suffix: string) {
+  const before = extractNumberBetween(beforeText, prefix, suffix);
+  const after = extractNumberBetween(afterText, prefix, suffix);
+  return before !== null && after !== null && before !== after ? `${before} → ${after}` : null;
+}
+
+function extractNumberBetween(text: string, prefix: string, suffix: string) {
+  const start = text.indexOf(prefix);
+  if (start < 0) return null;
+  const from = start + prefix.length;
+  const end = text.indexOf(suffix, from);
+  if (end < 0) return null;
+  const valueText = text.slice(from, end).trim();
+  return /^\d+$/.test(valueText) ? Number(valueText) : null;
 }

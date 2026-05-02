@@ -1,9 +1,20 @@
 import { createCard } from "./cards";
 import type { CombatState, EnemyState, GameState, PlayerState } from "../types";
 
+export type CounterplayReadiness = {
+  id: "c2" | "credential" | "ransomware" | "lateral" | "generic";
+  label: string;
+  requirement: string;
+  current: string;
+  ready: boolean;
+  missing?: string;
+  tone: "ready" | "warning" | "info";
+};
+
 export type AttackChainPreview = {
   riskForecast: string[];
   counterplayWindows: string[];
+  counterplayReadiness: CounterplayReadiness[];
   bossPhase: null | {
     label: string;
     next: string;
@@ -68,9 +79,20 @@ export function previewAttackChain(state: GameState): AttackChainPreview {
   const noiseCount = countNoise(combat);
   const riskForecast: string[] = [];
   const counterplayWindows: string[] = [];
+  const counterplayReadiness: CounterplayReadiness[] = [];
   let ransomwareCountdown: AttackChainPreview["ransomwareCountdown"] = null;
 
   if (chain.includes("C2")) {
+    const ready = enemy.seal > 0;
+    counterplayReadiness.push({
+      id: "c2",
+      label: "C2 信标",
+      requirement: "IOC ≥ 1",
+      current: `IOC ${enemy.seal}`,
+      ready,
+      missing: ready ? undefined : "还差 1 IOC",
+      tone: ready ? "ready" : "warning",
+    });
     if (combat.turn % 2 === 0) {
       riskForecast.push(`下次信标：${enemy.seal > 0 ? "本回合 IOC 拦截，噪声不增加" : "本回合结束触发，噪声 +1"}`);
       counterplayWindows.push(`C2：IOC ≥ 1 可拦截本轮信标${enemy.seal > 0 ? "（已满足）" : "（未满足）"}`);
@@ -81,6 +103,16 @@ export function previewAttackChain(state: GameState): AttackChainPreview {
   }
 
   if (chain.includes("凭据")) {
+    const ready = enemy.weak > 1 && noiseCount > 0;
+    counterplayReadiness.push({
+      id: "credential",
+      label: "凭据污染",
+      requirement: "敌方降权 ≥ 2",
+      current: `降权 ${enemy.weak} · 噪声 ${noiseCount}`,
+      ready,
+      missing: ready ? undefined : noiseCount > 0 ? `还差 ${2 - Math.min(enemy.weak, 1)} 降权` : "等待噪声出现",
+      tone: ready ? "ready" : noiseCount > 0 ? "warning" : "info",
+    });
     if (noiseCount >= 2) riskForecast.push(`抽牌污染：${enemy.weak > 1 ? "敌方已降权，下次抽牌前清洗" : "已生效，下回合少抽 1 张"}`);
     else riskForecast.push(`抽牌污染：还差 ${2 - noiseCount} 张噪声触发${enemy.weak > 1 && noiseCount > 0 ? "，已降权会先清洗" : ""}`);
     if (noiseCount > 0) counterplayWindows.push(`凭据：敌方降权可在下次抽牌前清洗 ${noiseCount} 张噪声${enemy.weak > 1 ? "（已满足）" : "（建议降噪过滤）"}`);
@@ -88,6 +120,16 @@ export function previewAttackChain(state: GameState): AttackChainPreview {
   }
 
   if (chain.includes("勒索")) {
+    const ready = player.incense >= 2;
+    counterplayReadiness.push({
+      id: "ransomware",
+      label: "勒索倒计时",
+      requirement: "算力 ≥ 2",
+      current: `算力 ${player.incense}`,
+      ready,
+      missing: ready ? undefined : `还差 ${2 - player.incense} 算力`,
+      tone: ready ? "ready" : "warning",
+    });
     const triggeringThisTurn = combat.turn % 3 === 0;
     const turnsRemaining = triggeringThisTurn ? 0 : 3 - (combat.turn % 3);
     const canCancel = player.incense >= 2;
@@ -102,6 +144,16 @@ export function previewAttackChain(state: GameState): AttackChainPreview {
   }
 
   if (chain.includes("横向移动")) {
+    const ready = enemy.weak > 0;
+    counterplayReadiness.push({
+      id: "lateral",
+      label: "横向移动",
+      requirement: "降权 ≥ 1",
+      current: `降权 ${enemy.weak}`,
+      ready,
+      missing: ready ? undefined : "还差 1 降权",
+      tone: ready ? "ready" : "warning",
+    });
     const lateralTriggered = enemy.intent?.type === "attack";
     riskForecast.push(`横移失控：${enemy.weak > 0 ? "已降权，强度滚雪球暂停" : lateralTriggered ? "本轮攻击后强度 +1" : "本轮不触发，留意下一次攻击"}`);
     counterplayWindows.push(`横移：降权可冻结攻击后强度滚雪球${enemy.weak > 0 ? "（已满足）" : "（建议降噪过滤）"}`);
@@ -112,6 +164,7 @@ export function previewAttackChain(state: GameState): AttackChainPreview {
   return {
     riskForecast: riskForecast.length ? riskForecast : ["链路风险预告：暂无额外链路节奏，按当前意图处置。"],
     counterplayWindows: counterplayWindows.length ? counterplayWindows : ["当前攻击链没有额外反制窗口，按意图处置即可。"],
+    counterplayReadiness,
     bossPhase: previewBossPhase(enemy),
     queryCacheStatus: player.relics.some((relic) => relic.id === "blankPage") ? `查询缓存 ${combat.queryCacheProgress}/3` : null,
     ransomwareCountdown,

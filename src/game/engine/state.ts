@@ -14,6 +14,7 @@ export function createGameState(): GameState {
     cinematic: null,
     reward: null,
     event: null,
+    lastEventResult: null,
     shop: null,
     pendingRemove: null,
     pendingUpgrade: null,

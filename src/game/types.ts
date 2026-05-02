@@ -126,6 +126,7 @@ export interface EventChoiceDef {
   id: string;
   title: string;
   desc: string;
+  preview?: string;
 }
 
 export interface EventDef {
@@ -190,6 +191,7 @@ export interface GameState {
   cinematic: CinematicState | null;
   reward: RewardState | null;
   event: EventDef | null;
+  lastEventResult: string | null;
   shop: ShopState | null;
   pendingRemove: PendingCardAction | null;
   pendingUpgrade: PendingCardAction | null;

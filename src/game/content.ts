@@ -366,8 +366,8 @@ export const EVENTS: EventDef[] = [
     title: "深夜误报告警",
     body: "一条高危告警反复触发，日志上下文却很薄。值班窗口正在被它占满。",
     choices: [
-      { id: "wellHeal", title: "快速关闭", desc: "回复 12 点生命。" },
-      { id: "wellRelic", title: "深挖上下文", desc: "失去 7 点生命，获得 1 件工具。" },
+      { id: "wellHeal", title: "快速关闭", desc: "回复 12 点生命。", preview: "获得：防线 +12" },
+      { id: "wellRelic", title: "深挖上下文", desc: "失去 7 点生命，获得 1 件工具。", preview: "失去：防线 -7；获得：随机安全工具" },
     ],
   },
   {
@@ -375,8 +375,8 @@ export const EVENTS: EventDef[] = [
     title: "灰色情报源",
     body: "匿名情报商递来一个 IOC 包，来源不明，但格式看起来可以直接导入。",
     choices: [
-      { id: "foxCard", title: "接收样本", desc: "获得 1 张随机牌。" },
-      { id: "foxRemove", title: "清理旧规则", desc: "花费 40 预算，移除 1 张牌。" },
+      { id: "foxCard", title: "接收样本", desc: "获得 1 张随机牌。", preview: "获得：随机响应剧本 1 张" },
+      { id: "foxRemove", title: "清理旧规则", desc: "花费 40 预算，移除 1 张牌。", preview: "进入删牌清单；花费：40 预算" },
     ],
   },
   {
@@ -384,8 +384,8 @@ export const EVENTS: EventDef[] = [
     title: "短暂维护窗口",
     body: "业务方终于给出 15 分钟窗口。你可以升级响应动作，也可以换取更多预算。",
     choices: [
-      { id: "templeUpgrade", title: "升级剧本", desc: "升级 1 张牌。" },
-      { id: "templeGold", title: "申请预算", desc: "获得 80 预算，将 1 张噪声告警加入牌组。" },
+      { id: "templeUpgrade", title: "升级剧本", desc: "升级 1 张牌。", preview: "进入升级清单；选择 1 张剧本强化" },
+      { id: "templeGold", title: "申请预算", desc: "获得 80 预算，将 1 张噪声告警加入牌组。", preview: "获得：80 预算；代价：牌组污染 +1" },
     ],
   },
   {
@@ -393,8 +393,8 @@ export const EVENTS: EventDef[] = [
     title: "供应链请求",
     body: "第三方组件要求临时放行。审批消息很急，但你看见了版本号里不自然的一段空白。",
     choices: [
-      { id: "scholarCopy", title: "隔离复现", desc: "复制 1 张非基础牌，并加入 1 张噪声告警。" },
-      { id: "scholarLeave", title: "暂不放行", desc: "什么也不发生。" },
+      { id: "scholarCopy", title: "隔离复现", desc: "复制 1 张非基础牌，并加入 1 张噪声告警。", preview: "获得：复制 1 张非基础剧本；代价：牌组污染 +1" },
+      { id: "scholarLeave", title: "暂不放行", desc: "什么也不发生。", preview: "保持现状：不扩大供应链风险" },
     ],
   },
 ];
