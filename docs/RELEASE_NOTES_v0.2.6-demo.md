@@ -80,34 +80,31 @@
 
 ## 验证状态
 
-本地 release gate 已执行：
-
-```bash
-npm run check:engine-scenarios
-npm run build
-npm run check:theme
-```
-
-以及完整检查：
+本地 release gate 已执行并通过：
 
 ```bash
 npm run check
 npm run build
+npm run desktop:dist
 ```
 
-> 发布前仍需执行浏览器 smoke：生产预览打开、标题页、地图路线说明、首战卡牌预测、攻击链面板、控制台无 runtime error。
+覆盖结果：
 
-## 发布前检查清单
+- `check:theme` 通过。
+- `check:attack-chain` 通过。
+- `check:engine-scenarios` 通过，14 个场景。
+- `check:playtest-run` 通过，story / normal / hard 三个 fixture 均通关。
+- 生产 preview 浏览器 smoke 通过：标题页、地图路线说明、首战卡牌预测、攻击链面板可见，控制台未发现阻塞性 runtime error。
+- GitHub Actions release workflows 通过。
+- GitHub Release 页面已实际打开确认，Assets 包含 Linux / macOS / Windows 桌面包。
 
-- [ ] `package.json` / `package-lock.json` version 更新为 `0.2.6`
-- [ ] `npm run check` 通过
-- [ ] `npm run build` 通过
-- [ ] 生产 preview 浏览器 smoke 通过
-- [ ] commit: `release: prepare v0.2.6 demo`
-- [ ] tag: `v0.2.6-demo`
-- [ ] push `main` 和 tag 到 `origin`
-- [ ] GitHub Release 页面实际打开确认
-- [ ] Release assets 包含 Linux / macOS / Windows 桌面包
+## 发布资产
+
+本 release 包含：
+
+- Linux x64: `.AppImage` 与 `.zip`
+- macOS arm64: `.dmg` 与 `.zip`
+- Windows x64: `.exe` 与 `.zip`
 
 ## 已知非阻塞项
 
