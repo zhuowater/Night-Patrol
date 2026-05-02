@@ -1,20 +1,10 @@
-import {
-  AudioWaveform,
-  Home,
-  Info,
-  RotateCcw,
-  Sparkles,
-  Volume2,
-  VolumeX,
-} from "lucide-react";
+import { Home, Info, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import type { ComponentType } from "react";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import {
   cardDef,
   buyShopCard,
   buyShopRelic,
-  cardName,
-  cardText,
   chooseNode,
   cloneState,
   createGameState,
@@ -32,25 +22,49 @@ import {
   takeRewardCard,
   upgradeCard,
 } from "./game/engine";
-import type { Difficulty, GameState, Screen } from "./game/types";
-import {
-  baguaIconUrl,
-  gameIconUrl,
-  goldIconUrl,
-  hudBloodUrl,
-  mapIconUrl,
-  playerNightPatrolUrl,
-  relicIconUrl,
-  sceneLoopVideoUrl,
-} from "./ui/assets";
+import type { CardInstance, Difficulty, GameState, Screen } from "./game/types";
 import { MapScreen } from "./ui/map-log";
 import { EndScreen, TopHud } from "./ui/shell";
-import { AboutScreen, DeckPickScreen, EventScreen, LoadingScreen, RewardScreen, RestScreen, ShopScreen, TitleScreen } from "./ui/screens";
+import { AboutScreen, LoadingScreen, TitleScreen } from "./ui/title-screens";
 import { CombatScreen } from "./ui/screens/CombatScreen";
 
 type CinematicScreenProps = { game: GameState; onContinue: () => void };
+type RewardScreenProps = { game: GameState; onTake: (uid: string) => void; onSkip: () => void };
+type EventScreenProps = { game: GameState; onChoice: (choice: string) => void };
+type RestScreenProps = { onHeal: () => void; onUpgrade: () => void };
+type ShopScreenProps = {
+  game: GameState;
+  onBuyCard: (index: number) => void;
+  onBuyRelic: () => void;
+  onRemove: () => void;
+  onLeave: () => void;
+};
+type DeckPickScreenProps = {
+  title: string;
+  desc: string;
+  cards: CardInstance[];
+  actionLabel: string;
+  onPick: (uid: string) => void;
+  emptyAction?: () => void;
+};
+
 const LazyCinematicScreen = lazy<ComponentType<CinematicScreenProps>>(() =>
   import("./ui/screens/CinematicScreen").then((module) => ({ default: module.CinematicScreen })),
+);
+const LazyRewardScreen = lazy<ComponentType<RewardScreenProps>>(() =>
+  import("./ui/screens/RunScreens").then((module) => ({ default: module.RewardScreen })),
+);
+const LazyEventScreen = lazy<ComponentType<EventScreenProps>>(() =>
+  import("./ui/screens/RunScreens").then((module) => ({ default: module.EventScreen })),
+);
+const LazyRestScreen = lazy<ComponentType<RestScreenProps>>(() =>
+  import("./ui/screens/RunScreens").then((module) => ({ default: module.RestScreen })),
+);
+const LazyShopScreen = lazy<ComponentType<ShopScreenProps>>(() =>
+  import("./ui/screens/RunScreens").then((module) => ({ default: module.ShopScreen })),
+);
+const LazyDeckPickScreen = lazy<ComponentType<DeckPickScreenProps>>(() =>
+  import("./ui/screens/RunScreens").then((module) => ({ default: module.DeckPickScreen })),
 );
 
 export function App() {
@@ -171,55 +185,55 @@ export function App() {
             onDismissGuidance={(id) => transact((draft) => markGuidanceSeen(draft, id), false)}
           />
         )}
-        {player && game.screen === "cinematic" && game.cinematic && (
-          <Suspense fallback={<div className="combat-stage-loading">处置过场加载中...</div>}>
+        <Suspense fallback={<div className="combat-stage-loading">值班界面加载中...</div>}>
+          {player && game.screen === "cinematic" && game.cinematic && (
             <LazyCinematicScreen game={game} onContinue={() => transact(finishCinematic, false)} />
-          </Suspense>
-        )}
-        {player && game.screen === "reward" && game.reward && (
-          <RewardScreen
-            game={game}
-            onTake={(uid) => transact((draft) => takeRewardCard(draft, uid))}
-            onSkip={() => transact(goMap)}
-          />
-        )}
-        {player && game.screen === "event" && game.event && (
-          <EventScreen game={game} onChoice={(choice) => transact((draft) => resolveEvent(draft, choice))} />
-        )}
-        {player && game.screen === "rest" && (
-          <RestScreen
-            onHeal={() => transact(restHeal)}
-            onUpgrade={() => transact((draft) => openUpgrade(draft, "map"))}
-          />
-        )}
-        {player && game.screen === "shop" && game.shop && (
-          <ShopScreen
-            game={game}
-            onBuyCard={(index) => transact((draft) => buyShopCard(draft, index))}
-            onBuyRelic={() => transact(buyShopRelic)}
-            onRemove={() => transact((draft) => openRemoveCard(draft, draft.shop?.removeCost || 75, "shop"))}
-            onLeave={() => transact(goMap)}
-          />
-        )}
-        {player && game.screen === "remove" && (
-          <DeckPickScreen
-            title="清理一张牌"
-            desc={`花费 ${game.pendingRemove?.cost || 0} 预算。选中的牌会从牌组中移除。`}
-            cards={player.deck}
-            actionLabel="清理"
-            onPick={(uid) => transact((draft) => removeCard(draft, uid))}
-          />
-        )}
-        {player && game.screen === "upgrade" && (
-          <DeckPickScreen
-            title="升级一张牌"
-            desc="重写响应剧本，旧动作也能变得更快更准。"
-            cards={player.deck.filter((card) => !card.upgraded && cardDef(card).rarity !== "status")}
-            actionLabel="升级"
-            onPick={(uid) => transact((draft) => upgradeCard(draft, uid))}
-            emptyAction={() => transact(goMap)}
-          />
-        )}
+          )}
+          {player && game.screen === "reward" && game.reward && (
+            <LazyRewardScreen
+              game={game}
+              onTake={(uid) => transact((draft) => takeRewardCard(draft, uid))}
+              onSkip={() => transact(goMap)}
+            />
+          )}
+          {player && game.screen === "event" && game.event && (
+            <LazyEventScreen game={game} onChoice={(choice) => transact((draft) => resolveEvent(draft, choice))} />
+          )}
+          {player && game.screen === "rest" && (
+            <LazyRestScreen
+              onHeal={() => transact(restHeal)}
+              onUpgrade={() => transact((draft) => openUpgrade(draft, "map"))}
+            />
+          )}
+          {player && game.screen === "shop" && game.shop && (
+            <LazyShopScreen
+              game={game}
+              onBuyCard={(index) => transact((draft) => buyShopCard(draft, index))}
+              onBuyRelic={() => transact(buyShopRelic)}
+              onRemove={() => transact((draft) => openRemoveCard(draft, draft.shop?.removeCost || 75, "shop"))}
+              onLeave={() => transact(goMap)}
+            />
+          )}
+          {player && game.screen === "remove" && (
+            <LazyDeckPickScreen
+              title="清理一张牌"
+              desc={`花费 ${game.pendingRemove?.cost || 0} 预算。选中的牌会从牌组中移除。`}
+              cards={player.deck}
+              actionLabel="清理"
+              onPick={(uid) => transact((draft) => removeCard(draft, uid))}
+            />
+          )}
+          {player && game.screen === "upgrade" && (
+            <LazyDeckPickScreen
+              title="升级一张牌"
+              desc="重写响应剧本，旧动作也能变得更快更准。"
+              cards={player.deck.filter((card) => !card.upgraded && cardDef(card).rarity !== "status")}
+              actionLabel="升级"
+              onPick={(uid) => transact((draft) => upgradeCard(draft, uid))}
+              emptyAction={() => transact(goMap)}
+            />
+          )}
+        </Suspense>
         {game.screen === "victory" && (
           <EndScreen
             title="边界天明"

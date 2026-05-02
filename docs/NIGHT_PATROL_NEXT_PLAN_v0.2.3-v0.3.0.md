@@ -535,6 +535,7 @@ Done 条件：`engine.ts ≤ 220 行`；所有检查与浏览器冒烟通过。
 - [x] 胜利视频懒加载，poster 先显示。
 - [x] Vite manual chunks：react/phaser 分包。
 - [x] 处置过场 `CinematicScreen` 独立 lazy chunk，主入口不再静态绑定全部过场素材表。
+- [x] 非首屏 run/choice screens 拆到 `RunScreens` lazy chunk；首屏只保留 title/about/loading，主入口首屏 chunk 进一步瘦身。
 
 Done 条件：`dist/assets` 总体积下降 ≥30%；首屏资源显著减少；build 通过。
 
