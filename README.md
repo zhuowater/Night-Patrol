@@ -2,7 +2,7 @@
 
 《夜巡 SOC：边界告警》是一个网络安全主题的卡牌构筑 roguelike demo。你扮演夜班 SOC 响应员，接管凌晨控制台，在有限算力和响应窗口里追踪 IOC、压制横向移动、清理噪声告警，并在天亮前阻止攻击者触达核心域控。
 
-当前版本是 `v0.2.2-demo` 试玩候选：可以从标题页进入攻击路径，经历普通战、高危入侵、异常事件、情报市场、维护窗口，最终阻断核心域控前的勒索核心。
+当前版本是 `v0.2.5-demo` 试玩候选：可以从标题页进入攻击路径，经历普通战、高危入侵、异常事件、情报市场、维护窗口，最终阻断核心域控前的勒索核心。本版重点补强了资源体积治理、UI 模块拆分、攻击链反制可视化、查询缓存进度、Boss 三阶段提示与自动跑局验证。
 
 ## 下载试玩
 
@@ -43,7 +43,7 @@ macOS 版本目前是 demo 阶段的 ad-hoc 签名包，没有 Apple 公证。�
 
 ## 操作方式
 
-- 鼠标拖拽卡牌到目标身上出牌。
+- 点击或拖拽卡牌出牌；攻击牌会命中敌人，技能和法门牌会加固自己。
 - 攻击牌拖到敌人区域。
 - 技能牌和法门牌拖到玩家区域。
 - 点击“结束回合”进入敌人回合。
@@ -131,8 +131,8 @@ npm run desktop:dist
 GitHub CI 打包方式：
 
 ```bash
-git tag v0.2.2-demo
-git push origin v0.2.2-demo
+git tag v0.2.5-demo
+git push origin v0.2.5-demo
 ```
 
 推送 tag 后，GitHub Actions 会构建 macOS 和 Windows 包，并附加到 GitHub Release 页面。
@@ -142,7 +142,9 @@ git push origin v0.2.2-demo
 - `docs/CYBERSECURITY_RETHEME_DESIGN.md`：网络安全主题改编设计。
 - `docs/plans/2026-05-01-cybersecurity-retheme-phase-1.md`：Phase 1 实施计划。
 - `docs/plans/2026-05-01-v0.2.2-playtest-candidate.md`：v0.2.2 试玩候选收口计划。
-- `docs/RELEASE_NOTES_v0.2.2.md`：v0.2.2 Release Notes 草案。
+- `docs/RELEASE_NOTES_v0.2.5-demo.md`：v0.2.5 Release Notes。
+- `docs/NIGHT_PATROL_NEXT_PLAN_v0.2.3-v0.3.0.md`：v0.2.3 到 v0.3.0 后续路线图。
+- `docs/RELEASE_NOTES_v0.2.3-demo.md`：v0.2.3 Release Notes。
 - `docs/PLANNING.md`：早期玩法与世界观规划。
 - `docs/FIRST_ACT_DEMO_ROADMAP.md`：第一关完整 demo 路线图。
 - `docs/IMPLEMENTATION_DETAILS.md`：实现细节和 AI 协作复盘。
@@ -150,14 +152,14 @@ git push origin v0.2.2-demo
 
 ## 版权与授权
 
-《夜巡 SOC：边界告警》由歸藏 × Codex 联合开发，仅供娱乐、学习和非商业展示。
+《夜巡 SOC：边界告警》由 zhuowater × Hermes 联合开发，仅供娱乐、学习和非商业展示。
 
 除另有说明外，本项目采用 `CC BY-NC 4.0` 授权：允许非商业分享和改编，但必须署名，不得移除作者信息，不得用于售卖、广告导流、商业试玩包、应用商店上架或其它商业分发。
 
 推荐署名：
 
 ```text
-《夜巡 SOC：边界告警》，由歸藏 × Codex 联合开发。
+《夜巡 SOC：边界告警》，由 zhuowater × Hermes 联合开发。
 ```
 
 完整声明见 `LICENSE` 与 `NOTICE.md`。

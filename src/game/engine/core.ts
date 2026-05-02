@@ -2,46 +2,11 @@ import { createCard } from "./cards";
 import { startCombat } from "./combat";
 import { DIFFICULTY_SPECS } from "./difficulty";
 import { startEvent } from "./events";
-import { startShop } from "./maintenance";
 import { addRelic } from "./rewards";
 import { generateRouteMap, nodeTrailLine } from "./map";
-import type {
-  CombatState,
-  Difficulty,
-  EnemyMove,
-  GameState,
-  MapNode,
-  NodeType,
-  PlayerState,
-} from "../types";
-
-export function createGameState(): GameState {
-  return {
-    screen: "title",
-    difficulty: "normal",
-    player: null,
-    floor: 0,
-    mapNodes: [],
-    availableNodeIds: [],
-    currentNodeId: null,
-    visitedNodeIds: [],
-    combat: null,
-    cinematic: null,
-    reward: null,
-    event: null,
-    shop: null,
-    pendingRemove: null,
-    pendingUpgrade: null,
-    log: [],
-    seed: Date.now() % 2147483647,
-    nextCardUid: 1,
-    lastFx: "none",
-  };
-}
-
-export function cloneState(state: GameState): GameState {
-  return structuredClone(state) as GameState;
-}
+import { startRest } from "./rest";
+import { startShop } from "./shop";
+import type { CombatState, Difficulty, EnemyMove, GameState, PlayerState } from "../types";
 
 export function hpPercent(entity: { hp: number; maxHp: number }) {
   return `${Math.max(0, Math.min(100, (entity.hp / entity.maxHp) * 100))}%`;
@@ -137,10 +102,7 @@ export function chooseNode(state: GameState, nodeId: string) {
   addLog(state, nodeTrailLine(node));
   if (type === "combat" || type === "elite" || type === "boss") startCombat(state, type);
   if (type === "event") startEvent(state);
-  if (type === "rest") {
-    state.screen = "rest";
-    addLog(state, "维护窗口打开，防线可以重新整备。");
-  }
+  if (type === "rest") startRest(state);
   if (type === "shop") startShop(state);
 }
 

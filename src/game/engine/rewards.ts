@@ -59,8 +59,8 @@ export function createCinematicState(
     combatType,
     title,
     subtitle,
-    videoUrl: `/assets/generated/cinematics/victory-${slug}.mp4`,
-    posterUrl: `/assets/generated/cinematics/victory-${slug}-poster.png`,
+    videoUrl: `/assets/optimized/cinematics/victory-${slug}.mp4`,
+    posterUrl: `/assets/optimized/cinematics/victory-${slug}-poster.webp`,
     nextScreen,
     rewardSummary,
   };

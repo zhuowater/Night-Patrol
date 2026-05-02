@@ -282,7 +282,7 @@ button:focus-visible {
   padding: 96px clamp(22px, 6vw, 90px) 54px;
   background:
     linear-gradient(90deg, rgba(5, 8, 8, 0.98), rgba(5, 8, 8, 0.72) 48%, rgba(5, 8, 8, 0.24)),
-    url("../assets/generated/backgrounds/night-temple-battle.png") center / cover;
+    url("../assets/optimized/backgrounds/night-temple-battle.webp") center / cover;
 }
 
 .title-copy {
@@ -485,7 +485,7 @@ button:focus-visible {
   padding: 118px clamp(22px, 6vw, 88px) 52px;
   background:
     linear-gradient(90deg, rgba(5, 8, 8, 0.98), rgba(5, 8, 8, 0.7) 54%, rgba(5, 8, 8, 0.36)),
-    url("../assets/generated/backgrounds/night-temple-battle.png") center / cover;
+    url("../assets/optimized/backgrounds/night-temple-battle.webp") center / cover;
 }
 
 .about-view::after {
@@ -567,7 +567,7 @@ button:focus-visible {
   padding: 110px 28px 34px;
   background:
     linear-gradient(rgba(5, 8, 8, 0.54), rgba(5, 8, 8, 0.72)),
-    url("../assets/generated/backgrounds/night-temple-battle.png") center / cover;
+    url("../assets/optimized/backgrounds/night-temple-battle.webp") center / cover;
 }
 
 .choice-view {
@@ -692,6 +692,18 @@ button:focus-visible {
   line-height: 1.2;
 }
 
+.map-node small {
+  grid-column: 2;
+  justify-self: start;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(121, 219, 203, 0.24);
+  color: rgba(121, 219, 203, 0.86);
+  font-size: 0.62rem;
+  line-height: 1.1;
+  background: rgba(10, 24, 24, 0.72);
+}
+
 .map-node.available {
   opacity: 1;
   cursor: pointer;
@@ -771,7 +783,8 @@ button:focus-visible {
 .node-card,
 .decision-card,
 .shop-card,
-.deck-card {
+.deck-card,
+.route-option-card {
   min-height: 168px;
   border: 1px solid rgba(218, 181, 105, 0.24);
   border-radius: 8px;
@@ -789,7 +802,8 @@ button:focus-visible {
 .node-card:hover,
 .decision-card:hover,
 .shop-card:hover:not(:disabled),
-.deck-card:hover {
+.deck-card:hover,
+.route-option-card:hover {
   transform: translateY(-4px);
   border-color: rgba(121, 219, 203, 0.56);
   filter: brightness(1.08);
@@ -810,7 +824,8 @@ button:focus-visible {
 .node-card strong,
 .decision-card strong,
 .shop-card strong,
-.deck-card strong {
+.deck-card strong,
+.route-option-card strong {
   display: block;
   color: #ffe2ad;
   font-size: 1.25rem;
@@ -1011,7 +1026,7 @@ button:focus-visible {
   padding: 104px 32px 34px;
   background:
     linear-gradient(90deg, rgba(5, 8, 8, 0.72), rgba(5, 8, 8, 0.34) 58%, rgba(5, 8, 8, 0.8)),
-    url("../assets/generated/backgrounds/night-temple-battle.png") center / cover;
+    url("../assets/optimized/backgrounds/night-temple-battle.webp") center / cover;
 }
 
 .cinematic-scene {
@@ -1584,6 +1599,7 @@ button:focus-visible {
 .intel-move-tactic,
 .intel-risk-forecast,
 .intel-counterplay,
+.intel-boss-cache,
 .intel-interruption {
   margin: 0;
   padding: 9px 10px;
@@ -1599,6 +1615,7 @@ button:focus-visible {
 .intel-move-tactic strong,
 .intel-risk-forecast strong,
 .intel-counterplay strong,
+.intel-boss-cache strong,
 .intel-interruption strong {
   display: block;
   margin-bottom: 2px;
@@ -1609,6 +1626,7 @@ button:focus-visible {
 
 .intel-risk-forecast,
 .intel-counterplay,
+.intel-boss-cache,
 .intel-interruption {
   display: grid;
   gap: 5px;
@@ -1618,6 +1636,7 @@ button:focus-visible {
 
 .intel-risk-forecast span,
 .intel-counterplay span,
+.intel-boss-cache span,
 .intel-interruption span {
   display: block;
   color: rgba(255, 239, 207, 0.84);
@@ -1626,6 +1645,25 @@ button:focus-visible {
 .intel-interruption {
   border-color: rgba(130, 213, 199, 0.24);
   background: rgba(68, 196, 181, 0.09);
+}
+
+.intel-boss-cache {
+  border-color: rgba(255, 95, 75, 0.28);
+  background:
+    linear-gradient(135deg, rgba(184, 70, 56, 0.18), rgba(231, 199, 126, 0.06)),
+    rgba(11, 6, 7, 0.66);
+}
+
+.intel-boss-cache .boss-phase strong {
+  color: #ffd38a;
+}
+
+.intel-boss-cache .boss-phase-pressure strong {
+  color: #ffb36c;
+}
+
+.intel-boss-cache .boss-phase-final strong {
+  color: #ff735f;
 }
 
 .intel-counterplay {
@@ -1940,7 +1978,7 @@ button:focus-visible {
   border-radius: 8px;
   background:
     radial-gradient(circle at 50% 50%, rgba(255, 247, 219, 0.16), transparent 42%),
-    url("../assets/generated/cards/talisman-card-window.png") center / cover;
+    url("../assets/optimized/cards/talisman-card-window.webp") center / cover;
   background-blend-mode: screen, normal;
   position: relative;
   overflow: hidden;
@@ -2543,4 +2581,20 @@ button:focus-visible {
     width: 78px;
     height: 78px;
   }
+}
+
+
+.route-option-card small,
+.route-option-card b {
+  display: block;
+  margin-top: 8px;
+  color: rgba(121, 219, 203, 0.82);
+  font-size: 0.82rem;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.route-option-card b {
+  color: rgba(255, 239, 207, 0.68);
+  font-weight: 500;
 }

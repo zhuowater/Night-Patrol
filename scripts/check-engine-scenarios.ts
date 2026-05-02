@@ -49,6 +49,7 @@ function setupCombat(enemyId: keyof typeof ENEMIES) {
     pulse: 0,
     hitTarget: null,
     lastInterruption: null,
+    queryCacheProgress: 0,
   };
   state.screen = 'combat';
   state.player!.hp = 50;
@@ -165,6 +166,28 @@ const scenarios: Scenario[] = [
       assert(combat.hand.length === 2, `base qingxin should draw two cards before exhausting, hand=${combat.hand.length}`);
       assert(combat.exhaustPile.some((item) => item.id === 'qingxin'), 'qingxin should exhaust after play');
       assert(!combat.discardPile.some((item) => item.id === 'qingxin'), 'qingxin should not re-enter discard loop');
+    },
+  },
+  {
+    name: 'query cache tracks visible progress and draws every third played card',
+    run: () => {
+      const state = setupCombat('lantern');
+      const combat = state.combat!;
+      state.player!.relics.push({ id: 'blankPage', name: '查询缓存', text: '每回合每打出 3 张牌，抽 1 张牌。' });
+      state.player!.energy = 3;
+      combat.hand = [makeCard(state, 'defend'), makeCard(state, 'defend'), makeCard(state, 'defend')];
+      combat.drawPile = [makeCard(state, 'strike')];
+      playCard(state, combat.hand[0].uid);
+      const progressAfterFirst = combat.queryCacheProgress;
+      assert(progressAfterFirst === 1, `expected cache progress 1, got ${progressAfterFirst}`);
+      assert(!combat.hand.some((card) => card.id === 'strike'), 'query cache should not draw before third card');
+      playCard(state, combat.hand[0].uid);
+      const progressAfterSecond = combat.queryCacheProgress;
+      assert(progressAfterSecond === 2, `expected cache progress 2, got ${progressAfterSecond}`);
+      playCard(state, combat.hand[0].uid);
+      const progressAfterThird = combat.queryCacheProgress;
+      assert(progressAfterThird === 0, `expected cache progress reset after draw, got ${progressAfterThird}`);
+      assert(combat.hand.some((card) => card.id === 'strike'), 'query cache should draw on third card');
     },
   },
   {

@@ -119,6 +119,7 @@ export interface CombatState {
   pulse: number;
   hitTarget: "enemy" | "player" | null;
   lastInterruption: string | null;
+  queryCacheProgress: number;
 }
 
 export interface EventChoiceDef {

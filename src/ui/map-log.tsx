@@ -5,6 +5,15 @@ import type { GameState, NodeType } from "../game/types";
 
 const routeNames = ["边界", "办公网", "终端", "日志湖", "服务器区", "情报市", "核心域", "域控"];
 
+const nodeBrief: Record<NodeType, { risk: string; reward: string; advice: string }> = {
+  combat: { risk: "低-中", reward: "预算 + 响应动作", advice: "适合补构筑与稳定成长。" },
+  elite: { risk: "高", reward: "安全工具", advice: "血量/牌组质量足够时优先。" },
+  event: { risk: "不确定", reward: "资源或治理", advice: "适合用当前局势换取弹性。" },
+  rest: { risk: "低", reward: "回血或升级", advice: "残血、关键牌未升级时走这里。" },
+  shop: { risk: "低", reward: "采购/删牌", advice: "预算充足或噪声偏多时收益高。" },
+  boss: { risk: "终局", reward: "通关", advice: "确认防护、IOC 与爆发窗口。" },
+};
+
 export function MapScreen({ game, onChoose }: { game: GameState; onChoose: (nodeId: string) => void }) {
   const rows = routeNames.map((_, row) => game.mapNodes.filter((node) => node.row === row).sort((a, b) => a.lane - b.lane));
   const available = new Set(game.availableNodeIds);
@@ -54,6 +63,8 @@ export function MapScreen({ game, onChoose }: { game: GameState; onChoose: (node
             const isAvailable = available.has(node.id);
             const isCurrent = game.currentNodeId === node.id;
             const isPast = visited.has(node.id) && !isCurrent;
+            const def = NODE_DEFS[node.type];
+            const brief = nodeBrief[node.type];
             return (
               <button
                 key={node.id}
@@ -62,11 +73,12 @@ export function MapScreen({ game, onChoose }: { game: GameState; onChoose: (node
                 style={{ gridColumn: node.lane + 2, gridRow: node.row + 1 }}
                 disabled={!isAvailable}
                 onClick={() => onChoose(node.id)}
-                title={NODE_DEFS[node.type].desc}
-                aria-label={`${NODE_DEFS[node.type].name}，${NODE_DEFS[node.type].desc}${isAvailable ? "，可进入" : "，暂不可进入"}`}
+                title={`${def.desc} 风险：${brief.risk}；收益：${brief.reward}`}
+                aria-label={`${def.name}，${def.desc}，风险 ${brief.risk}，收益 ${brief.reward}${isAvailable ? "，可进入" : "，暂不可进入"}`}
               >
                 {nodeIcon(node.type)}
-                <span>{NODE_DEFS[node.type].name}</span>
+                <span>{def.name}</span>
+                <small>{brief.risk}</small>
               </button>
             );
           })}
@@ -78,11 +90,14 @@ export function MapScreen({ game, onChoose }: { game: GameState; onChoose: (node
         {game.availableNodeIds.map((id) => {
           const node = game.mapNodes.find((item) => item.id === id)!;
           const def = NODE_DEFS[node.type];
+          const brief = nodeBrief[node.type];
           return (
             <button key={id} type="button" className="route-option-card" onClick={() => onChoose(id)}>
               <span>{nodeIcon(node.type)}</span>
               <strong>{def.name}</strong>
               <em>{def.desc}</em>
+              <small>风险：{brief.risk} · 收益：{brief.reward}</small>
+              <b>{brief.advice}</b>
             </button>
           );
         })}

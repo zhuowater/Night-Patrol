@@ -4,11 +4,10 @@ import {
   applyVulnerable,
   applyWeak,
   dealEnemyDamage,
-  drawCards,
   gainBlock,
   losePlayerHp,
-  recycleDiscardIntoDraw,
 } from "./combat";
+import { drawCards, recycleDiscardIntoDraw } from "./deck";
 import { addLog, hasRelic, mustCombat, mustPlayer } from "./core";
 import { winCombat } from "./rewards";
 import type { CardDef, CardInstance, GameState } from "../types";
@@ -66,9 +65,14 @@ export function playCard(state: GameState, command: PlayCardCommand | string) {
   recordAttackChainInterruption(state, card, def.type);
 
   combat.cardsPlayedThisTurn += 1;
-  if (hasRelic(state, "blankPage") && combat.cardsPlayedThisTurn % 3 === 0) {
-    drawCards(state, 1);
-    addLog(state, "查询缓存命中，抽 1 张牌。");
+  if (hasRelic(state, "blankPage")) {
+    combat.queryCacheProgress = (combat.queryCacheProgress + 1) % 3;
+    if (combat.queryCacheProgress === 0) {
+      drawCards(state, 1);
+      addLog(state, "查询缓存命中，抽 1 张牌。");
+    } else {
+      addLog(state, `查询缓存进度 ${combat.queryCacheProgress}/3。`);
+    }
   }
 
   if (def.type === "power" || def.exhaust || card.temp) {

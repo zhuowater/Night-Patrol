@@ -91,7 +91,7 @@ export function cardTermHint(card: CardInstance) {
   if (text.includes("算力")) return "算力是临时资源，可支撑爆发清剿。";
   if (text.includes("防护")) return "防护抵消本回合攻击活动。";
   if (text.includes("降权")) return "降权会压低攻击活动的输出强度。";
-  return "拖拽到正确处置区域执行这条响应动作。";
+  return "点击卡牌或拖出手牌区施放；攻击默认命中当前攻击链。";
 }
 
 export function cardArtImage(card: CardInstance) {
