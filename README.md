@@ -6,22 +6,22 @@
 
 ## 下载试玩
 
-桌面客户端会发布在 GitHub Releases：
-
-https://github.com/zhuowater/Night-Patrol/releases
-
-当前闭门试玩基线：
+桌面客户端已发布在 GitHub Releases：
 
 - 最新试玩包：`v0.2.8-demo`
 - 下载页面：https://github.com/zhuowater/Night-Patrol/releases/tag/v0.2.8-demo
 - 试玩说明：`docs/playtest/v0.2.8-closed-playtest-instructions.md`
 - 反馈表：`docs/playtest/v0.2.8-feedback-form.md`
 
-当前计划提供：
+### 选择哪个文件下载
 
-- Linux x64 测试包
-- macOS Apple Silicon / Intel 测试包
-- Windows x64 测试包
+| 系统 | 推荐下载 | 备用 | 备注 |
+|---|---|---|---|
+| Windows x64 | `Night-Patrol-SOC-0.2.8-win-x64.exe` | `Night-Patrol-SOC-0.2.8-win-x64.zip` | 如果 SmartScreen 拦截，点“更多信息”→“仍要运行”；或改用 zip 版。 |
+| macOS Apple Silicon | `Night-Patrol-SOC-0.2.8-mac-arm64.dmg` | `Night-Patrol-SOC-0.2.8-mac-arm64.zip` | 当前是 Apple Silicon 包；demo 阶段未公证，首次打开可能需要右键“打开”。 |
+| Linux x64 | `Night-Patrol-SOC-0.2.8-linux-x86_64.AppImage` | `Night-Patrol-SOC-0.2.8-linux-x64.zip` | AppImage 可能需要先执行 `chmod +x Night-Patrol*.AppImage`。 |
+
+不要下载 `Source code`；那是源码包，不是可直接试玩的客户端。
 
 macOS 版本目前是 demo 阶段的 ad-hoc 签名包，没有 Apple 公证。如果系统提示“无法验证开发者”，请右键点击应用，选择“打开”，再确认一次。
 
@@ -52,11 +52,10 @@ macOS 版本目前是 demo 阶段的 ad-hoc 签名包，没有 Apple 公证。�
 
 ## 操作方式
 
-- 点击或拖拽卡牌出牌；攻击牌会命中敌人，技能和法门牌会加固自己。
-- 攻击牌拖到敌人区域。
-- 技能牌和法门牌拖到玩家区域。
+- 点击卡牌或把卡牌拖出手牌区即可施放；攻击牌默认命中当前攻击链，技能和法门牌默认加固自己。
+- 卡牌下方会显示预计效果、取证价值或战术代价；优先看回合级“建议响应”。
 - 点击“结束回合”进入敌人回合。
-- 地图界面点击可选节点前进。
+- 地图界面点击当前可选节点前进，远端“待侦察”节点只是路线预告。
 - 顶部按钮可以回首页、静音或重新开始。
 
 ## 当前内容

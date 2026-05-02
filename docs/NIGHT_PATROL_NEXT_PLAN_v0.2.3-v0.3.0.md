@@ -1,7 +1,27 @@
 # 《夜巡 SOC：边界告警》v0.2.3-v0.3.0 后续开发计划
 
 > 依据：资深玩家完整跑局反馈、SOC 专业评估报告、当前代码与资源体积抽样检查。  
-> 当前判断：已发布到 `v0.2.7-demo`；下一步先做“first-run 引导 + 信息层级 + 资源命名治理”，再扩内容。不要立刻继续堆卡、堆敌人、堆视频。
+> 当前判断：已发布到 `v0.2.8-demo`；第一局引导和信息层级已补齐，下一步先把闭门试玩分发/反馈闭环跑起来，再做资源治理和包体压缩，最后再扩内容。
+
+## 2026-05-02 v0.2.8 发布后状态更新
+
+`v0.2.8-demo` 已发布，Release 资产覆盖 Linux x64、macOS arm64、Windows x64：
+
+- Release：`https://github.com/zhuowater/Night-Patrol/releases/tag/v0.2.8-demo`
+- Release notes：`docs/RELEASE_NOTES_v0.2.8-demo.md`
+- 闭门试玩说明：`docs/playtest/v0.2.8-closed-playtest-instructions.md`
+- 反馈表：`docs/playtest/v0.2.8-feedback-form.md`
+- 反馈汇总模板：`docs/playtest/v0.2.8-feedback-summary-template.md`
+- v0.2.9 入口/反馈闭环计划：`docs/plans/2026-05-02-v0.2.9-playtest-feedback-loop.md`
+
+下一阶段判断：
+
+1. **先运营闭门试玩，不先扩内容**：把 `v0.2.8-demo` 发给 5-10 名试玩者，优先收集启动、第一战理解、C2/IOC、噪声、奖励、地图、Boss 与性能反馈。
+2. **v0.2.9 前半段做反馈闭环**：README 下载入口、分发短文案、反馈汇总模板和问题池先稳定；真实反馈回来后再决定 P0/P1。
+3. **v0.2.9 后半段或 v0.2.10 做资源治理**：旧计划里的 `assets:audit`、资源压缩、首屏资源懒加载、Vite chunk 分包仍然是扩内容前的 P0 工程主线。
+4. **内容扩展继续后置**：新增敌人、事件、卡牌、小 Boss 应等第一局理解和包体风险都有数据后再进入。
+
+---
 
 ## 2026-05-02 v0.2.7 试玩后状态更新
 
