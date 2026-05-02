@@ -529,7 +529,7 @@ Done 条件：`engine.ts ≤ 220 行`；所有检查与浏览器冒烟通过。
 
 ### Sprint 3：资源治理（1-3 天）
 
-- [ ] 加 `assets:audit` 脚本，输出 top assets 与预算违规。
+- [x] 加 `assets:audit` 脚本，输出 top assets、类型/区域占比、runtime/generated/dist 三种审计视图与预算违规。
 - [ ] 加 `assets:optimize` 脚本，生成 WebP/压缩 MP4/压缩音频。
 - [ ] 引入 `assets/optimized/`，UI 改用 optimized。
 - [x] 胜利视频懒加载，poster 先显示。

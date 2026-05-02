@@ -116,17 +116,24 @@ npm run check:engine-scenarios
 
 ## 资源治理
 
-运行时默认只审计会进入构建或客户端包的资源：`assets/optimized`、`assets/audio/sfx`、`assets/marketing`、`public`、`desktop-assets`。
+运行时默认只审计会进入构建或客户端包的资源：`assets/optimized`、`assets/audio/sfx`、`assets/marketing`、`public`、`desktop-assets`。输出包含资源类型占比、top-level area 占比、Top assets 和预算违规列表。
 
 ```bash
 npm run assets:optimize
 npm run assets:audit
 ```
 
-如果要单独检查未压缩源素材，可显式传目录：
+常用审计视图：
 
 ```bash
-npm run assets:audit assets/generated
+# 运行时/客户端包基线，默认视图
+npm run assets:audit
+
+# 构建产物视图，适合看 dist/assets 真实落盘大小和代码 chunk 占比
+npm run assets:audit -- --mode dist --top 20
+
+# 未压缩源素材视图，只用于诊断生成素材压力，不作为默认包体预算基线
+npm run assets:audit -- --mode generated --top 20
 ```
 
 当前 UI 和音频入口应引用 `assets/optimized` 产物；`assets/generated` 保留为源素材，不作为默认包体预算基线。
