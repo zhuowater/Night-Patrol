@@ -47,24 +47,27 @@
 
 ## 0. 执行摘要
 
-### 0.1 下一阶段总目标
+### 0.1 当前代码与 roadmap 总判断（2026-05-02 / `aa520af`）
 
-把 Night Patrol 从“能玩的主题 demo”推进到“可以持续迭代的试玩产品”。
+这份文档最初用于规划 `v0.2.3-v0.3.0`，但当前仓库已经推进到 `v0.2.8-demo` 发布后、`v0.2.9` 闭门试玩反馈闭环阶段。后续不应再按旧 Sprint 1-6 机械推进；旧条目只作为“哪些主线已经完成/仍有债务”的索引。
 
-核心不是再证明题材成立——题材已经成立；核心是降低后续开发风险：
+对照最近提交与代码，当前事实是：
 
-1. **引擎解构**：`src/game/engine.ts` 已经是千行级单体，继续加机制会快速失控。v0.2.3 首要任务是拆模块、补回归、保持行为不变。
-2. **资源分包与压缩**：当前大图/视频/音频资源已经占主要体积，继续加演出会让包体失控。v0.2.3 必须建立资产预算、压缩脚本、懒加载边界。
-3. **试玩体验修正**：来自完整跑局的高优先问题：地图决策信息不足、卡牌交互提示与实际逻辑不一致、0 费抽牌循环过顺、Boss 阶段感不足。
-4. **发布工程闭环**：Release 已能发 Linux 包，但三平台自动构建与下一 tag 验证仍要纳入流程。
+1. **引擎解构已完成第一轮**：`src/game/engine.ts` 已变成 1 行 facade，`src/game/engine/` 下已有 `core/deck/rng/state/attackChain/cardEffects/combat/enemyAi/map/rewards/events/shop/rest` 等模块；`check:playtest-run` 已纳入 `npm run check`，并覆盖 story/normal/hard 固定跑局。
+2. **资源治理与首屏分包已完成第一轮**：`assets:audit` 支持 runtime/generated/dist 视图；`assets:optimize` 支持 `--dry-run`、`--check`、`--force`；UI/BGM 入口已改用 `assets/optimized`；`CinematicScreen` 与非首屏 `RunScreens` 已 lazy chunk，Vite manual chunks 已拆 `react/phaser/icons`。
+3. **UI/App 解构已完成主要闭环但仍可继续瘦身**：`TopHud`、`TitleScreen`、`MapScreen`、`CombatScreen` 已移出 `App.tsx`；`App.tsx` 当前 250 行，刚好达到旧验收线；`CombatScreen.tsx` 381 行，仍在旧阈值内但后续可继续拆 hook/子组件。
+4. **玩家理解层已进入可闭门试玩状态**：点击/拖出手牌区施放、卡牌预计效果、地图风险/奖励/下一跳、first-run cue、C2/噪声 micro-cue、Boss 阶段/倒计时表达均已落地到代码或文档。
+5. **发布与分发闭环当前基线是 `v0.2.8-demo`**：GitHub Release 已有 Linux x64、macOS arm64、Windows x64 试玩资产；`docs/playtest/v0.2.9-distribution-qa.md` 已记录 Release 资产、README/试玩说明/反馈模板闭环。
+6. **下一步优先级不是扩内容**：先把 `v0.2.8-demo` 发给 5-10 名闭门试玩者，收集有效反馈；若样本不足，继续补发布工程/文档/自动化，不先加敌人、卡牌或视频。
 
-### 0.2 版本节奏建议
+### 0.2 下一阶段版本节奏建议
 
-| 版本 | 主题 | 目标 |
-|---|---|---|
-| v0.2.3 | Stabilization / 架构与体验修正 | 引擎拆分、资源治理、地图/卡牌交互修正、Boss 阶段化第一版 |
-| v0.2.4 | Content & Replayability / 内容扩展 | 在架构稳定后加新事件、新敌人、新工具、新卡，并做三类玩家试玩 |
-| v0.3.0 | Public Demo Candidate / 公开试玩候选 | 第二套攻击链/第一章完整化、教程化、签名/分发说明、公开展示素材 |
+| 版本/阶段 | 主题 | 当前状态 | 下一步 |
+|---|---|---|---|
+| v0.2.8-demo | First-run guidance / IA polish | 已发布；三平台资产已在 Release 页面 | 作为闭门试玩分发基线 |
+| v0.2.9 | Playtest feedback loop / distribution QA | README、试玩说明、反馈模板、分发 QA 已完成；等待真实反馈 | 收 5-10 份反馈后决定 P0/P1 修正 |
+| v0.2.10 或 v0.3.0 前置 | Release engineering / polish debt | 资源治理与 lazy chunk 已完成第一轮；workflow 有多份历史文件需统一 | 视反馈补自动 release、桌面验证、UI 继续解构 |
+| v0.3.0 | Public Demo Candidate / 公开试玩候选 | 暂不进入 | 只有在反馈显示第一局理解成立后，再扩一章内容/敌人/Boss |
 
 ---
 
@@ -80,14 +83,14 @@
 
 ### 1.2 当前最大风险
 
-| 优先级 | 风险 | 现象 | 后果 |
+| 优先级 | 风险 | 当前现象 | 后果 / 处理 |
 |---|---|---|---|
-| P0 | 引擎继续膨胀 | `engine.ts` 千行级，规则、卡牌、敌人、奖励、地图混在一起 | 后续每加机制都可能引入隐性回归 |
-| P0 | 资源体积失控 | 多个 MP4/PNG/MP3 为 3-4MB 级，生成资源约几十 MB | 包体膨胀、首屏加载慢、Release 资产变重 |
-| P1 | 交互语义不一致 | UI 强调拖拽到目标，但引擎 `playCard` 无目标参数 | 玩家困惑，未来多目标改造成本高 |
-| P1 | 地图决策不足 | 同名节点多，收益/风险/二跳路线不清 | 玩家只是在“点亮节点”，不是在做路线策略 |
-| P1 | 0 费循环过顺 | 日志检索/关联分析/快速 triage/查询缓存组合形成长链 | 中后期回合拖长，决策密度下降 |
-| P1 | Boss 缺阶段记忆点 | Boss 有长度，但像高血量普通怪 | 终局不够尖锐，玩家记不住 |
+| P0 | 缺少真实试玩反馈 | `v0.2.8-demo` 已可分发，但下载数/反馈样本仍待回收 | 不要靠内部想象扩内容；先收 5-10 份有效反馈 |
+| P0 | Release workflow 历史文件分叉 | `.github/workflows/` 同时存在 `build-desktop.yml`、`desktop-release.yml`、`release.yml`；其中 `desktop-release.yml` 仍绑定旧 release notes | 下一轮发布工程切片应统一/废弃旧 workflow，避免 tag 发布时重复或引用旧文档 |
+| P1 | 资源体积仍大 | 资源治理脚本与 optimized 入口已完成，但 Electron 资产仍约百 MB 级 | 闭门试玩可接受；公开 demo 前继续看 dist/runtime 预算和下载反馈 |
+| P1 | UI 仍有局部大组件 | `App.tsx` 已降到 250 行，`CombatScreen.tsx` 381 行；后者仍承载 drag、cue、HUD、建议、手牌 | 若后续改战斗 UI，先拆 `useCardDrag` / `CombatHud` / `GuidanceStack`，避免回到单体组件 |
+| P1 | 数值/Boss 体验需真人验证 | Boss 阶段、倒计时、0 费链限制已部分落地；但完整体验是否“紧张但不拖”仍靠内部 fixture | 用反馈表中的 Boss/循环/理解评分决定是否进 v0.2.9 P1 |
+| P2 | 旧规划文档仍有历史基线 | `FIRST_ACT_DEMO_ROADMAP.md`、`PACKAGING_DISTRIBUTION.md` 等保留 v0.2.2 语境 | 可在后续文档卫生切片中加“已被当前 roadmap 取代”提示，不影响当前分发 |
 
 ---
 
@@ -508,25 +511,25 @@ v0.3.0 才考虑更公开地发。
 
 ## 6. 工程任务拆解
 
-### Sprint 1：引擎拆分安全网（1-2 天）
+### Sprint 1：引擎拆分安全网（已完成）
 
-- [ ] 整理当前 engine 公共导出。
-- [ ] 把 `scripts/playtest-normal-run.ts` 正式纳入 package script。
-- [ ] 增加 story/hard smoke fixtures。
-- [ ] 给攻击链反制、战斗胜利、奖励、地图推进补断言。
-- [ ] 建立 `src/game/engine/` 目录和 `index.ts`。
+- [x] 整理当前 engine 公共导出：`src/game/engine/index.ts` 聚合导出，`src/game/engine.ts` 为兼容 facade。
+- [x] 把固定跑局纳入 package script：`check:playtest-run` 已进入 `npm run check`。
+- [x] 增加 story/normal/hard smoke fixtures：`scripts/check-playtest-runs.ts` 覆盖 3 个难度固定跑局。
+- [x] 给攻击链反制、战斗胜利、奖励、地图推进补断言：`check:attack-chain`、`check:engine-scenarios` 与 playtest fixtures 共同覆盖。
+- [x] 建立 `src/game/engine/` 目录和 `index.ts`。
 
-Done 条件：所有检查通过，行为未变。
+当前证据：`package.json` 的 `check` 包含 theme / attack-chain / engine-scenarios / playtest-run；`src/game/engine.ts` 当前 1 行。
 
-### Sprint 2：引擎模块化（2-4 天）
+### Sprint 2：引擎模块化（已完成第一轮）
 
-- [ ] 抽 `rng.ts`、`deck.ts`、`state.ts`。
-- [ ] 抽 `attackChain.ts`。
-- [ ] 抽 `cardEffects.ts`，保留旧 `playCard(uid)` 兼容。
-- [ ] 抽 `combat.ts`、`enemyAi.ts`。
-- [ ] 抽 `map.ts`、`rewards.ts`、`events.ts`、`shop.ts`、`rest.ts`。
+- [x] 抽 `rng.ts`、`deck.ts`、`state.ts`。
+- [x] 抽 `attackChain.ts`。
+- [x] 抽 `cardEffects.ts`，保留旧 `playCard(uid)` 兼容，并已预留 `PlayCardCommand.targetId`。
+- [x] 抽 `combat.ts`、`enemyAi.ts`。
+- [x] 抽 `map.ts`、`rewards.ts`、`events.ts`、`shop.ts`、`rest.ts`。
 
-Done 条件：`engine.ts ≤ 220 行`；所有检查与浏览器冒烟通过。
+当前证据：`src/game/engine/` 包含 18 个模块；`engine.ts ≤ 220 行` 的目标已超过完成（当前 1 行）。后续如继续改玩法，应保持模块边界，不把逻辑回填到 UI 或 facade。
 
 ### Sprint 3：资源治理（1-3 天）
 
@@ -540,34 +543,34 @@ Done 条件：`engine.ts ≤ 220 行`；所有检查与浏览器冒烟通过。
 
 Done 条件：`dist/assets` 总体积下降 ≥30%；首屏资源显著减少；build 通过。
 
-### Sprint 4：UI 解构与交互修正（2-4 天）
+### Sprint 4：UI 解构与交互修正（主要完成，保留继续瘦身债务）
 
-- [ ] 拆 `TopHud`、`TitleScreen`、`MapScreen`、`CombatScreen`。
-- [ ] 资源 URL 从 `App.tsx` 移走。
-- [ ] 卡牌交互文案改为点击/拖出施放。
-- [ ] 卡牌 hover 显示预计效果。
-- [ ] 地图节点增加风险/奖励/二跳预览。
+- [x] 拆 `TopHud`、`TitleScreen`、`MapScreen`、`CombatScreen`。
+- [x] 资源 URL 从 `App.tsx` 移走：当前资源入口在 `src/ui/assets.ts` 等 UI/资源模块中，`App.tsx` 不再静态绑定大素材表。
+- [x] 卡牌交互文案改为点击/拖出施放。
+- [x] 卡牌 hover/卡面显示预计效果：`previewCardEffect` 已接入 `GameCard`。
+- [x] 地图节点增加风险/奖励/二跳预览：`MapScreen` 已展示风险、收益、节奏、适合场景和下一跳。
 
-Done 条件：`App.tsx ≤ 250 行`；新玩家第一战出牌无困惑；浏览器截图确认。
+当前证据：`App.tsx` 当前 250 行；`CombatScreen.tsx` 当前 381 行。旧 Done 条件已基本满足，但浏览器截图/真人“无困惑”仍应由 v0.2.8 闭门试玩反馈确认。
 
-### Sprint 5：数值与 Boss 修正（1-2 天）
+### Sprint 5：数值与 Boss 修正（部分完成，等待真实反馈判定）
 
-- [ ] 调整 0 费抽牌链。
-- [ ] 查询缓存改为每回合首次第 3 张触发。
-- [ ] Boss 加三阶段与倒计时 UI。
-- [ ] normal seed 重新跑局，目标：可通关但最终 HP 压力更明显。
+- [x] 调整 0 费抽牌链：`日志检索/windScroll` 已改为敌方有 IOC 时额外抽牌，避免无条件 0 费抽 2。
+- [x] 查询缓存改为第 3 张节奏触发：`blankPage` 当前按 `queryCacheProgress` 每 3 张牌抽 1，并在 UI 预告进度。
+- [x] Boss 加三阶段与倒计时 UI：`previewAttackChain` 输出 Boss phase 与 ransomware countdown，`CombatIntelPanel`/Boss HP 标记消费该信息。
+- [x] story/normal/hard 固定跑局已纳入 `check:playtest-run`；数值是否足够有压力仍需 v0.2.8 闭门反馈判断。
 
-Done 条件：完整跑局不再出现过长低决策循环；Boss 至少有两次阶段变化。
+Done 条件更新：自动 fixtures 只证明可通关和规则不崩；“循环是否过长、Boss 是否有压迫感”必须看反馈表与试玩报告，不再靠内部单次判断直接宣布完成。
 
-### Sprint 6：发布与外部试玩（1 天）
+### Sprint 6：发布与外部试玩（v0.2.8 已完成发布；v0.2.9 正在做反馈闭环）
 
-- [ ] 修 README 所有旧仓库/release 链接。
-- [ ] 完成/验证 GitHub Actions 三平台 release workflow。
-- [ ] 发布 `v0.2.3-demo`。
-- [ ] 浏览器打开 Release 页面确认资产展示。
-- [ ] 给 5-10 个闭门玩家发下载说明和反馈表。
+- [x] 修 README 旧仓库/release 链接：当前 README 指向 `zhuowater/Night-Patrol` 与 `v0.2.8-demo`。
+- [x] 完成/验证 GitHub Actions 三平台 release workflow：已能产出 Linux/macOS/Windows 资产；但 `.github/workflows/` 存在多份历史 workflow，后续应统一保留一条权威发布链路。
+- [x] 发布 `v0.2.8-demo`：Release 页面已有 Linux x64、macOS arm64、Windows x64 桌面试玩资产。
+- [x] 浏览器打开 Release 页面确认资产展示：见 `docs/playtest/v0.2.9-distribution-qa.md`。
+- [x] 准备给 5-10 个闭门玩家的下载说明和反馈表：见 `docs/playtest/v0.2.8-closed-playtest-instructions.md`、`v0.2.8-feedback-form.md`、`v0.2.8-feedback-summary-template.md`。
 
-Done 条件：Release 页面可见三平台资产；反馈问题可归档到下一版。
+当前 Done 条件：分发材料已闭环；真正未完成的是“回收 5-10 份有效反馈并形成 v0.2.9 P0/P1 实施列表”。
 
 ---
 
@@ -593,13 +596,13 @@ Done 条件：Release 页面可见三平台资产；反馈问题可归档到下�
 
 ## 8. 推荐优先级结论
 
-如果只做三件事，顺序是：
+当前不再是 v0.2.3 的“先搭地基”阶段；地基已经搭过一轮。接下来如果只做三件事，顺序应改为：
 
-1. **引擎解构 + 回归固化**：这是后续所有玩法开发的地基。
-2. **资源分包压缩 + 资产预算**：这是后续继续加演出和发布包的地基。
-3. **地图/卡牌交互/Boss 阶段化**：这是让玩家真正玩懂、记住、愿意反馈的关键。
+1. **闭门试玩反馈回收**：把 `v0.2.8-demo` 发给 5-10 名玩家，先确认下载/启动/第一战/C2/噪声/地图/奖励/Boss 是否被理解。
+2. **发布工程去重与可重复化**：统一 `.github/workflows/` 的桌面发布链路，避免多 workflow 重复触发或引用旧 release notes；继续保留 `npm run check && npm run build && assets:optimize -- --check` 作为发布 gate。
+3. **按反馈修 P0/P1，不先扩内容**：如果反馈显示第一局理解断点，优先修 cue、地图、奖励、Boss；如果反馈样本健康，再进入 v0.3.0 内容扩展。
 
-v0.2.3 的口号可以定为：
+当前口号应从 v0.2.3 的“解构核心、瘦身包体、讲清玩法”更新为：
 
-> **Refactor the core, slim the package, clarify the play.**  
-> 解构核心、瘦身包体、讲清玩法。
+> **Ship the closed playtest, collect signal, then expand.**
+> 先发闭测、收信号，再扩内容。
