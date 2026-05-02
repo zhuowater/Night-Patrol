@@ -22,9 +22,10 @@
     "check:attack-chain": "node scripts/check-attack-chain-counterplay.mjs",
     "check:engine-scenarios": "tsx scripts/check-engine-scenarios.ts",
     "check:playtest-run": "tsx scripts/check-playtest-runs.ts",
+    "check:short-viewport": "tsx scripts/check-short-viewport-choice-screens.ts",
     "assets:audit": "node scripts/audit-assets.mjs",
     "assets:optimize": "node scripts/optimize-assets.mjs",
-    "check": "npm run check:theme && npm run check:attack-chain && npm run check:engine-scenarios && npm run check:playtest-run"
+    "check": "npm run check:theme && npm run check:attack-chain && npm run check:engine-scenarios && npm run check:playtest-run && npm run check:short-viewport"
   },
   "build": {
     "appId": "com.yexunlu.soc",

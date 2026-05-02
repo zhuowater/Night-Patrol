@@ -56,7 +56,7 @@ export function RewardScreen({ game, onTake, onSkip }: { game: GameState; onTake
       <div className="choice-header reward-briefing">
         <p className="eyebrow">处置奖励 · 复盘选择</p>
         <h2>选择一张响应动作</h2>
-        <p>奖励不是只看伤害：看“适合构筑”和你当前缺什么。本次处置回收 {reward.gold} 预算；现在先选下一条响应动作。</p>
+        <p>本次回收 {reward.gold} 预算；优先看适合构筑、预计效果和响应算力代价。</p>
         <div className="reward-metrics" aria-label="奖励情报摘要">
           <span><strong>+{reward.gold}</strong> 预算回收</span>
           <span><strong>{reward.cards.length}</strong> 条候选剧本</span>
@@ -71,6 +71,7 @@ export function RewardScreen({ game, onTake, onSkip }: { game: GameState; onTake
           return (
             <div key={card.uid} className="reward-option">
               <GameCard card={card} mode="reward" onClick={() => onTake(card.uid)} />
+              <button className="reward-choice-cta" type="button" onClick={() => onTake(card.uid)}>选择：{cardName(card)}</button>
               <div className="reward-dossier">
                 <span><strong>预计效果</strong>{previewCardEffect(card)}</span>
                 <span><strong>取证价值</strong>{forensicValue}</span>
@@ -106,7 +107,7 @@ export function RewardScreen({ game, onTake, onSkip }: { game: GameState; onTake
           <LogRail logs={game.log} />
         </details>
       </div>
-      <button className="secondary-command" type="button" onClick={onSkip}>跳过响应动作</button>
+      <button className="secondary-command reward-skip" type="button" onClick={onSkip}>跳过响应动作</button>
     </section>
   );
 }
@@ -134,7 +135,7 @@ export function EventScreen({ game, onChoice }: { game: GameState; onChoice: (ch
             <strong>{choice.title}</strong>
             <span>{choice.desc}</span>
             {choice.preview && <b className="event-choice-preview">预计结果：{choice.preview}</b>}
-            <em>点击提交值班结论</em>
+            <em className="decision-card-cta">选择：{choice.title}</em>
           </button>
         ))}
       </div>
