@@ -53,7 +53,11 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libfuse2
+          sudo apt-get install -y libfuse2 ffmpeg
+
+      - name: Install macOS packaging dependencies
+        if: runner.os == 'macOS'
+        run: brew install ffmpeg
 
       - name: Install dependencies
         run: npm ci
