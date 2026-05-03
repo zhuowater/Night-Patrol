@@ -9,7 +9,7 @@
 - Electron 只负责桌面窗口、应用菜单、图标和本地文件加载。
 - GitHub Releases 托管 macOS/Windows 安装包与 zip 包。
 
-这条路线已经支撑 `v0.2.8-demo` 闭门试玩候选：开发成本低，能最快把 demo 发给第一批玩家。
+这条路线已经支撑 `v0.2.9-demo` 闭门试玩候选：开发成本低，能最快把 demo 发给第一批玩家。
 
 ## 2. 为什么选 Electron
 
@@ -157,7 +157,7 @@ git push origin main
 
 触发方式：
 
-- 自动：推送 tag，例如 `v0.2.8-demo`。
+- 自动：推送 tag，例如 `v0.2.9-demo`。
 - 手动：GitHub Actions 页面点击 `Run workflow`；只有从 tag ref 运行并勾选 `upload_to_release` 时才上传到 Release。
 
 发布 gate：
@@ -178,12 +178,12 @@ git push origin main
 玩家主要下载：
 
 ```text
-Night-Patrol-SOC-0.2.8-linux-x86_64.AppImage
-Night-Patrol-SOC-0.2.8-linux-x64.zip
-Night-Patrol-SOC-0.2.8-mac-arm64.dmg
-Night-Patrol-SOC-0.2.8-mac-arm64.zip
-Night-Patrol-SOC-0.2.8-win-x64.exe
-Night-Patrol-SOC-0.2.8-win-x64.zip
+Night-Patrol-SOC-0.2.9-linux-x86_64.AppImage
+Night-Patrol-SOC-0.2.9-linux-x64.zip
+Night-Patrol-SOC-0.2.9-mac-arm64.dmg
+Night-Patrol-SOC-0.2.9-mac-arm64.zip
+Night-Patrol-SOC-0.2.9-win-x64.exe
+Night-Patrol-SOC-0.2.9-win-x64.zip
 ```
 
 实际文件名以 electron-builder 输出为准。
@@ -191,15 +191,15 @@ Night-Patrol-SOC-0.2.8-win-x64.zip
 ### 5.3 发布 demo tag
 
 ```bash
-git tag v0.2.8-demo
-git push origin v0.2.8-demo
+git tag v0.2.9-demo
+git push origin v0.2.9-demo
 ```
 
 等 Action 跑完后，在 GitHub Release 页面确认：
 
 - Release 标题与 tag 正确。
 - Linux / macOS / Windows 桌面资产都已附加。
-- Release notes 已生成或补充为 `docs/RELEASE_NOTES_v0.2.8-demo.md` 的内容。
+- Release notes 已生成或补充为 `docs/RELEASE_NOTES_v0.2.9-demo.md` 的内容。
 - README、试玩说明和反馈表链接可从 Release 页面顺利跳转。
 - 浏览器实际打开 Release 页面看一遍资产展示，不只相信 API 返回。
 
@@ -271,7 +271,7 @@ macOS 的 `.icns` 由 electron-builder 在打包时根据 `desktop-assets/icon.p
 - 结算视频。
 - poster PNG 与 BGM 文件。
 
-短期接受这个体积是合理的，因为 demo 需要完整视听效果。v0.2.8 已完成第一轮资源治理，后续继续按闭门试玩反馈和包体预算做增量瘦身。
+短期接受这个体积是合理的，因为 demo 需要完整视听效果。v0.2.9 已完成第一轮资源治理，后续继续按闭门试玩反馈和包体预算做增量瘦身。
 
 建议优化顺序：
 

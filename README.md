@@ -2,24 +2,24 @@
 
 《夜巡 SOC：边界告警》是一个网络安全主题的卡牌构筑 roguelike demo。你扮演夜班 SOC 响应员，接管凌晨控制台，在有限算力和响应窗口里追踪 IOC、压制横向移动、清理噪声告警，并在天亮前阻止攻击者触达核心域控。
 
-当前版本是 `v0.2.8-demo` 闭门试玩候选：可以从标题页进入攻击路径，经历普通战、高危入侵、异常事件、情报市场、维护窗口，最终阻断核心域控前的勒索核心。本版重点降低第一局认知负担：加入首次跑局 cue、回合级建议、C2/噪声微提示、专家细节折叠、奖励聚焦和地图渐进披露。
+当前版本是 `v0.2.9-demo` 闭门试玩候选：可以从标题页进入攻击路径，经历普通战、高危入侵、异常事件、情报市场、维护窗口，最终阻断核心域控前的勒索核心。本版延续 v0.2.8 的首次跑局引导，并补齐闭门试玩入口、资源治理、首屏分包和短视口关键选择页修正。
 
 ## 下载试玩
 
 桌面客户端已发布在 GitHub Releases：
 
-- 最新试玩包：`v0.2.8-demo`
-- 下载页面：https://github.com/zhuowater/Night-Patrol/releases/tag/v0.2.8-demo
-- 试玩说明：`docs/playtest/v0.2.8-closed-playtest-instructions.md`
-- 反馈表：`docs/playtest/v0.2.8-feedback-form.md`
+- 最新试玩包：`v0.2.9-demo`
+- 下载页面：https://github.com/zhuowater/Night-Patrol/releases/tag/v0.2.9-demo
+- 试玩说明：`docs/playtest/v0.2.9-closed-playtest-instructions.md`
+- 反馈表：`docs/playtest/v0.2.9-feedback-form.md`
 
 ### 选择哪个文件下载
 
 | 系统 | 推荐下载 | 备用 | 备注 |
 |---|---|---|---|
-| Windows x64 | `Night-Patrol-SOC-0.2.8-win-x64.exe` | `Night-Patrol-SOC-0.2.8-win-x64.zip` | 如果 SmartScreen 拦截，点“更多信息”→“仍要运行”；或改用 zip 版。 |
-| macOS Apple Silicon | `Night-Patrol-SOC-0.2.8-mac-arm64.dmg` | `Night-Patrol-SOC-0.2.8-mac-arm64.zip` | 当前是 Apple Silicon 包；demo 阶段未公证，首次打开可能需要右键“打开”。 |
-| Linux x64 | `Night-Patrol-SOC-0.2.8-linux-x86_64.AppImage` | `Night-Patrol-SOC-0.2.8-linux-x64.zip` | AppImage 可能需要先执行 `chmod +x Night-Patrol*.AppImage`。 |
+| Windows x64 | `Night-Patrol-SOC-0.2.9-win-x64.exe` | `Night-Patrol-SOC-0.2.9-win-x64.zip` | 如果 SmartScreen 拦截，点“更多信息”→“仍要运行”；或改用 zip 版。 |
+| macOS Apple Silicon | `Night-Patrol-SOC-0.2.9-mac-arm64.dmg` | `Night-Patrol-SOC-0.2.9-mac-arm64.zip` | 当前是 Apple Silicon 包；demo 阶段未公证，首次打开可能需要右键“打开”。 |
+| Linux x64 | `Night-Patrol-SOC-0.2.9-linux-x86_64.AppImage` | `Night-Patrol-SOC-0.2.9-linux-x64.zip` | AppImage 可能需要先执行 `chmod +x Night-Patrol*.AppImage`。 |
 
 不要下载 `Source code`；那是源码包，不是可直接试玩的客户端。
 
@@ -176,8 +176,8 @@ npm run desktop:dist
 如需通过 GitHub Release 分发，推送 tag 后会触发 `.github/workflows/release.yml` 自动构建三平台桌面包并附加到对应 Release：
 
 ```bash
-git tag v0.2.8-demo
-git push origin v0.2.8-demo
+git tag v0.2.9-demo
+git push origin v0.2.9-demo
 ```
 
 发布前 gate 与 CI 一致：`npm run check`、`npm run assets:optimize -- --check`、`npm run desktop:dist`。tag 发布后仍需打开浏览器确认 Release 页面资产实际展示。
@@ -187,6 +187,7 @@ git push origin v0.2.8-demo
 - `docs/CYBERSECURITY_RETHEME_DESIGN.md`：网络安全主题改编设计。
 - `docs/plans/2026-05-01-cybersecurity-retheme-phase-1.md`：Phase 1 实施计划。
 - `docs/plans/2026-05-01-v0.2.2-playtest-candidate.md`：v0.2.2 试玩候选收口计划。
+- `docs/RELEASE_NOTES_v0.2.9-demo.md`：v0.2.9 Release Notes。
 - `docs/RELEASE_NOTES_v0.2.8-demo.md`：v0.2.8 Release Notes。
 - `docs/RELEASE_NOTES_v0.2.7-demo.md`：v0.2.7 Release Notes。
 - `docs/RELEASE_NOTES_v0.2.6-demo.md`：v0.2.6 Release Notes。
