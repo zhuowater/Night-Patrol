@@ -243,7 +243,15 @@ export function App() {
             onStart={() => transact(startRun)}
           />
         )}
-        {game.screen === "gameover" && <EndScreen title="响应失守" body="攻击链突破了窗口，核心资产进入应急隔离。下一次接班，你会更懂哪些告警不能拖。" onStart={() => transact(startRun)} />}
+        {game.screen === "gameover" && (
+          <EndScreen
+            title="响应失守"
+            body="攻击链突破了窗口，核心资产进入应急隔离。下一次接班，你会更懂哪些告警不能拖。"
+            game={game}
+            variant="gameover"
+            onStart={() => transact(startRun)}
+          />
+        )}
       </main>
     </div>
   );

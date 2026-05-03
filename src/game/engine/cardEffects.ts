@@ -81,7 +81,10 @@ export function playCard(state: GameState, command: PlayCardCommand | string) {
     combat.discardPile.push(card);
   }
 
-  if (combat.enemy.hp <= 0) winCombat(state);
+  if (combat.enemy.hp <= 0) {
+    winCombat(state);
+    return;
+  }
 }
 
 export function recordAttackChainInterruption(state: GameState, card: CardInstance, type: CardDef["type"]) {

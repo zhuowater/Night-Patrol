@@ -125,6 +125,46 @@ export interface CombatState {
   hitTarget: "enemy" | "player" | null;
   lastInterruption: string | null;
   queryCacheProgress: number;
+  summary?: {
+    startHp: number;
+    maxDamageDealt: number;
+    maxDamageTaken: number;
+  };
+}
+
+export interface RunCombatSummary {
+  floor: number;
+  type: "combat" | "elite" | "boss";
+  enemyName: string;
+  startHp: number;
+  endHp: number;
+  turns: number;
+  maxDamageDealt: number;
+  maxDamageTaken: number;
+}
+
+export interface RunEventSummary {
+  floor: number;
+  title: string;
+  choiceTitle: string;
+  result: string;
+}
+
+export interface RunSummaryState {
+  route: Array<{
+    floor: number;
+    nodeType: NodeType;
+    nodeName: string;
+    hpBefore: number;
+    maxHp: number;
+  }>;
+  combats: RunCombatSummary[];
+  events: RunEventSummary[];
+  rewardsTaken: Array<{ floor: number; cardName: string }>;
+  relicsGained: Array<{ floor: number; relicName: string }>;
+  bossEntryHp?: number;
+  bossEntryMaxHp?: number;
+  causeHint?: string;
 }
 
 export interface EventChoiceDef {
@@ -204,5 +244,6 @@ export interface GameState {
   seed: number;
   nextCardUid: number;
   guidance?: GuidanceState;
+  runSummary: RunSummaryState;
   lastFx: "none" | "card" | "hit" | "impact" | "fire" | "lightning" | "charge" | "block" | "reward" | "danger";
 }

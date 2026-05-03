@@ -393,8 +393,8 @@ const scenarios: Scenario[] = [
       cardState.screen = 'event';
       const beforeDeck = cardState.player!.deck.length;
       resolveEvent(cardState, 'foxCard');
-      assert(cardState.player!.deck.length === beforeDeck + 1, 'fox card event should add one card');
-      assert(cardState.lastEventResult?.startsWith('获得：'), `fox card event should summarize gained card, got ${cardState.lastEventResult}`);
+      assert(cardState.player!.deck.length === beforeDeck + 2, 'fox card event should add two sample cards');
+      assert(cardState.lastEventResult?.startsWith('获得：2 张'), `fox card event should summarize gained sample cards, got ${cardState.lastEventResult}`);
     },
   },
  ];

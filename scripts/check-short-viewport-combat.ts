@@ -25,6 +25,10 @@ if (!combatIntelPanel.includes("compactIntel") || !combatIntelPanel.includes('co
   failures.push("CombatIntelPanel must support a compact mode for the short viewport rail");
 }
 
+if (!combatIntelPanel.includes('open={!compactIntel}')) {
+  failures.push("full intel should keep expert details open while compact intel collapses them by default");
+}
+
 if (!css.includes(".combat-priority-row") || !css.includes(".combat-mini-recommendation") || !css.includes(".combat-mini-end-turn")) {
   failures.push("missing combat priority row styling");
 }

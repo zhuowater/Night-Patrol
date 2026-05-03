@@ -22,6 +22,13 @@ export function createGameState(): GameState {
     seed: Date.now() % 2147483647,
     nextCardUid: 1,
     guidance: { seen: {} },
+    runSummary: {
+      route: [],
+      combats: [],
+      events: [],
+      rewardsTaken: [],
+      relicsGained: [],
+    },
     lastFx: "none",
   };
 }

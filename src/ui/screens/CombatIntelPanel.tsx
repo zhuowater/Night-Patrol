@@ -53,7 +53,7 @@ export function CombatIntelPanel({
         <strong>{enemyName}</strong>
         <em>{attackChain}</em>
       </div>
-      <details className="intel-expert-details">
+      <details className="intel-expert-details" open={!compactIntel}>
         <summary>专业态势详情</summary>
         <p className="intel-tradecraft">{tradecraft}</p>
       </details>

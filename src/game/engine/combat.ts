@@ -40,6 +40,11 @@ export function startCombat(state: GameState, type: "combat" | "elite" | "boss")
     hitTarget: null,
     lastInterruption: null,
     queryCacheProgress: 0,
+    summary: {
+      startHp: player.hp,
+      maxDamageDealt: 0,
+      maxDamageTaken: 0,
+    },
   };
   player.block = 0;
   player.incense = 0;
@@ -91,6 +96,36 @@ function startPlayerTurn(state: GameState) {
   drawCards(state, drawCount);
 }
 
+export function inferRunCauseHint(state: GameState) {
+  const boss = state.runSummary.combats.find((combat) => combat.type === "boss");
+  const eliteCount = state.runSummary.route.filter((route) => route.nodeType === "elite").length;
+  const eventCount = state.runSummary.route.filter((route) => route.nodeType === "event").length;
+  const bossEntryHp = state.runSummary.bossEntryHp ?? state.player?.hp ?? 0;
+  const bossEntryMaxHp = state.runSummary.bossEntryMaxHp ?? state.player?.maxHp ?? 1;
+
+  if (boss && boss.turns >= 18) return "Boss 战拖入长线，说明牌组缺少收口爆发或过度防守。";
+  if (boss && bossEntryHp / bossEntryMaxHp <= 0.25) return "进入核心域控前防线过低，前序路线风险已经透支。";
+  if (eventCount >= 4 && eliteCount === 0) return "事件路线偏多但构筑补偿不足，Boss 前缺少关键工具或爆发。";
+  if (eliteCount >= 3) return "高危入侵收益高但代价重，本局属于贪高危后的血线失败。";
+  return "攻击链突破窗口；下一局优先检查路线风险、Boss 入场血线和构筑短板。";
+}
+
+export function appendCombatSummary(state: GameState) {
+  const combat = state.combat;
+  const player = state.player;
+  if (!combat || !player) return;
+  state.runSummary.combats.push({
+    floor: state.floor,
+    type: combat.type,
+    enemyName: combat.enemy.name,
+    startHp: combat.summary?.startHp ?? player.hp,
+    endHp: player.hp,
+    turns: combat.turn,
+    maxDamageDealt: combat.summary?.maxDamageDealt ?? 0,
+    maxDamageTaken: combat.summary?.maxDamageTaken ?? 0,
+  });
+}
+
 export function gainBlock(state: GameState, amount: number, source = "防护") {
   mustPlayer(state).block += amount;
   addLog(state, `${source}获得 ${amount} 点防护。`);
@@ -131,6 +166,8 @@ export function dealEnemyDamage(state: GameState, baseAmount: number, hits = 1, 
     total += dealt;
   }
   addLog(state, `造成 ${total} 点伤害。`);
+  combat.summary = combat.summary ?? { startHp: mustPlayer(state).hp, maxDamageDealt: 0, maxDamageTaken: 0 };
+  combat.summary.maxDamageDealt = Math.max(combat.summary.maxDamageDealt, total);
   state.lastFx = "hit";
   combat.hitTarget = "enemy";
   combat.pulse += 1;
@@ -141,11 +178,15 @@ export function losePlayerHp(state: GameState, amount: number, source = "失去�
   player.hp = Math.max(0, player.hp - amount);
   addLog(state, `${source}：失去 ${amount} 点生命。`);
   if (state.combat) {
+    state.combat.summary = state.combat.summary ?? { startHp: player.hp + amount, maxDamageDealt: 0, maxDamageTaken: 0 };
+    state.combat.summary.maxDamageTaken = Math.max(state.combat.summary.maxDamageTaken, amount);
     state.combat.hitTarget = "player";
     state.combat.pulse += 1;
   }
   state.lastFx = "impact";
   if (player.hp <= 0) {
+    appendCombatSummary(state);
+    state.runSummary.causeHint = inferRunCauseHint(state);
     state.screen = "gameover";
     state.lastFx = "danger";
   }

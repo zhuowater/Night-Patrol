@@ -115,6 +115,7 @@ export function MapScreen({ game, onChoose }: { game: GameState; onChoose: (node
               <small>{futureRouteHint(game, id)}</small>
               <b>{brief.advice}</b>
               <b>适合：{brief.bestWhen}</b>
+              <em className="route-option-cta">进入该节点</em>
             </button>
           );
         })}

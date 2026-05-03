@@ -1,3 +1,4 @@
+import { appendCombatSummary, inferRunCauseHint } from "./combat";
 import { ENEMIES } from "../content";
 import { applyAttackChainPressure } from "./attackChain";
 import { createCard } from "./cards";
@@ -38,6 +39,8 @@ export function enemyAttack(state: GameState, base: number, hits = 1) {
     player.block -= blocked;
     const dealt = amount - blocked;
     player.hp = Math.max(0, player.hp - dealt);
+    combat.summary = combat.summary ?? { startHp: player.hp + dealt, maxDamageDealt: 0, maxDamageTaken: 0 };
+    combat.summary.maxDamageTaken = Math.max(combat.summary.maxDamageTaken, dealt);
     total += dealt;
   }
   addLog(state, `${combat.enemy.name}造成 ${total} 点伤害。`);
@@ -96,6 +99,8 @@ export function enemyTurn(state: GameState, triggerSeal: (state: GameState) => v
   player.vulnerable = Math.max(0, player.vulnerable - 1);
 
   if (player.hp <= 0) {
+    appendCombatSummary(state);
+    state.runSummary.causeHint = inferRunCauseHint(state);
     state.screen = "gameover";
     return;
   }

@@ -1,3 +1,4 @@
+import { appendCombatSummary } from "./combat";
 import { CARD_POOL, RELICS } from "../content";
 import { cardName, createCard } from "./cards";
 import { DIFFICULTY_SPECS } from "./difficulty";
@@ -9,6 +10,7 @@ export function winCombat(state: GameState) {
   const combat = mustCombat(state);
   const enemy = combat.enemy;
   if (combat.type === "boss") {
+    appendCombatSummary(state);
     state.cinematic = createCinematicState(enemy, combat.type, "victory");
     state.combat = null;
     state.screen = "cinematic";
@@ -17,6 +19,7 @@ export function winCombat(state: GameState) {
     return;
   }
 
+  appendCombatSummary(state);
   const spec = DIFFICULTY_SPECS[state.difficulty];
   const gold = Math.round((int(state, 18, 32) + (combat.type === "elite" ? 18 : 0)) * spec.rewardGold);
   mustPlayer(state).gold += gold;
@@ -114,6 +117,7 @@ export function addRelic(state: GameState, id: string) {
   const relic = RELICS.find((item) => item.id === id);
   if (!relic || hasRelic(state, id)) return null;
   player.relics.push(relic);
+  state.runSummary.relicsGained.push({ floor: state.floor, relicName: relic.name });
   addLog(state, `获得工具：${relic.name}。`);
   if (relic.onGain === "gold60") {
     player.gold += 60;
@@ -127,5 +131,6 @@ export function takeRewardCard(state: GameState, uid: string) {
   if (!card) return;
   mustPlayer(state).deck.push(createCard(state, card.id, card.upgraded));
   addLog(state, `获得响应动作：${cardName(card)}。`);
+  state.runSummary.rewardsTaken.push({ floor: state.floor, cardName: cardName(card) });
   goMap(state);
 }

@@ -48,6 +48,22 @@ function shopRemovalReason(game: GameState) {
   return "精简低效动作，提高关键剧本上手率";
 }
 
+function buildGapHint(game: GameState) {
+  const deck = game.player?.deck ?? [];
+  const texts = deck.map((card) => cardText(card));
+  const iocApplicators = texts.filter((text) => text.includes("IOC")).length;
+  const blockCards = texts.filter((text) => text.includes("防护")).length;
+  const drawCards = texts.filter((text) => text.includes("抽")).length;
+  const upgradedCards = deck.filter((card) => card.upgraded).length;
+
+  if (deck.length > 17) return "牌组偏厚：优先删低效动作或拿抽牌，避免关键响应沉底。";
+  if (blockCards < 3 && game.player && game.player.hp <= game.player.maxHp * 0.55) return "防护缺口：低血量时优先补防护/回血，少赌高危路线。";
+  if (iocApplicators < 2) return "IOC 缺口：补标记来源，才能让雷击、溯源和沙箱爆发稳定兑现。";
+  if (drawCards < 2) return "稳定性缺口：补抽牌或 0 费牌，减少关键剧本卡手。";
+  if (upgradedCards < 2) return "升级缺口：维护窗口优先升级核心牌，提高同一套剧本的复用效率。";
+  return "构筑稳定：可以按当前路线继续强化爆发、防护或工具收益。";
+}
+
 export function RewardScreen({ game, onTake, onSkip }: { game: GameState; onTake: (uid: string) => void; onSkip: () => void }) {
   const reward = game.reward!;
   return (
@@ -62,6 +78,7 @@ export function RewardScreen({ game, onTake, onSkip }: { game: GameState; onTake
           <span><strong>{reward.cards.length}</strong> 条候选剧本</span>
           <span><strong>{reward.relic ? "1" : "0"}</strong> 件工具入库</span>
         </div>
+        <div className="build-gap-hint"><strong>当前构筑诊断</strong>{buildGapHint(game)}</div>
       </div>
       <div className="reward-primary-choice" aria-label="候选响应动作">
         {reward.cards.map((card) => {
@@ -203,6 +220,7 @@ export function ShopScreen({
           <span><strong>{shop.cards.filter((item) => !item.sold).length}</strong> 条剧本在售</span>
           <span><strong>{shop.relic.sold ? "售罄" : `${shop.relic.cost}`}</strong> 工具报价</span>
         </div>
+        <div className="build-gap-hint"><strong>当前构筑诊断</strong>{buildGapHint(game)}</div>
       </div>
       <div className="shop-grid">
         {shop.cards.map((item, index) => (

@@ -1,3 +1,4 @@
+import { RunSummaryPanel } from "./RunSummaryPanel";
 import { Swords } from "lucide-react";
 import type { ReactNode } from "react";
 import type { GameState } from "../game/types";
@@ -108,37 +109,14 @@ export function EndScreen({
   variant?: "victory" | "gameover";
 }) {
   const player = game?.player;
-  const hpRatio = player ? player.hp / player.maxHp : 0;
-  const rating = hpRatio >= 0.7 ? "S" : hpRatio >= 0.45 ? "A" : "B";
-  const difficultyLabel = game?.difficulty === "story" ? "剧情" : game?.difficulty === "hard" ? "困难" : "标准";
-  const recentLog = game?.log.slice(0, 5) ?? [];
 
   return (
     <section className="title-view end-view">
       <div className="title-copy end-copy">
-        <p className="eyebrow">复盘</p>
+        <p className="eyebrow">{variant === "victory" ? "复盘" : "本局 SOC 复盘"}</p>
         <h1>{title}</h1>
         <p>{body}</p>
-        {variant === "victory" && player && game ? (
-          <div className="run-summary-grid" aria-label="本局复盘摘要">
-            <SummaryTile label="响应评级" value={rating} accent />
-            <SummaryTile label="难度" value={difficultyLabel} />
-            <SummaryTile label="最终防线" value={`${player.hp}/${player.maxHp}`} />
-            <SummaryTile label="巡逻进度" value={`${Math.min(game.floor + 1, 8)}/8`} />
-            <SummaryTile label="牌组规模" value={`${player.deck.length} 张`} />
-            <SummaryTile label="工具数量" value={`${player.relics.length} 件`} />
-            <div className="run-summary-wide">
-              <span>工具入库</span>
-              <strong>{player.relics.length ? player.relics.map((relic) => relic.name).join(" · ") : "无工具通关"}</strong>
-            </div>
-            <div className="run-summary-wide">
-              <span>最后响应记录</span>
-              <ul>
-                {recentLog.length ? recentLog.map((line) => <li key={line}>{line}</li>) : <li>没有额外日志。</li>}
-              </ul>
-            </div>
-          </div>
-        ) : null}
+        {player && game ? <RunSummaryPanel game={game} variant={variant} /> : null}
         <div className="title-actions">
           <button className="primary-command" type="button" onClick={onStart}>
             <Swords /> 再接一班
@@ -146,14 +124,5 @@ export function EndScreen({
         </div>
       </div>
     </section>
-  );
-}
-
-function SummaryTile({ label, value, accent = false }: { label: string; value: string; accent?: boolean }) {
-  return (
-    <div className={`summary-tile ${accent ? "summary-tile-accent" : ""}`}>
-      <span>{label}</span>
-      <strong>{value}</strong>
-    </div>
   );
 }

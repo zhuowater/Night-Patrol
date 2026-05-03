@@ -1,3 +1,4 @@
+import { NODE_DEFS } from "../content";
 import { createCard } from "./cards";
 import { startCombat } from "./combat";
 import { DIFFICULTY_SPECS } from "./difficulty";
@@ -75,6 +76,13 @@ export function startRun(state: GameState, difficulty: Difficulty = "normal") {
   state.currentNodeId = null;
   state.visitedNodeIds = [];
   state.guidance = { seen: {} };
+  state.runSummary = {
+    route: [],
+    combats: [],
+    events: [],
+    rewardsTaken: [],
+    relicsGained: [],
+  };
   state.combat = null;
   state.cinematic = null;
   state.reward = null;
@@ -101,6 +109,18 @@ export function chooseNode(state: GameState, nodeId: string) {
   state.availableNodeIds = node.nextIds;
   state.floor = node.row + 1;
   const type = node.type;
+  const player = mustPlayer(state);
+  state.runSummary.route.push({
+    floor: state.floor,
+    nodeType: type,
+    nodeName: NODE_DEFS[type].name,
+    hpBefore: player.hp,
+    maxHp: player.maxHp,
+  });
+  if (type === "boss") {
+    state.runSummary.bossEntryHp = player.hp;
+    state.runSummary.bossEntryMaxHp = player.maxHp;
+  }
   addLog(state, nodeTrailLine(node));
   if (type === "combat" || type === "elite" || type === "boss") startCombat(state, type);
   if (type === "event") startEvent(state);
