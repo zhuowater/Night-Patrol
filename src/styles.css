@@ -2545,6 +2545,22 @@ button:focus-visible {
   text-shadow: 0 2px 2px rgba(0, 0, 0, 0.48);
 }
 
+.card-mode-hand .card-term-hint {
+  display: none;
+}
+
+.card-mode-hand .card-effect-preview {
+  position: static;
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px solid rgba(255, 223, 154, 0.18);
+  color: rgba(130, 213, 199, 0.88);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .reward-row,
 .reward-primary-choice {
   display: flex;
@@ -3119,6 +3135,32 @@ button:focus-visible {
     width: min(650px, 55vw);
     height: 184px;
     min-height: 184px;
+  }
+
+  .card-mode-hand .card-art-window {
+    height: 58px;
+    margin-top: 3px;
+  }
+
+  .card-mode-hand .card-kind {
+    margin: -6px auto 5px;
+  }
+
+  .card-mode-hand p {
+    display: block;
+    max-height: 2.44em;
+    overflow: hidden;
+    font-size: 0.72rem;
+    line-height: 1.22;
+  }
+
+  .card-mode-hand .card-effect-preview {
+    display: block;
+    max-height: 2.24em;
+    margin-top: 7px;
+    padding-top: 5px;
+    font-size: 0.56rem;
+    line-height: 1.12;
   }
 
   .card-mode-hand {
