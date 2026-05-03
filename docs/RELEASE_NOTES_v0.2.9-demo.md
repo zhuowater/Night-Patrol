@@ -39,12 +39,13 @@
 
 ### 5. 当前试玩报告
 
-新增模拟资深玩家试玩材料，用于指导第一轮真实闭门试玩：
+新增模拟资深玩家与 5 人画像试玩材料，用于指导第一轮真实闭门试玩：
 
 - `reports/playtest-v0.2.9-demo-senior-player-report-2026-05-02.md`
 - `reports/playtest-v0.2.9-demo-senior-player-feedback-form-2026-05-02.md`
+- `reports/playtest-v0.2.9-demo-5-independent-players-2026-05-03.md`
 
-结论：当前版本已经具备 5-10 人闭门试玩条件；下一步应优先收真实反馈，不建议立刻扩内容。
+5 人画像模拟结论：4/5 通关，1 名 hard 硬核玩家在 Boss 阶段死亡。当前版本已经具备 5-10 人闭门试玩条件；进入真实试玩前优先补下载指引与短视口战斗信息层级。
 
 ## QA 与验证状态
 
@@ -62,7 +63,7 @@ npm run build
 - `check:attack-chain` 通过。
 - `check:engine-scenarios` 通过，22 个场景。
 - `check:playtest-run` 通过，story / normal / hard 三档固定跑局均胜利。
-- `check:short-viewport` 通过。
+- `check:short-viewport` 通过，覆盖选择页与战斗首屏短视口静态规则。
 - `npm run build` 通过。
 
 ## 已知非阻塞项

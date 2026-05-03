@@ -19,6 +19,7 @@ export function CombatIntelPanel({
   bossPhase,
   queryCacheStatus,
   ransomwareCountdown,
+  compactIntel = false,
 }: {
   enemyName: string;
   attackChain: string;
@@ -43,9 +44,10 @@ export function CombatIntelPanel({
     canCancel: boolean;
     computeNeeded: number;
   } | null;
+  compactIntel?: boolean;
 }) {
   return (
-    <aside className="combat-intel-panel" aria-label="攻击链态势">
+    <aside className={`combat-intel-panel ${compactIntel ? "combat-intel-panel-compact" : ""}`} aria-label="攻击链态势">
       <div className="intel-header">
         <span>攻击链态势</span>
         <strong>{enemyName}</strong>

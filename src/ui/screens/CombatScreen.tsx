@@ -155,6 +155,19 @@ export function CombatScreen({ game, onPlayCard, onEndTurn, onDismissGuidance }:
             {burst.kind === "shield" ? <Shield /> : <Swords />}
           </div>
         )}
+        <div className="combat-priority-row" aria-label="短视口值班优先级">
+          <div className="combat-mini-intent">
+            <span>敌方意图</span>
+            <strong>{intentSummary}</strong>
+          </div>
+          <div className="combat-mini-recommendation">
+            <span>值班建议</span>
+            <strong>{turnRecommendation?.title || responseAdvice.replace(/^建议响应：/, "")}</strong>
+          </div>
+          <button className="end-turn combat-mini-end-turn" type="button" onClick={() => { markCueOnAction(); onEndTurn(); }}>
+            <SkipForward /> 结束回合
+          </button>
+        </div>
         <div className="combat-guidance-stack" aria-label="值班引导">
           {shouldShowFirstCombatCue && (
             <FirstRunCue
@@ -220,6 +233,27 @@ export function CombatScreen({ game, onPlayCard, onEndTurn, onDismissGuidance }:
             {enemy.vulnerable > 0 && <StatusBadge text={`暴露面 ${enemy.vulnerable}`} />}
           </div>
         </div>
+        <CombatIntelPanel
+          enemyName={enemy.name}
+          attackChain={enemy.attackChain}
+          tradecraft={enemy.tradecraft}
+          counter={enemy.counter}
+          intent={intentSummary}
+          moveTactic={moveTactic}
+          seal={enemy.seal}
+          noiseCount={noiseCount}
+          block={player.block}
+          incense={player.incense}
+          advice={responseAdvice}
+          riskForecast={riskForecast}
+          counterplayWindows={counterplayWindows}
+          counterplayReadiness={counterplayReadiness}
+          lastInterruption={combat.lastInterruption}
+          bossPhase={bossPhase}
+          queryCacheStatus={queryCacheStatus}
+          ransomwareCountdown={ransomwareCountdown}
+          compactIntel={true}
+        />
         <CombatIntelPanel
           enemyName={enemy.name}
           attackChain={enemy.attackChain}
